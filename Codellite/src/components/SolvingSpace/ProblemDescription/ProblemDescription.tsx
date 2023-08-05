@@ -63,8 +63,9 @@ const ProblemDescription: React.FC<ProblemDescriptionProps> = () => {
                             <p className='mt-3'>
                                 You may assume that each input would have <b><em>exactly</em> one solution</b>, and you may not use the same element twice.
                             </p>
-                            You can return the answer in any order.
-                            <p></p>
+                            <p className='mt-3'>
+                                You can return the answer in any order.
+                            </p>
                         </div>
 
                         {/* Examples */}
@@ -80,7 +81,7 @@ const ProblemDescription: React.FC<ProblemDescriptionProps> = () => {
                                     </pre>
                                 </div>
                             </div>
-                            
+
                             {/* Example 2 */}
                             <div>
                                 <p className='font-medium text-white'> Example 2: </p>
@@ -93,8 +94,8 @@ const ProblemDescription: React.FC<ProblemDescriptionProps> = () => {
                                 </div>
                             </div>
 
-                             {/* Example 3 */}
-                             <div>
+                            {/* Example 3 */}
+                            <div>
                                 <p className='font-medium text-white'>Example 3: </p>
                                 <div className='example-card'>
                                     <pre>
@@ -110,7 +111,14 @@ const ProblemDescription: React.FC<ProblemDescriptionProps> = () => {
                             <p className='text-white font-medium'>Constraints:</p>
                             <ul className='text-white ml-5 list-disc '>
                                 <li className='mt-2'>
-                                    <code>2  nums.length  10</code>
+                                    <code>2 ≤ nums.length ≤ 10</code>
+                                </li> <li className='mt-2'>
+                                    <code>-10 ≤ nums[i] ≤ 10</code>
+                                </li> <li className='mt-2'>
+                                    <code>-10 ≤ target ≤ 10</code>
+                                </li>
+                                <li className='mt-2 text-sm'>
+                                    <strong>Only one valid answer exists.</strong>
                                 </li>
                             </ul>
                         </div>

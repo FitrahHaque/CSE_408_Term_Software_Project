@@ -12,12 +12,9 @@ type PlaygroundProps = {
 };
 
 const Playground: React.FC<PlaygroundProps> = () => {
-    const boilerplateCode = `class Solution {
-public:
-    vector<int> twoSum(vector<int>& nums, int target) {
-    //Write your code here
-    }
-};`
+    const boilerplateCode = `vector<int> twoSum(vector<int>& nums, int target) {
+  //Write your code here
+}`
     return (
         <div className='flex flex-col bg-dark-layer-1 relative overflow-x-hidden'>
             <PreferenceNav />
