@@ -11,7 +11,7 @@
 # next.js
 /.next/
 /out/
-/.pack
+Codellite/.next/cache/webpack/
 # production
 /build
 
