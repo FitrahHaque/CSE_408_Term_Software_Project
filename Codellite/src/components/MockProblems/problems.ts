@@ -5,6 +5,7 @@ export type Problem = {
 	category: string;
 	order: number;
 	videoId?: string;
+	deadline?: Date;
 };
 
 export const problems: Problem[] = [

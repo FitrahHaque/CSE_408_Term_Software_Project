@@ -25,10 +25,10 @@
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
     ],
-    "/auth": [
+    "/problems/[pid]": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/auth.js"
+      "static/chunks/pages/problems/[pid].js"
     ]
   },
   "ampFirstPages": []
