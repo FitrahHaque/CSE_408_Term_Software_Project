@@ -9,12 +9,13 @@
 		"lint": "next lint"
 	},
 	"dependencies": {
-		"@codemirror/lang-javascript": "^6.1.6",
+		"@codemirror/lang-cpp": "^6.0.2",
+		"@codemirror/lang-javascript": "^6.1.9",
 		"@types/node": "18.15.3",
 		"@types/react": "18.0.28",
 		"@types/react-dom": "18.0.11",
-		"@uiw/codemirror-theme-vscode": "^4.19.16",
-		"@uiw/react-codemirror": "^4.19.16",
+		"@uiw/codemirror-theme-vscode": "^4.21.9",
+		"@uiw/react-codemirror": "^4.21.9",
 		"assert": "^2.0.0",
 		"eslint": "8.36.0",
 		"eslint-config-next": "13.2.4",
