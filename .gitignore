@@ -16,6 +16,7 @@ Codellite/build
 
 # misc
 .DS_Store
+Codellite/.DS_Store
 *.pem
 
 # debug
