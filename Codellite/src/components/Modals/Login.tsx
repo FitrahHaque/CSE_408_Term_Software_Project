@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 type LoginProps = {};
 
 const Login: React.FC<LoginProps> = () => {
+	// console.log('Login Page')
 	const setAuthModalState = useSetRecoilState(authModalState);
 	const handleClick = (type: "login" | "register" | "forgotPassword") => {
 		setAuthModalState((prev) => ({ ...prev, type }));
@@ -21,7 +22,7 @@ const Login: React.FC<LoginProps> = () => {
 
 	const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		if (!inputs.email || !inputs.password) return alert("Please fill all fields");
+		if (!inputs.email || !inputs.password) return toast.error("Please fill all fields", {position: 'top-center', autoClose: 3000, theme: 'dark'});
 		try {
 			const newUser = await signInWithEmailAndPassword(inputs.email, inputs.password);
 			if (!newUser) return;
