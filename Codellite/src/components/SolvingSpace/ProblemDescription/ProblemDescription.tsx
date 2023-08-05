@@ -68,13 +68,52 @@ const ProblemDescription: React.FC<ProblemDescriptionProps> = () => {
 
                         {/* Examples */}
                         <div className='mt-4'>
+                            {/* Example 1 */}
+                            <div>
+                                <p className='font-medium text-white'> Example 1: </p>
+                                <div className='example-card'>
+                                    <pre>
+                                        <strong className='text-white'>Input: </strong> <span className='text-white'>nums = [2,7,11,15], target = 9{" "} </span>
+                                        <br />
+                                        <strong className='text-white'>Output: </strong> <span className='text-white'> [0,1] </span> <br />
+                                        <strong className='text-white'>Explanation: </strong> <span className='text-white'> Because nums[0] + nums[1] == 9, we return [0,1].</span>
+                                    </pre>
+                                </div>
+                            </div>
 
+                            {/* Example 2 */}
+                            <div>
+                                <p className='font-medium text-white'>Example 2: </p>
+                                <div className='example card'>
+                                    <pre>
+                                        <strong className='text-white'>Input: </strong> <span className='text-white'>nums = [3,2,4], target = 6{" "}</span>
+                                        <br />
+                                        <strong className='text-white'>Output:</strong> <span className='text-white'> [1,2] </span> <br />
+                                        <strong className='text-white'>Explanation:</strong> <span className='text-white'>Because nums[1] + nums[2] == 6, we return [1,2].</span>
+                                    </pre>
+                                </div>
+                            </div>
+
+                             {/* Example 3 */}
+                             <div>
+                                <p className='font-medium text-white'>Example 3: </p>
+                                <div className='example card'>
+                                    <pre>
+                                        <strong className='text-white'>Input: </strong> <span className='text-white'> nums = [3,3], target = 6{" "} </span>
+                                        <br />
+                                        <strong className='text-white'>Output:</strong> <span className='text-white'>[0,1] </span> <br />
+                                    </pre>
+                                </div>
+                            </div>
                         </div>
 
                         {/* Constraints */}
                         <div className='my-8 pb-4'>
-                            <div className='text-white text-sm font-medium'>Constraints:</div>
+                            <p className='text-white text-sm font-medium'>Constraints:</p>
                             <ul className='text-white ml-5 list-disc '>
+                                <li className='mt-2'>
+                                    <code>2  nums.length  10</code>
+                                </li>
                             </ul>
                         </div>
                     </div>
