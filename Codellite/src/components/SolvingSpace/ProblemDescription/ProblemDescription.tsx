@@ -58,9 +58,10 @@ const ProblemDescription: React.FC<ProblemDescriptionProps> = () => {
                         {/* Problem Statement(paragraphs) */}
                         <div className='text-white text-sm'>
                             <p className='mt-3'>
-                                Given an array of integers <code>nums</code> and an integer <code>target</code>, return indices of the two numbers such that they add up to  <code>target</code>.
-
-                                You may assume that each input would have exactly one solution, and you may not use the same element twice.
+                                Given an array of integers <code>nums</code> and an integer <code>target</code>, return <em>indices of the two numbers such that they add up</em> to <code>target</code>.
+                            </p>
+                            <p className='mt-3'>
+                                You may assume that each input would have <b><em>exactly</em> one solution</b>, and you may not use the same element twice.
                             </p>
                             You can return the answer in any order.
                             <p></p>
@@ -73,23 +74,21 @@ const ProblemDescription: React.FC<ProblemDescriptionProps> = () => {
                                 <p className='font-medium text-white'> Example 1: </p>
                                 <div className='example-card'>
                                     <pre>
-                                        <strong className='text-white'>Input: </strong> <span className='text-white'>nums = [2,7,11,15], target = 9{" "} </span>
-                                        <br />
-                                        <strong className='text-white'>Output: </strong> <span className='text-white'> [0,1] </span> <br />
-                                        <strong className='text-white'>Explanation: </strong> <span className='text-white'> Because nums[0] + nums[1] == 9, we return [0,1].</span>
+                                        <strong>Input:</strong><span className='text-white'> nums = [2,7,11,15], target = 9{" "} </span><br />
+                                        <strong>Output:</strong><span className='text-white'> [0,1] </span><br />
+                                        <strong>Explanation:</strong><span className='text-white'> Because nums[0] + nums[1] == 9, we return [0,1].</span>
                                     </pre>
                                 </div>
                             </div>
-
+                            
                             {/* Example 2 */}
                             <div>
-                                <p className='font-medium text-white'>Example 2: </p>
-                                <div className='example card'>
+                                <p className='font-medium text-white'> Example 2: </p>
+                                <div className='example-card'>
                                     <pre>
-                                        <strong className='text-white'>Input: </strong> <span className='text-white'>nums = [3,2,4], target = 6{" "}</span>
-                                        <br />
-                                        <strong className='text-white'>Output:</strong> <span className='text-white'> [1,2] </span> <br />
-                                        <strong className='text-white'>Explanation:</strong> <span className='text-white'>Because nums[1] + nums[2] == 6, we return [1,2].</span>
+                                        <strong>Input:</strong><span className='text-white'> nums = [3,2,4], target = 6{" "}</span><br />
+                                        <strong>Output:</strong><span className='text-white'> [1,2] </span> <br />
+                                        <strong>Explanation:</strong><span className='text-white'> Because nums[1] + nums[2] == 6, we return [1,2].</span>
                                     </pre>
                                 </div>
                             </div>
@@ -97,19 +96,18 @@ const ProblemDescription: React.FC<ProblemDescriptionProps> = () => {
                              {/* Example 3 */}
                              <div>
                                 <p className='font-medium text-white'>Example 3: </p>
-                                <div className='example card'>
+                                <div className='example-card'>
                                     <pre>
-                                        <strong className='text-white'>Input: </strong> <span className='text-white'> nums = [3,3], target = 6{" "} </span>
-                                        <br />
-                                        <strong className='text-white'>Output:</strong> <span className='text-white'>[0,1] </span> <br />
+                                        <strong className='text-white'>Input:</strong><span className='text-white'> nums = [3,3], target = 6{" "} </span><br />
+                                        <strong className='text-white'>Output:</strong><span className='text-white'> [0,1]</span><br />
                                     </pre>
                                 </div>
                             </div>
                         </div>
 
                         {/* Constraints */}
-                        <div className='my-8 pb-4'>
-                            <p className='text-white text-sm font-medium'>Constraints:</p>
+                        <div className='mt-8 pb-4'>
+                            <p className='text-white font-medium'>Constraints:</p>
                             <ul className='text-white ml-5 list-disc '>
                                 <li className='mt-2'>
                                     <code>2  nums.length  10</code>

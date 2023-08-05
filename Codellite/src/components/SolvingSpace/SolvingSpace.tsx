@@ -1,6 +1,7 @@
 import React from 'react';
 import Split from 'react-split';
 import ProblemDescription from './ProblemDescription/ProblemDescription';
+import Playground from './Playground/Playground';
 
 type SolvingSpaceProps = {
     
@@ -9,9 +10,9 @@ type SolvingSpaceProps = {
 const SolvingSpace:React.FC<SolvingSpaceProps> = () => {
     
     return (
-        <Split className='split'>
+        <Split className='split' minSize={0}>
         <ProblemDescription/>
-        <div>Code Editor</div>
+        <Playground />
         </Split>
     )
 }
