@@ -1,4 +1,5 @@
 import React from 'react';
+import PreferenceNav from './PreferenceNav/PreferenceNav';
 
 type PlaygroundProps = {
     
@@ -6,6 +7,10 @@ type PlaygroundProps = {
 
 const Playground:React.FC<PlaygroundProps> = () => {
     
-    return <div>Have a good coding</div>
+    return (
+        <>
+        <PreferenceNav />
+        </>
+    )
 }
 export default Playground;
