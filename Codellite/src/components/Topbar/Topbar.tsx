@@ -10,6 +10,7 @@ import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { BsList } from "react-icons/bs";
 import Timer from "../Timer/Timer";
 import { useRouter } from "next/router";
+import { Button } from "@/components/ui/button"
 // import { problems } from "@/utils/problems";
 // import { Problem } from "@/utils/types/problem";
 
@@ -92,6 +93,7 @@ const Topbar: React.FC<TopbarProps> = ({ problemPage }) => {
 							onClick={() => setAuthModalState((prev) => ({ ...prev, isOpen: true, type: "login" }))}
 						>
 							<button className='bg-dark-fill-3 py-1 px-2 cursor-pointer rounded '>Sign In</button>
+							{/* <Button>Sign In</Button> */}
 						</Link>
 					)} 
 					{/* {user && problemPage && <Timer />} */}
