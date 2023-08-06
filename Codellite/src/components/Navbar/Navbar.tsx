@@ -13,13 +13,15 @@ const Navbar: React.FC<NavbarProps> = () => {
 	};
 	return (
 		<div className='flex items-center justify-between sm:px-12 px-2 md:px-24'>
+			{/* Logo */}
 			<Link href='/' className='flex items-center justify-center h-20'>
 				<Image src='/logo.png' alt='Codellite' height={200} width={200} />
 			</Link>
 			<div className='flex items-center'>
 				<Button variant="ghost"
-					className='text-white px-2 py-1 sm:px-4 rounded-md text-sm font-medium
-                hover:text-black hover:bg-white border-2 border-transparent
+					className='text-white bg-transparent px-2 py-1 sm:px-4 border-solid border-2 border-black
+					rounded-md text-sm font-medium
+                hover:text-white  hover:bg-transparent hover:border-solid hover:border-2 hover:border-sky-600
                 transition duration-300 ease-in-out
                 '
 					onClick={handleClick}

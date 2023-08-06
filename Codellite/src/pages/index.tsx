@@ -9,7 +9,7 @@ const Home:React.FC<HomeProps> = () => {
 	
 	return (
 		<>
-			<main className='bg-dark-layer-2 min-h-screen'>
+			<main className='bg-black min-h-screen'>
 				<Topbar />
 				<h1
 					className='text-2xl text-center text-gray-700 dark:text-gray-400 font-medium

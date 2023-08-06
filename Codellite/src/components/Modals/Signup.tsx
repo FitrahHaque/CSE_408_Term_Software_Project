@@ -57,7 +57,7 @@ const Signup: React.FC<SignupProps> = () => {
 		<>
 
 			<form className='space-y-6 px-6 pb-4' onSubmit={handleRegister}>
-				<h3 className='text-xl font-medium text-white flex justify-center'>Create an account</h3>
+				<h3 className='font-mono text-transparent bg-gradient-to-r from-cyan-200 to-indigo-800 bg-clip-text text-2xl font-extrabold flex justify-center'>Create an account</h3>
 				<div>
 					<label htmlFor='email' className='text-sm font-medium block mb-2 text-slate-400'>
 						Email
@@ -68,15 +68,15 @@ const Signup: React.FC<SignupProps> = () => {
 						name='email'
 						id='email'
 						className='
-        border-2 outline-none sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5
-        bg-gray-600 border-gray-500 placeholder-gray-400 text-white
+        border-2 outline-none sm:text-sm rounded-lg focus:ring-sky-600 focus:border-sky-600 block w-full p-2.5
+        bg-gray-800 border-gray-500 placeholder-gray-400 text-white
     '
 						placeholder='chistophernolan@oppenheimer.com'
 					/>
 				</div>
 				<div>
 					<label htmlFor='displayName' className='text-sm font-medium block mb-2 text-slate-400'>
-						Display Name
+						User Handle
 					</label>
 					<input
 						onChange={handleChangeInput}
@@ -84,8 +84,8 @@ const Signup: React.FC<SignupProps> = () => {
 						name='displayName'
 						id='displayName'
 						className='
-        border-2 outline-none sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5
-        bg-gray-600 border-gray-500 placeholder-gray-400 text-white
+        border-2 outline-none sm:text-sm rounded-lg focus:ring-sky-600 focus:border-sky-600 block w-full p-2.5
+        bg-gray-800 border-gray-500 placeholder-gray-400 text-white
     '
 						placeholder='Cillian Murphy'
 					/>
@@ -100,16 +100,17 @@ const Signup: React.FC<SignupProps> = () => {
 						name='password'
 						id='password'
 						className='
-        border-2 outline-none sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5
-        bg-gray-600 border-gray-500 placeholder-gray-400 text-white
+        border-2 outline-none sm:text-sm rounded-lg focus:ring-sky-600 focus:border-sky-600 block w-full p-2.5
+        bg-gray-800 border-gray-500 placeholder-gray-400 text-white
     '
 						placeholder='*******'
 					/>
 				</div>
 
 				<Button disabled={loading}
+				variant="outline"
 					type='submit'
-					className='w-full text-black bg-slate-400 hover:text-black hover:bg-white'
+					className='font-mono w-full text-white bg-transparent hover:bg-gradient-to-r hover:from-cyan-300 hover:to-indigo-900 hover:text-black transition duration-200 ease-in-out'
 				>
 					{loading ? "Registering..." : "Register"}
 				</Button>
@@ -129,7 +130,7 @@ const Signup: React.FC<SignupProps> = () => {
 				</div>
 			</div>
 			<div className="flex justify-center">
-			<Button variant="outline" className='w-80 bg-slate-500 text-white mb-5 mt-2 mr-1' type="button" disabled={loading}>
+			<Button variant="outline" className='w-80 bg-transparent font-mono text-white mb-5 mt-2 mr-1 hover:bg-gradient-to-r hover:from-cyan-300 hover:to-indigo-900 hover:text-black transition duration-200 ease-in-out' type="button" disabled={loading}>
 				{loading ? (
 					<Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
 				) : (
@@ -139,9 +140,9 @@ const Signup: React.FC<SignupProps> = () => {
 			</Button>
 			</div>
 			
-			<div className='space-y-6 px-6 pb-4 text-sm font-medium text-gray-300'>
+			<div className='space-y-6 px-6 pb-4 text-sm font-medium font-mono text-slate-300'>
 				Already have an account?{" "}
-				<a href='#' className='text-blue-700 hover:underline' onClick={handleClick}>
+				<a href='#' className='text-sky-400 hover:underline' onClick={handleClick}>
 					Log In
 				</a>
 			</div>

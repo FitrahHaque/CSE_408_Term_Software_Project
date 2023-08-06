@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
 import { useSetRecoilState } from "recoil";
 import { toast } from "react-toastify";
+import { Button } from "../ui/button";
 type LoginProps = {};
 
 const Login: React.FC<LoginProps> = () => {
@@ -37,56 +38,56 @@ const Login: React.FC<LoginProps> = () => {
 	}, [error]);
 	return (
 		<form className='space-y-6 px-6 pb-4' onSubmit={handleLogin}>
-			<h3 className='text-xl font-medium text-white'>Sign in to Codellite</h3>
-			<div>
-				<label htmlFor='email' className='text-sm font-medium block mb-2 text-gray-300'>
-					Your Email
-				</label>
-				<input
-					onChange={handleInputChange}
-					type='email'
-					name='email'
-					id='email'
-					className='
-            border-2 outline-none sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5
-            bg-gray-600 border-gray-500 placeholder-gray-400 text-white
-        '
-					placeholder='name@company.com'
-				/>
-			</div>
-			<div>
-				<label htmlFor='password' className='text-sm font-medium block mb-2 text-gray-300'>
-					Your Password
-				</label>
-				<input
-					onChange={handleInputChange}
-					type='password'
-					name='password'
-					id='password'
-					className='
-            border-2 outline-none sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5
-            bg-gray-600 border-gray-500 placeholder-gray-400 text-white
-        '
-					placeholder='*******'
-				/>
-			</div>
+				<h3 className='font-mono text-transparent bg-gradient-to-r from-cyan-200 to-indigo-800 bg-clip-text text-2xl 
+				font-extrabold flex justify-center'>Log in to Codellite</h3>
 
-			<button
-				type='submit'
-				className='w-full text-white focus:ring-blue-300 font-medium rounded-lg
-                text-sm px-5 py-2.5 text-center bg-brand-orange hover:bg-brand-orange-s
-            '
-			>
-				{loading ? "Loading..." : "Log In"}
-			</button>
+			<div>
+					<label htmlFor='email' className='text-sm font-medium block mb-2 text-slate-400'>
+						Email
+					</label>
+					<input
+						onChange={handleInputChange}
+						type='email'
+						name='email'
+						id='email'
+						className='
+        border-2 outline-none sm:text-sm rounded-lg focus:ring-sky-600 focus:border-sky-600 block w-full p-2.5
+        bg-gray-800 border-gray-500 placeholder-gray-400 text-white
+    '
+						placeholder='chistophernolan@oppenheimer.com'
+					/>
+				</div>
+				<div>
+					<label htmlFor='password' className='text-sm font-medium block mb-2 text-slate-400'>
+						Password
+					</label>
+					<input
+						onChange={handleInputChange}
+						type='password'
+						name='password'
+						id='password'
+						className='
+        border-2 outline-none sm:text-sm rounded-lg focus:ring-sky-600 focus:border-sky-600 block w-full p-2.5
+        bg-gray-800 border-gray-500 placeholder-gray-400 text-white
+    '
+						placeholder='*******'
+					/>
+				</div>
+			<Button disabled={loading}
+				variant="outline"
+					type='submit'
+					className='font-mono w-full text-white bg-transparent hover:bg-gradient-to-r hover:from-cyan-300 hover:to-indigo-900 hover:text-black transition duration-200 ease-in-out'
+				>
+					{loading ? "Loading..." : "Log In"}
+				</Button>
 			<button className='flex w-full justify-end' onClick={() => handleClick("forgotPassword")}>
-				<a href='#' className='text-sm block text-brand-orange hover:underline w-full text-right'>
+				<a href='#' className='text-sm font-mono block text-sky-400 hover:underline w-full text-right'>
 					Forgot Password?
 				</a>
 			</button>
-			<div className='text-sm font-medium text-gray-300'>
+			<div className='space-y-6 px-6 pb-4 text-sm font-medium font-mono text-slate-300'>
 				Not Registered?{" "}
-				<a href='#' className='text-blue-700 hover:underline' onClick={() => handleClick("register")}>
+				<a href='#' className='text-sky-400 hover:underline' onClick={() => handleClick("register")}>
 					Create account
 				</a>
 			</div>
