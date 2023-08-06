@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { useSetRecoilState } from "recoil";
+import { Button } from "../ui/button";
 type NavbarProps = {};
 
 const Navbar: React.FC<NavbarProps> = () => {
@@ -16,15 +17,15 @@ const Navbar: React.FC<NavbarProps> = () => {
 				<Image src='/logo.png' alt='Codellite' height={200} width={200} />
 			</Link>
 			<div className='flex items-center'>
-				<button
-					className='bg-brand-orange text-white px-2 py-1 sm:px-4 rounded-md text-sm font-medium
-                hover:text-brand-orange hover:bg-white hover:border-2 hover:border-brand-orange border-2 border-transparent
+				<Button variant="ghost"
+					className='text-white px-2 py-1 sm:px-4 rounded-md text-sm font-medium
+                hover:text-black hover:bg-white border-2 border-transparent
                 transition duration-300 ease-in-out
                 '
 					onClick={handleClick}
 				>
-					Sign In
-				</button>
+					Log In
+				</Button>
 			</div>
 		</div>
 	);

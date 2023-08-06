@@ -6,7 +6,8 @@ import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
 import { useRouter } from "next/router";
 import { doc, setDoc } from "firebase/firestore";
 import { toast } from "react-toastify";
-
+import { Button } from "../ui/button";
+import { Icons } from "../icons";
 type SignupProps = {};
 
 const Signup: React.FC<SignupProps> = () => {
@@ -49,77 +50,102 @@ const Signup: React.FC<SignupProps> = () => {
 	};
 
 	useEffect(() => {
-		if (error) alert(error.message);
+		if (error) toast.error(error.message, { position: "top-center" });
 	}, [error]);
 
 	return (
-		<form className='space-y-6 px-6 pb-4' onSubmit={handleRegister}>
-			<h3 className='text-xl font-medium text-white'>Register to Codellite</h3>
-			<div>
-				<label htmlFor='email' className='text-sm font-medium block mb-2 text-gray-300'>
-					Email
-				</label>
-				<input
-					onChange={handleChangeInput}
-					type='email'
-					name='email'
-					id='email'
-					className='
-        border-2 outline-none sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5
-        bg-gray-600 border-gray-500 placeholder-gray-400 text-white
-    '
-					placeholder='name@company.com'
-				/>
-			</div>
-			<div>
-				<label htmlFor='displayName' className='text-sm font-medium block mb-2 text-gray-300'>
-					Display Name
-				</label>
-				<input
-					onChange={handleChangeInput}
-					type='displayName'
-					name='displayName'
-					id='displayName'
-					className='
-        border-2 outline-none sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5
-        bg-gray-600 border-gray-500 placeholder-gray-400 text-white
-    '
-					placeholder='John Doe'
-				/>
-			</div>
-			<div>
-				<label htmlFor='password' className='text-sm font-medium block mb-2 text-gray-300'>
-					Password
-				</label>
-				<input
-					onChange={handleChangeInput}
-					type='password'
-					name='password'
-					id='password'
-					className='
-        border-2 outline-none sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5
-        bg-gray-600 border-gray-500 placeholder-gray-400 text-white
-    '
-					placeholder='*******'
-				/>
-			</div>
+		<>
 
-			<button
-				type='submit'
-				className='w-full text-white focus:ring-blue-300 font-medium rounded-lg
-            text-sm px-5 py-2.5 text-center bg-brand-orange hover:bg-brand-orange-s
-        '
-			>
-				{loading ? "Registering..." : "Register"}
-			</button>
+			<form className='space-y-6 px-6 pb-4' onSubmit={handleRegister}>
+				<h3 className='text-xl font-medium text-white flex justify-center'>Create an account</h3>
+				<div>
+					<label htmlFor='email' className='text-sm font-medium block mb-2 text-slate-400'>
+						Email
+					</label>
+					<input
+						onChange={handleChangeInput}
+						type='email'
+						name='email'
+						id='email'
+						className='
+        border-2 outline-none sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5
+        bg-gray-600 border-gray-500 placeholder-gray-400 text-white
+    '
+						placeholder='chistophernolan@oppenheimer.com'
+					/>
+				</div>
+				<div>
+					<label htmlFor='displayName' className='text-sm font-medium block mb-2 text-slate-400'>
+						Display Name
+					</label>
+					<input
+						onChange={handleChangeInput}
+						type='displayName'
+						name='displayName'
+						id='displayName'
+						className='
+        border-2 outline-none sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5
+        bg-gray-600 border-gray-500 placeholder-gray-400 text-white
+    '
+						placeholder='Cillian Murphy'
+					/>
+				</div>
+				<div>
+					<label htmlFor='password' className='text-sm font-medium block mb-2 text-slate-400'>
+						Password
+					</label>
+					<input
+						onChange={handleChangeInput}
+						type='password'
+						name='password'
+						id='password'
+						className='
+        border-2 outline-none sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5
+        bg-gray-600 border-gray-500 placeholder-gray-400 text-white
+    '
+						placeholder='*******'
+					/>
+				</div>
 
-			<div className='text-sm font-medium text-gray-300'>
+				<Button disabled={loading}
+					type='submit'
+					className='w-full text-black bg-slate-400 hover:text-black hover:bg-white'
+				>
+					{loading ? "Registering..." : "Register"}
+				</Button>
+
+			</form>
+			<div className="relative m-3">
+				<div className="absolute inset-x-3.5 inset-y-0 flex items-center">
+					<span className="w-4/12 border-t" />
+				</div>
+				<div className="relative flex justify-center text-xs uppercase">
+					<span className="px-4 text-slate-300">
+						Or continue with
+					</span>
+				</div>
+				<div className="absolute inset-x-3.5 inset-y-0 flex items-center flex-row-reverse">
+					<span className="w-4/12 border-t" />
+				</div>
+			</div>
+			<div className="flex justify-center">
+			<Button variant="outline" className='w-80 bg-slate-500 text-white mb-5 mt-2 mr-1' type="button" disabled={loading}>
+				{loading ? (
+					<Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+				) : (
+					<Icons.gitHub className="mr-2 h-4 w-4" />
+				)}{" "}
+				Github
+			</Button>
+			</div>
+			
+			<div className='space-y-6 px-6 pb-4 text-sm font-medium text-gray-300'>
 				Already have an account?{" "}
 				<a href='#' className='text-blue-700 hover:underline' onClick={handleClick}>
 					Log In
 				</a>
 			</div>
-		</form>
+		</>
 	);
 };
 export default Signup;
