@@ -10,4 +10,5 @@ export type Problem = {
     boilerplateCode: string;
     onlineJudge: ((fn: any) => boolean) | string;
     starterFunctionName: string;
+    difficulty: string;
 };

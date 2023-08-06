@@ -85,4 +85,5 @@ export const search2DMatrix: Problem = {
 	onlineJudge: search2DMatrixHandler,
 	starterFunctionName: "function searchMatrix",
 	order: 5,
+    difficulty: "Medium"
 };

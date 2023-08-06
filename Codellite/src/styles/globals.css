@@ -26,10 +26,6 @@ body {
 		origin-center scale-0 transition-all duration-100 ease-linear group-hover:scale-100;
 	}
 	
-	.TestCaseSelection {
-		@apply text-sm items-center transition-all focus:outline-none inline-flex 
-		bg-dark-fill-3 hover:bg-dark-fill-2 relative rounded-lg px-4 py-1 cursor-pointer whitespace-nowrap;
-	}
 }
 
 /* dark  scrollbar */

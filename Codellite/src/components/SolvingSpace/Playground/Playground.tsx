@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PreferenceNav from './PreferenceNav/PreferenceNav';
 import Split from 'react-split';
 import CodeMirror from '@uiw/react-codemirror';
@@ -6,15 +6,14 @@ import { vscodeDark } from '@uiw/codemirror-theme-vscode';
 import { javascript } from '@codemirror/lang-javascript';
 import EditorFooter from './EditorFooter/EditorFooter';
 import { cpp } from '@codemirror/lang-cpp';
+import { Problem } from '@/utils/types/problem';
 
 type PlaygroundProps = {
-
+    problem: Problem;
 };
 
-const Playground: React.FC<PlaygroundProps> = () => {
-    const boilerplateCode = `vector<int> twoSum(vector<int>& nums, int target) {
-  //Write your code here
-}`
+const Playground: React.FC<PlaygroundProps> = ({ problem }) => {
+    const [currentTestCaseId, setCurrentTestCaseId] = useState<number> (0);
     return (
         <div className='flex flex-col bg-dark-layer-1 relative overflow-x-hidden'>
             <PreferenceNav />
@@ -22,7 +21,7 @@ const Playground: React.FC<PlaygroundProps> = () => {
                 {/* Code editor */}
                 <div className='w-full overflow-auto'>
                     <CodeMirror
-                        value={boilerplateCode}
+                        value={problem.boilerplateCode}
                         theme={vscodeDark}
                         extensions={[javascript(),cpp()]}
                         style={{ fontSize: 16 }}
@@ -40,32 +39,22 @@ const Playground: React.FC<PlaygroundProps> = () => {
 
                     {/* Testcases */}
                     <div className='flex'>
-                        {/* Case 1 */}
-                        <div className='mr-2 items-start mt-2 text-white'>
+                        {problem.samples.map((sample,index) => (
+                            <div 
+                            className='mr-2 items-start mt-2 text-white'
+                            onClick={() => setCurrentTestCaseId(index)}
+                            >
                             <div className='flex flex-wrap items-center gap-y-4'>
-                                <div className={`TestCaseSelection`}>
-                                    Case 1
+                                <div className={`text-sm items-center transition-all focus:outline-none inline-flex 
+		bg-dark-fill-3 hover:bg-dark-fill-2 relative rounded-lg px-4 py-1 cursor-pointer whitespace-nowrap ${currentTestCaseId === index ? "text-white" :"text-gray-500"}`}>
+                                    Case {index+1}
                                 </div>
                             </div>
                         </div>
+                        ))}
+                        
 
-                        {/* Case 2 */}
-                        <div className='mr-2 items-start mt-2 text-white'>
-                            <div className='flex flex-wrap items-center gap-y-4'>
-                                <div className={`TestCaseSelection`}>
-                                    Case 2
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Case 3 */}
-                        <div className='mr-2 items-start mt-2 text-white'>
-                            <div className='flex flex-wrap items-center gap-y-4'>
-                                <div className={`TestCaseSelection`}>
-                                    Case 3
-                                </div>
-                            </div>
-                        </div>
+                        
                     </div>
 
                     <div className='font-light mb-[80px] overflow-auto'>
@@ -73,13 +62,13 @@ const Playground: React.FC<PlaygroundProps> = () => {
                             Input:
                         </p>
                         <div className='w-full cursor-text rounded-lg border px-3 py-[10px] bg-dark-fill-3 border-transparent text-slate-50 mt-2'>
-                            nums = [2,7,11,15], target = 9
+                            {problem.samples[currentTestCaseId].inputText}
                         </div>
                         <p className='text-sm font-medium mt-4 text-gray-400'>
                             Output:
                         </p>
                         <div className='w-full cursor-text rounded-lg border px-3 py-[10px] bg-dark-fill-3 border-transparent text-white mt-2'>
-                            [0,1]
+                            {problem.samples[currentTestCaseId].outputText}
                         </div>
                     </div>
                 </div>

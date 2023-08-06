@@ -58,4 +58,5 @@ export const jumpGame: Problem = {
 	onlineJudge: jumpGameHandler,
 	starterFunctionName: "function canJump(",
 	order: 3,
+    difficulty: "Medium",
 };

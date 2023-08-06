@@ -1,7 +1,7 @@
 import assert from "assert";
 import { Problem } from "../types/problem";
 
-const onlineJudge = (fn: any) => {
+const twoSumHandler = (fn: any) => {
 	// fn is the callback that user's code is passed into
 	try {
 		const nums = [
@@ -75,8 +75,9 @@ You can return the answer in any order.
 </li>`,
     order: 1,
     boilerplateCode: `function twoSum(nums, target) {
-        //Write your code here
-      };`,
-    onlineJudge: () => true,
+    //Write your code here
+};`,
+    onlineJudge: twoSumHandler,
     starterFunctionName: `function twoSum(nums, target)`,
+    difficulty: "Easy",
 };
