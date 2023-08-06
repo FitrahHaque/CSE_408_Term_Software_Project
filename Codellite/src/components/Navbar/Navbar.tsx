@@ -19,7 +19,7 @@ const Navbar: React.FC<NavbarProps> = () => {
 			</Link>
 			<div className='flex items-center'>
 				<Button variant="ghost"
-					className='text-white bg-transparent px-2 py-1 sm:px-4 border-solid border-2 border-black
+					className='font-mono text-white bg-transparent px-2 py-1 sm:px-4 border-solid border-2 border-black
 					rounded-md text-sm font-medium
                 hover:text-white  hover:bg-transparent hover:border-solid hover:border-2 hover:border-sky-600
                 transition duration-300 ease-in-out

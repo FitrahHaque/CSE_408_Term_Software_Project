@@ -11,16 +11,65 @@ import { BsList } from "react-icons/bs";
 import Timer from "../Timer/Timer";
 import { useRouter } from "next/router";
 import { Button } from "@/components/ui/button";
+import { Icons } from "@/components/icons"
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  navigationMenuTriggerStyle,
+} from "@/components/ui/navigation-menu"
+
 type TopbarProps = {
 	problemPage?: boolean;
 };
-
+const components: { title: string; href: string; description: string }[] = [
+	{
+	  title: "Alert Dialog",
+	  href: "/docs/primitives/alert-dialog",
+	  description:
+		"A modal dialog that interrupts the user with important content and expects a response.",
+	},
+	{
+	  title: "Hover Card",
+	  href: "/docs/primitives/hover-card",
+	  description:
+		"For sighted users to preview content available behind a link.",
+	},
+	{
+	  title: "Progress",
+	  href: "/docs/primitives/progress",
+	  description:
+		"Displays an indicator showing the completion progress of a task, typically displayed as a progress bar.",
+	},
+	{
+	  title: "Scroll-area",
+	  href: "/docs/primitives/scroll-area",
+	  description: "Visually or semantically separates content.",
+	},
+	{
+	  title: "Tabs",
+	  href: "/docs/primitives/tabs",
+	  description:
+		"A set of layered sections of content—known as tab panels—that are displayed one at a time.",
+	},
+	{
+	  title: "Tooltip",
+	  href: "/docs/primitives/tooltip",
+	  description:
+		"A popup that displays information related to an element when the element receives keyboard focus or the mouse hovers over it.",
+	},
+  ]
+   
+  
 const Topbar: React.FC<TopbarProps> = ({ problemPage }) => {
 	const [user] = useAuthState(auth);
 	const setAuthModalState = useSetRecoilState(authModalState);
 
 	return (
-		<nav className='relative flex h-[50px] w-full shrink-0 items-center px-5 bg-transparent text-dark-gray-7'>
+		<nav className='relative flex h-[50px] w-full shrink-0 items-center px-5 bg-black'>
 			<div className={`flex w-full items-center justify-between  ${problemPage ? "" : "max-w-[1200px] mx-auto"}`}>
 				<Link href='/' className='h-[22px] flex-1'>
 					<Image src='/logo-full.png' alt='Logo' height={100} width={100} />
