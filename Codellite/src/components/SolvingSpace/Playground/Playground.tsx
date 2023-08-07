@@ -3,6 +3,7 @@ import PreferenceNav from './PreferenceNav/PreferenceNav';
 import Split from 'react-split';
 import CodeMirror from '@uiw/react-codemirror';
 import { vscodeDark } from '@uiw/codemirror-theme-vscode';
+import { tokyoNight } from '@uiw/codemirror-theme-tokyo-night';
 import { javascript } from '@codemirror/lang-javascript';
 import EditorFooter from './EditorFooter/EditorFooter';
 import { cpp } from '@codemirror/lang-cpp';
@@ -15,14 +16,14 @@ type PlaygroundProps = {
 const Playground: React.FC<PlaygroundProps> = ({ problem }) => {
     const [currentTestCaseId, setCurrentTestCaseId] = useState<number> (0);
     return (
-        <div className='flex flex-col bg-dark-layer-1 relative overflow-x-hidden'>
+        <div className='flex flex-col bg-zinc-900 relative overflow-x-hidden'>
             <PreferenceNav />
             <Split className='h-[calc(100vh-94px)]' direction='vertical' sizes={[60, 40]} minSize={60}>
                 {/* Code editor */}
                 <div className='w-full overflow-auto'>
                     <CodeMirror
                         value={problem.boilerplateCode}
-                        theme={vscodeDark}
+                        theme={tokyoNight}
                         extensions={[javascript(),cpp()]}
                         style={{ fontSize: 16 }}
                     />
