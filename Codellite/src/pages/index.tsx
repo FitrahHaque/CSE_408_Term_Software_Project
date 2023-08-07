@@ -12,7 +12,7 @@ const Home:React.FC<HomeProps> = () => {
 			<main className='bg-black min-h-screen'>
 				<Topbar />
 
-				<h1 className='font-mono text-transparent bg-gradient-to-r from-cyan-200 to-indigo-800 bg-clip-text text-2xl font-extrabold 
+				<h1 className='font-mono text-transparent bg-gradient-to-b from-cyan-200 to-indigo-800 bg-clip-text text-2xl font-extrabold 
 				flex justify-center uppercase mt-10 mb-5'>Problem List</h1>
 
 				<div className='relative overflow-x-auto mx-auto px-6 pb-10'>
@@ -25,7 +25,7 @@ const Home:React.FC<HomeProps> = () => {
 					)} */}
 					<table className='text-sm text-left text-gray-500 dark:text-gray-400 sm:w-7/12 w-full max-w-[1200px] mx-auto'>
 						{/*!loadingProblems */ true && (
-							<thead className='text-xs text-transparent bg-gradient-to-r from-cyan-200 to-indigo-600 bg-clip-text uppercase border-b border-b-sky-400'>
+							<thead className='text-xs font-bold text-white uppercase border-b'>
 								<tr>
 									<th scope='col' className='px-1 py-3 w-0 font-medium'>
 										Status
