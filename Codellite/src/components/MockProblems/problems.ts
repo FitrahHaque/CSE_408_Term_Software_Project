@@ -5,7 +5,7 @@ export type Problem = {
 	category: string;
 	order: number;
 	videoId?: string;
-	deadline?: Date;
+	deadline?: string;
 };
 
 export const problems: Problem[] = [
@@ -16,6 +16,7 @@ export const problems: Problem[] = [
 		category: "Array",
 		order: 1,
 		videoId: "8-k1C6ehKuw",
+		deadline: "12-Aug-2023"
 	},
 	{
 		id: "reverse-linked-list",
