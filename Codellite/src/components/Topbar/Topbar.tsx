@@ -9,8 +9,6 @@ import Image from "next/image";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { BsList } from "react-icons/bs";
 import Timer from "../Timer/Timer";
-import { useRouter } from "next/router";
-import { Button } from "@/components/ui/button";
 import { Icons } from "@/components/icons"
 import {
 	NavigationMenu,
@@ -76,23 +74,23 @@ const Topbar: React.FC<TopbarProps> = ({ problemPage }) => {
 				</Link>
 
 				{problemPage && (
-					<div className='flex items-center gap-4 flex-1 justify-center'>
+					<div className='flex items-center text-white gap-4 flex-1 justify-center '>
 						<div
-							className='flex items-center justify-center rounded bg-dark-fill-3 hover:bg-dark-fill-2 h-8 w-8 cursor-pointer'
+							className='flex items-center justify-center rounded bg-black hover:bg-neutral-800 hover:text-sky-200 h-8 w-8 cursor-pointer'
 						>
 							<FaChevronLeft />
 						</div>
 						<Link
 							href='/'
-							className='flex items-center gap-2 font-medium max-w-[170px] text-dark-gray-8 cursor-pointer'
-						>
+							className='flex items-center gap-2 font-medium max-w-[170px] cursor-pointer hover:text-transparent hover:bg-gradient-to-r 
+							hover:from-cyan-200 hover:to-indigo-700 hover:bg-clip-text'>
 							<div>
 								<BsList />
 							</div>
 							<p>Problem List</p>
 						</Link>
 						<div
-							className='flex items-center justify-center rounded bg-dark-fill-3 hover:bg-dark-fill-2 h-8 w-8 cursor-pointer'
+							className='flex items-center justify-center rounded bg-black hover:bg-neutral-800 hover:text-sky-600 h-8 w-8 cursor-pointer'
 						>
 							<FaChevronRight />
 						</div>
@@ -185,7 +183,8 @@ const Topbar: React.FC<TopbarProps> = ({ problemPage }) => {
 						<div className='cursor-pointer group relative'>
 							<Image src='/avatar.png' alt='Avatar' width={30} height={30} className='rounded-full' />
 							<div
-								className='absolute top-10 left-2/4 -translate-x-2/4  mx-auto bg-dark-layer-1 text-brand-orange p-2 rounded shadow-lg 
+								className='overflow-x-hidden absolute top-10 left-2/4 -translate-x-3/4 text-white mx-auto 
+								bg-neutral-700 p-2 rounded shadow-lg 
 								z-40 group-hover:scale-100 scale-0 
 								transition-all duration-300 ease-in-out'
 							>

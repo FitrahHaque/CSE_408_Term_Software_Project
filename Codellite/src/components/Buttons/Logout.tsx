@@ -11,7 +11,7 @@ const Logout:React.FC<LogoutProps> = () => {
         signOut();
     }
     return (
-        <button className='bg-dark-fill-3 py-1.5 px-3 cursor-pointer rounded text-brand-orange' onClick={handleLogout}>
+        <button className='bg-black py-1.5 px-3 cursor-pointer rounded text-sky-300' onClick={handleLogout}>
             <FiLogOut/>
         </button>
     )
