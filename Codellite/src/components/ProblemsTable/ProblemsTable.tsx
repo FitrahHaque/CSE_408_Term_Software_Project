@@ -47,11 +47,19 @@ const ProblemsTable: React.FC<ProblemsTableProps> = ({ onSetLoadingProblems }) =
 								{/*solvedProblems.includes(problem.id) && */ <BsCheckCircle fontSize={"18"} width='18' />}
 							</th>
 							<td className='px-6 py-4'>
+								{problem.link ? (
+									<Link
+										className='group-hover:text-white cursor-pointer'
+										href={problem.link}>
+										{problem.title}
+									</Link>
+								) : (
 									<Link
 										className='group-hover:text-white cursor-pointer'
 										href={`/problems/${problem.id}`}>
 										{problem.title}
 									</Link>
+								)}
 							</td>
 							<td className={`px-6 py-4 ${difficulyColor}`}>{problem.difficulty}</td>
 							<td className={"group-hover:text-white px-6 py-4"}>{problem.category}</td>
