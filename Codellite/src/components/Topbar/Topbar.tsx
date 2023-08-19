@@ -19,7 +19,9 @@ import {
 	NavigationMenuTrigger,
 	navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
-
+import { useRouter } from "next/router";
+import { Problem } from "@/utils/types/problem";
+import { problems } from "@/utils/problems";
 type TopbarProps = {
 	problemPage?: boolean;
 };
@@ -65,7 +67,25 @@ const components: { title: string; href: string; description: string }[] = [
 const Topbar: React.FC<TopbarProps> = ({ problemPage }) => {
 	const [user] = useAuthState(auth);
 	const setAuthModalState = useSetRecoilState(authModalState);
-
+	const router = useRouter();
+	const handleProblemNavigation = (isForward: boolean) => {
+		const { order } = problems[router.query.pid as string] as Problem;
+		const direction = isForward ? 1 : -1;
+		const nextProblemOrder = order + direction;
+		const nextProblemKey = Object.keys(problems).find((key) => problems[key].order === nextProblemOrder);
+		if(isForward && !nextProblemKey) {
+			const firstProblemKey = Object.keys(problems).find((key) => problems[key].order === 1);
+			router.push(`/problems/${firstProblemKey}`);
+		}
+		else if(!isForward && !nextProblemKey){
+			const firstProblemKey = Object.keys(problems).find((key)=> problems[key].order === Object.keys(problems).length)
+			router.push(`/problems/${firstProblemKey}`);
+		}
+		else{
+			router.push(`/problems/${nextProblemKey}`);
+		}
+		// console.log(router.query.pid);
+	}
 	return (
 		<nav className='relative flex h-[50px] w-full shrink-0 items-center px-5 bg-black'>
 			<div className={`flex w-full items-center justify-between  ${problemPage ? "" : "max-w-[1200px] mx-auto"}`}>
@@ -77,6 +97,7 @@ const Topbar: React.FC<TopbarProps> = ({ problemPage }) => {
 					<div className='flex items-center text-white gap-4 flex-1 justify-center '>
 						<div
 							className='flex items-center justify-center rounded bg-black hover:bg-neutral-800 hover:text-sky-200 h-8 w-8 cursor-pointer'
+							onClick={() => handleProblemNavigation(false)}
 						>
 							<FaChevronLeft />
 						</div>
@@ -91,6 +112,8 @@ const Topbar: React.FC<TopbarProps> = ({ problemPage }) => {
 						</Link>
 						<div
 							className='flex items-center justify-center rounded bg-black hover:bg-neutral-800 hover:text-sky-600 h-8 w-8 cursor-pointer'
+							onClick={() => handleProblemNavigation(true)}
+
 						>
 							<FaChevronRight />
 						</div>
