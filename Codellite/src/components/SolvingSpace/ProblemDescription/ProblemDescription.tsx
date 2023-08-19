@@ -4,16 +4,26 @@ import { AiFillLike, AiFillDislike } from "react-icons/ai";
 import { BsCheck2Circle } from "react-icons/bs";
 import { TiStarOutline } from "react-icons/ti";
 import { doc, getDoc } from "firebase/firestore";
-import { firestore } from '@/firebase/firebase';
+import { auth, firestore } from '@/firebase/firebase';
 import RectangleSkeleton from '@/components/skeletons/RectangleSkeleton';
 import CircleSkeleton from '@/components/skeletons/CircleSkeleton';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { toast } from 'react-toastify';
 
 type ProblemDescriptionProps = {
     problem: Problem;
 };
 
 const ProblemDescription: React.FC<ProblemDescriptionProps> = ({ problem }) => {
+    const [ user ] = useAuthState(auth);
     const { currentProblem, loading, problemDifficultyClass } = useGetCurrentProblem(problem.id);
+    const { liked, disliked,solved,starred, setData } = useGetUserDataOnProblem(problem.id);
+    const handleLike = async () => {
+        if(!user){
+            toast.error("You must be logged in to like this problem", {position:"top-center", theme:"dark"});
+            return;
+        }
+    }
     return (
         <div className='bg-dark-layer-1'>
             {/* TAB */}
@@ -43,8 +53,9 @@ const ProblemDescription: React.FC<ProblemDescriptionProps> = ({ problem }) => {
                             </div>
                             <div
                                 className='flex items-center cursor-pointer hover:bg-dark-fill-3 space-x-1 rounded p-[3px]  ml-4 text-lg transition-colors duration-200 text-dark-gray-6'
+                                onClick={handleLike}
                             >
-                                <AiFillLike />
+                                {liked ? <AiFillLike  className='text-dark-blue-s'/> : <AiFillLike />}
                                 <span className='text-xs'>{currentProblem.likes}</span>
                             </div>
                             <div
@@ -146,4 +157,33 @@ function useGetCurrentProblem(problemId: string) {
 		getProblem();
     },[problemId]);
     return { currentProblem, loading, problemDifficultyClass};
+}
+
+function useGetUserDataOnProblem(problemId: string) {
+    const [ data, setData ] = useState({liked:false,disliked:false,starred:false,solved:false})
+    const [ user ] = useAuthState(auth);
+    useEffect(()=> {
+        const getUserDataOnProblem = async () => {
+			//fetching data logic from database
+            const userRef = doc(firestore, "users", user!.uid);
+            const userSnap = await getDoc(userRef);
+            
+            if (userSnap.exists()) {
+                const data = userSnap.data();
+                const { solvedProblems, likedProblems, dislikedProblems, starredProblems } = data;
+                setData({
+                    liked:likedProblems.includes(problemId),
+                    disliked:dislikedProblems.includes(problemId),
+                    starred:starredProblems.includes(problemId),
+                    solved:solvedProblems.includes(problemId),
+                });
+            } else {
+              // userSnap.data() will be undefined in this case
+              console.log("No such document!");
+            }
+		}
+		if(user) getUserDataOnProblem();
+        return () => setData({liked:false,disliked:false,starred:false,solved:false});
+    },[problemId, user])
+    return {...data,setData};
 }
