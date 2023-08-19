@@ -78,8 +78,8 @@ const Topbar: React.FC<TopbarProps> = ({ problemPage }) => {
 			router.push(`/problems/${firstProblemKey}`);
 		}
 		else if(!isForward && !nextProblemKey){
-			const firstProblemKey = Object.keys(problems).find((key)=> problems[key].order === Object.keys(problems).length)
-			router.push(`/problems/${firstProblemKey}`);
+			const lastProblemKey = Object.keys(problems).find((key)=> problems[key].order === Object.keys(problems).length)
+			router.push(`/problems/${lastProblemKey}`);
 		}
 		else{
 			router.push(`/problems/${nextProblemKey}`);

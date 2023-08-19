@@ -1,10 +1,10 @@
 import React from 'react';
 import { BsChevronUp, BsChevronDown } from 'react-icons/bs';
 type EditorFooterProps = {
-    
+    onHandleSubmit:() => void;
 };
 
-const EditorFooter:React.FC<EditorFooterProps> = () => {
+const EditorFooter:React.FC<EditorFooterProps> = ({ onHandleSubmit }) => {
     
     return (
         <div className='flex bg-dark-layer-1 absolute bottom-0 z-10 w-full'>
@@ -25,6 +25,7 @@ const EditorFooter:React.FC<EditorFooterProps> = () => {
 					</button>
 					<button
 						className='px-3 py-1.5 font-medium items-center transition-all focus:outline-none inline-flex text-sm text-white bg-dark-green-s hover:bg-green-3 rounded-lg'
+						onClick={onHandleSubmit}
 					>
 						Submit
 					</button>
