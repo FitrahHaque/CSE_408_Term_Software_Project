@@ -14,6 +14,7 @@ import { toast } from 'react-toastify';
 import { problems } from '@/utils/problems';
 import { useRouter } from 'next/router';
 import { arrayUnion, doc, updateDoc } from 'firebase/firestore';
+import useLocalStorage from '@/hooks/useLocalStorage';
 
 type PlaygroundProps = {
     problem: Problem;
@@ -31,8 +32,9 @@ const Playground: React.FC<PlaygroundProps> = ({ problem, onSuccess, setSolved }
     let [ userCode, setUserCode] = useState<string>(problem.boilerplateCode);
     const [ user ] = useAuthState(auth);
     const { query: { pid } } = useRouter();
-    const [ settings, setSettings ] = useState({
-        fontSize: "16px",
+	const [fontSize, setFontSize] = useLocalStorage("codellite-fontSize", "16px");
+    const [ settings, setSettings ] = useState<ISettings>({
+        fontSize: fontSize,
         settingsModalIsOpen: false,
         dropdownIsOpen: false,
     })

@@ -10,8 +10,8 @@ interface SettingsModalProps {
 	setSettings: React.Dispatch<React.SetStateAction<ISettings>>;
 }
 
-const SettingsModal: React.FC<SettingsModalProps> = ({ setSettings, settings }) => {
-	const [fontSize, setFontSize] = useLocalStorage("lcc-fontSize", "16px");
+const SettingsModal: React.FC<SettingsModalProps> = ({ settings, setSettings }) => {
+	const [fontSize, setFontSize] = useLocalStorage("codellite-fontSize", "16px");
 
 	const handleClickDropdown = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 		e.stopPropagation();

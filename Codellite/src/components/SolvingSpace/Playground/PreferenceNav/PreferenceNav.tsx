@@ -45,7 +45,7 @@ const PreferenceNav: React.FC<PreferenceNavProps> = ({ settings, onSetSettings }
             </button>
 
             <div className='flex items-center m-2'>
-                <button className='preferenceBtn group'>
+                <button className='preferenceBtn group' onClick={()=>onSetSettings({ ...settings, settingsModalIsOpen:true })}>
                     <div className='h-4 w-4 text-dark-gray-6 font-bold text-lg'>
                         <FiSettings />                        
                     </div>
@@ -61,7 +61,7 @@ const PreferenceNav: React.FC<PreferenceNavProps> = ({ settings, onSetSettings }
                     </div>
                 </button>
             </div>
-            {settings.settingsModalIsOpen && <SettingsModal/>}
+            {settings.settingsModalIsOpen && <SettingsModal settings={settings} setSettings={onSetSettings}/>}
         </div>
     )
 }
