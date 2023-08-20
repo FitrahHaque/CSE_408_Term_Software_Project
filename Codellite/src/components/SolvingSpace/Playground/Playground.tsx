@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PreferenceNav from './PreferenceNav/PreferenceNav';
 import Split from 'react-split';
 import CodeMirror from '@uiw/react-codemirror';
@@ -24,7 +24,7 @@ type PlaygroundProps = {
 
 const Playground: React.FC<PlaygroundProps> = ({ problem, onSuccess, setSolved }) => {
     const [ currentTestCaseId, setCurrentTestCaseId ] = useState<number> (0);
-    const [ userCode, setUserCode] = useState<String>(problem.boilerplateCode);
+    let [ userCode, setUserCode] = useState<string>(problem.boilerplateCode);
     const [ user ] = useAuthState(auth);
     const { query: { pid } } = useRouter();
     const handleSubmit = async () => {
@@ -33,21 +33,27 @@ const Playground: React.FC<PlaygroundProps> = ({ problem, onSuccess, setSolved }
             return;
         }
         try{
+            userCode = userCode.slice(userCode.indexOf(problem.starterFunctionName));
             const cb = new Function(`return ${userCode}`)();
-            const success = problems[pid as string].onlineJudge(cb);
-            if(success) {
-                toast.success("Congrats! All tests passed", {position: "top-center", autoClose: 3000, theme: "dark"})
-                onSuccess(true);
-                setTimeout(()=> {
-                    onSuccess(false);
-                }, 4000);
-                const userRef = doc(firestore, "users", user.uid);
-                await updateDoc(userRef, {
-                    solvedProblems:arrayUnion(pid),
-                })
-                setSolved(true);
+            const handler = problems[pid as string].onlineJudge;
+            if(typeof handler === "function"){
+                const success = handler(cb);
+                if(success) {
+                    toast.success("Congrats! All tests passed", {position: "top-center", autoClose: 3000, theme: "dark"})
+                    onSuccess(true);
+                    setTimeout(()=> {
+                        onSuccess(false);
+                    }, 4000);
+                    const userRef = doc(firestore, "users", user.uid);
+                    await updateDoc(userRef, {
+                        solvedProblems:arrayUnion(pid),
+                    })
+                    setSolved(true);
+                }
             }
+            
         } catch(error:any) {
+            console.log(error);
             if(error.message.startsWith("AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:")){
                 toast.error("Oops! One or more test cases failed!", {position:"top-center", autoClose: 3000, theme: "dark"})
             }
@@ -56,8 +62,19 @@ const Playground: React.FC<PlaygroundProps> = ({ problem, onSuccess, setSolved }
             }
         }
     }
+    useEffect(()=> {
+        if(user) {
+            const code = localStorage.getItem(`code-${pid}-${user.uid}`);
+            setUserCode(code ? JSON.parse(code) : problem.boilerplateCode);
+        } else{ 
+            setUserCode(problem.boilerplateCode);
+        }
+    },[pid, user, problem.boilerplateCode]);
     const onChange = (value:string) => {
         setUserCode(value);
+        if(user){
+            localStorage.setItem(`code-${pid}-${user.uid}`, JSON.stringify(value));
+        }
     }
     return (
         <div className='flex flex-col bg-zinc-900 relative overflow-x-hidden'>
@@ -66,7 +83,7 @@ const Playground: React.FC<PlaygroundProps> = ({ problem, onSuccess, setSolved }
                 {/* Code editor */}
                 <div className='w-full overflow-auto'>
                     <CodeMirror
-                        value={problem.boilerplateCode}
+                        value={userCode}
                         theme={tokyoNight}
                         onChange={onChange}
                         extensions={[javascript(),cpp()]}
