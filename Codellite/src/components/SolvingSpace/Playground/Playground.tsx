@@ -21,12 +21,21 @@ type PlaygroundProps = {
     setSolved: React.Dispatch<React.SetStateAction<boolean>>;
     
 };
-
+export interface ISettings {
+    fontSize: string;
+    settingsModalIsOpen: boolean;
+    dropdownIsOpen: boolean;
+}
 const Playground: React.FC<PlaygroundProps> = ({ problem, onSuccess, setSolved }) => {
     const [ currentTestCaseId, setCurrentTestCaseId ] = useState<number> (0);
     let [ userCode, setUserCode] = useState<string>(problem.boilerplateCode);
     const [ user ] = useAuthState(auth);
     const { query: { pid } } = useRouter();
+    const [ settings, setSettings ] = useState({
+        fontSize: "16px",
+        settingsModalIsOpen: false,
+        dropdownIsOpen: false,
+    })
     const handleSubmit = async () => {
         if(!user) {
             toast.error("Please Log in to submit your code", {position:"top-center", autoClose: 3000, theme: "dark"});
@@ -78,7 +87,7 @@ const Playground: React.FC<PlaygroundProps> = ({ problem, onSuccess, setSolved }
     }
     return (
         <div className='flex flex-col bg-zinc-900 relative overflow-x-hidden'>
-            <PreferenceNav />
+            <PreferenceNav settings={settings} onSetSettings={setSettings}/>
             <Split className='h-[calc(100vh-94px)]' direction='vertical' sizes={[60, 40]} minSize={60}>
                 {/* Code editor */}
                 <div className='w-full overflow-auto'>
@@ -87,7 +96,7 @@ const Playground: React.FC<PlaygroundProps> = ({ problem, onSuccess, setSolved }
                         theme={tokyoNight}
                         onChange={onChange}
                         extensions={[javascript(),cpp()]}
-                        style={{ fontSize: 16 }}
+                        style={{ fontSize: settings.fontSize }}
                     />
                 </div>
 
