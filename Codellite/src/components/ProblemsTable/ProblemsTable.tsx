@@ -4,9 +4,10 @@ import { BsCheckCircle } from "react-icons/bs";
 import { AiFillYoutube } from "react-icons/ai";
 import { IoClose } from "react-icons/io5";
 import YouTube from "react-youtube";
-import { collection, query, where, getDocs, orderBy } from "firebase/firestore";
-import { firestore } from "@/firebase/firebase";
+import { collection, query, where, getDocs, orderBy, doc, getDoc } from "firebase/firestore";
+import { auth, firestore } from "@/firebase/firebase";
 import { DBProblem } from "@/utils/types/problem";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 type ProblemsTableProps = {
 	onSetLoadingProblems: React.Dispatch<React.SetStateAction<boolean>>;
@@ -18,6 +19,8 @@ const ProblemsTable: React.FC<ProblemsTableProps> = ({ onSetLoadingProblems }) =
 		videoId: "",
 	});
 	const problems = useGetProblems(onSetLoadingProblems);
+	const solvedProblems = useGetSolvedProblems();
+	console.log("solvedProblems:", solvedProblems);
 	const closeModal = () => {
 		setYoutubePlayer({ isOpen: false, videoId: "" });
 	};
@@ -44,7 +47,7 @@ const ProblemsTable: React.FC<ProblemsTableProps> = ({ onSetLoadingProblems }) =
 					return (
 						<tr className={`group hover:bg-neutral-800 ${idx % 2 == 1 ? "bg-neutral-900" : ""}`} key={problem.id}>
 							<th className='px-2 py-4 font-medium whitespace-nowrap text-dark-green-s'>
-								{/*solvedProblems.includes(problem.id) && */ <BsCheckCircle fontSize={"18"} width='18' />}
+								{solvedProblems.includes(problem.id) &&  <BsCheckCircle fontSize={"18"} width='18' />}
 							</th>
 							<td className='px-6 py-4'>
 								{problem.link ? (
@@ -136,4 +139,26 @@ function useGetProblems(onSetLoadingProblems: React.Dispatch<React.SetStateActio
 		getProblems();
 	},[onSetLoadingProblems])
 	return problems;
+}
+
+function useGetSolvedProblems() {
+	const [ solvedProblems, setSolvedProblems ] = useState<string[]>([]);
+	const [ user ] = useAuthState(auth);
+	useEffect(()=>{
+		const getSolvedProblems = async () => {
+			const userRef = doc(firestore, "users", user!.uid);
+			const userDoc = await getDoc(userRef);
+			if(userDoc.exists()){
+				setSolvedProblems(userDoc.data().solvedProblems);
+			}
+		}
+		if(user){
+			getSolvedProblems();
+		}
+		if(!user){
+			setSolvedProblems([]);
+		}
+	},[user]);
+
+	return solvedProblems;
 }
