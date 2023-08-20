@@ -54,4 +54,5 @@ export const validParentheses: Problem = {
 	boilerplateCode: starterCodeValidParenthesesJS,
 	starterFunctionName: "function validParentheses(",
 	order: 4,
+	difficulty: "Hard",
 };
