@@ -1,4 +1,3 @@
-// "use client"
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { BsCheckCircle } from "react-icons/bs";
@@ -23,16 +22,15 @@ const ProblemsTable: React.FC<ProblemsTableProps> = ({ onSetLoadingProblems }) =
 	const [allProblems,setAllProblems] = useState<DBProblem[]>([]);
 	const [filteredProblems,setFilteredProblems] = useState<DBProblem[]>([]);
 	const [solvedProblems, setSolvedProblems] = useState<string[]>([]);
-	// const filteredProblems = useGetProblems(onSetLoadingProblems);
-	// const solvedProblems = useGetSolvedProblems();
 	const [user] = useAuthState(auth);
 	const closeModal = () => {
 		setYoutubePlayer({ isOpen: false, videoId: "" });
 	};
-	// fetch the solved problems
+
+	// fetch the solved problems by the current user
 	useEffect(()=> {
 		const getSolvedProblems = async () => {
-			let response = await fetch('/api/solvedproblems/route', {
+			let response = await fetch('/api/solvedproblems', {
 				method: 'POST',
 				body: JSON.stringify({
 					user: user,
@@ -42,8 +40,8 @@ const ProblemsTable: React.FC<ProblemsTableProps> = ({ onSetLoadingProblems }) =
 			setSolvedProblems(data.solvedProblems);
 		}
 		if (user) {
-			console.log("got user")
-			console.log("user type:", typeof user)
+			// console.log("got user")
+			// console.log("user type:", typeof user)
 			getSolvedProblems();
 		}
 		if (!user) {
@@ -57,7 +55,7 @@ const ProblemsTable: React.FC<ProblemsTableProps> = ({ onSetLoadingProblems }) =
 		const func = async () => {
 			onSetLoadingProblems(true);
 			console.log("here")
-			let response = await fetch('/api/allproblems/route', {
+			let response = await fetch('/api/allproblems', {
 				method: 'GET',
 			});
 			const data = await response.json();
@@ -71,6 +69,8 @@ const ProblemsTable: React.FC<ProblemsTableProps> = ({ onSetLoadingProblems }) =
 		};
 		func();
 	},[]);
+
+	//youtubeplayer closing with esc
 	useEffect(() => {
 
 		const handleEsc = (e: KeyboardEvent) => {
@@ -166,51 +166,3 @@ const ProblemsTable: React.FC<ProblemsTableProps> = ({ onSetLoadingProblems }) =
 	);
 };
 export default ProblemsTable;
-
-
-
-function useGetProblems(onSetLoadingProblems: React.Dispatch<React.SetStateAction<boolean>>) {
-	const [problems, setProblems] = useState<DBProblem[]>([]);
-	useEffect(() => {
-		const getProblems = async () => {
-			//fetching data logic from database
-			onSetLoadingProblems(true);
-			const q = query(collection(firestore, "problems"), orderBy("order", "asc"));
-			const querySnapshot = await getDocs(q);
-			const tmp: DBProblem[] = [];
-			querySnapshot.forEach((doc) => {
-				// doc.data() is never undefined for query doc snapshots
-				tmp.push({ id: doc.id, ...doc.data() } as DBProblem);
-			});
-			setProblems(tmp);
-			onSetLoadingProblems(false);
-		}
-		getProblems();
-	}, [onSetLoadingProblems]);
-	return problems;
-}
-
-function useGetSolvedProblems() {
-	const [solvedProblems, setSolvedProblems] = useState<string[]>([]);
-	const [user] = useAuthState(auth);
-	
-	useEffect(() => {
-		const getSolvedProblems = async () => {
-			
-			const userRef = doc(firestore, "users", user!.uid);
-			const userDoc = await getDoc(userRef);
-
-			if (userDoc.exists()) {
-				setSolvedProblems(userDoc.data().solvedProblems);
-			}
-		}
-		if (user) {
-			getSolvedProblems();
-		}
-		if (!user) {
-			setSolvedProblems([]);
-		}
-	}, [user]);
-
-	return solvedProblems;
-}

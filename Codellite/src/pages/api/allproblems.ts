@@ -10,8 +10,11 @@ type Data = {
 }
 
 export default async function handler(req: NextApiRequest,res: NextApiResponse<Data>) {
-	const data = await fetchAllProblems();
-	res.status(200).json({ problems: data });
+	if(req.method === 'GET') {
+		const data = await fetchAllProblems();
+		res.status(200).json({ problems: data });
+	}
+	res.status(200).json({ problems: [] });
 }
 
 async function fetchAllProblems() {
