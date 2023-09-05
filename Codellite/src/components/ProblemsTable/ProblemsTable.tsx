@@ -9,7 +9,6 @@ import { collection, query, where, getDocs, orderBy, doc, getDoc } from "firebas
 import { auth, firestore } from "@/firebase/firebase";
 import { DBProblem } from "@/utils/types/problem";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { on } from "events";
 
 type ProblemsTableProps = {
 	onSetLoadingProblems: React.Dispatch<React.SetStateAction<boolean>>;
@@ -20,24 +19,31 @@ const ProblemsTable: React.FC<ProblemsTableProps> = ({ onSetLoadingProblems }) =
 		isOpen: false,
 		videoId: "",
 	});
+	
 	const [allProblems,setAllProblems] = useState<DBProblem[]>([]);
 	const [filteredProblems,setFilteredProblems] = useState<DBProblem[]>([]);
 	const [solvedProblems, setSolvedProblems] = useState<string[]>([]);
 	// const filteredProblems = useGetProblems(onSetLoadingProblems);
 	// const solvedProblems = useGetSolvedProblems();
 	const [user] = useAuthState(auth);
-
 	const closeModal = () => {
 		setYoutubePlayer({ isOpen: false, videoId: "" });
 	};
 	// fetch the solved problems
 	useEffect(()=> {
 		const getSolvedProblems = async () => {
-			let fetchedSolvedProblems = await fetchSolvedProblems(user);
-			setSolvedProblems(fetchedSolvedProblems);
+			let response = await fetch('/api/solvedproblems/route', {
+				method: 'POST',
+				body: JSON.stringify({
+					user: user,
+				})
+			});
+			const data = await response.json();
+			setSolvedProblems(data.solvedProblems);
 		}
 		if (user) {
 			console.log("got user")
+			console.log("user type:", typeof user)
 			getSolvedProblems();
 		}
 		if (!user) {
@@ -50,16 +56,21 @@ const ProblemsTable: React.FC<ProblemsTableProps> = ({ onSetLoadingProblems }) =
 	useEffect(()=> {
 		const func = async () => {
 			onSetLoadingProblems(true);
-			let fetchedAllProblems = await fetchAllProblems();
-			setAllProblems(fetchedAllProblems);
-			setFilteredProblems(fetchedAllProblems);
-			console.log("allproblems:", allProblems);
-			console.log("solvedProblems:", solvedProblems);
-			console.log("filteredProblems:", filteredProblems);
+			console.log("here")
+			let response = await fetch('/api/allproblems/route', {
+				method: 'GET',
+			});
+			const data = await response.json();
+			console.log(data);
+			setAllProblems(data.problems);
+			setFilteredProblems(data.problems);
+			// console.log("allproblems:", allProblems);
+			// console.log("solvedProblems:", solvedProblems);
+			// console.log("filteredProblems:", filteredProblems);
 			onSetLoadingProblems(false);
 		};
 		func();
-	},[])
+	},[]);
 	useEffect(() => {
 
 		const handleEsc = (e: KeyboardEvent) => {
@@ -156,29 +167,7 @@ const ProblemsTable: React.FC<ProblemsTableProps> = ({ onSetLoadingProblems }) =
 };
 export default ProblemsTable;
 
-async function fetchAllProblems() {
-	const q = query(collection(firestore, "problems"), orderBy("order", "asc"));
-	const querySnapshot = await getDocs(q);
-	const tmp: DBProblem[] = [];
-	querySnapshot.forEach((doc) => {
-		// doc.data() is never undefined for query doc snapshots
-		tmp.push({ id: doc.id, ...doc.data() } as DBProblem);
-	});
-	return tmp;
-}
 
-async function fetchSolvedProblems(user:any) {
-	// const [user] = useAuthState(auth);
-	const userRef = doc(firestore, "users", user!.uid);
-	const userDoc = await getDoc(userRef);
-	const tmp: string[] = [];
-	if (userDoc.exists()) {
-		userDoc.data().solvedProblems.map((p:any) => {
-			tmp.push(p as string);
-		});
-	}
-	return tmp;
-}
 
 function useGetProblems(onSetLoadingProblems: React.Dispatch<React.SetStateAction<boolean>>) {
 	const [problems, setProblems] = useState<DBProblem[]>([]);
@@ -197,7 +186,7 @@ function useGetProblems(onSetLoadingProblems: React.Dispatch<React.SetStateActio
 			onSetLoadingProblems(false);
 		}
 		getProblems();
-	}, [onSetLoadingProblems])
+	}, [onSetLoadingProblems]);
 	return problems;
 }
 
