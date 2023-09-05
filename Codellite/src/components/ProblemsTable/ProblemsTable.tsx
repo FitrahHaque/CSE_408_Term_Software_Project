@@ -1,3 +1,4 @@
+// "use client"
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { BsCheckCircle } from "react-icons/bs";
@@ -8,6 +9,7 @@ import { collection, query, where, getDocs, orderBy, doc, getDoc } from "firebas
 import { auth, firestore } from "@/firebase/firebase";
 import { DBProblem } from "@/utils/types/problem";
 import { useAuthState } from "react-firebase-hooks/auth";
+import { on } from "events";
 
 type ProblemsTableProps = {
 	onSetLoadingProblems: React.Dispatch<React.SetStateAction<boolean>>;
@@ -18,14 +20,48 @@ const ProblemsTable: React.FC<ProblemsTableProps> = ({ onSetLoadingProblems }) =
 		isOpen: false,
 		videoId: "",
 	});
-	const problems = useGetProblems(onSetLoadingProblems);
-	const solvedProblems = useGetSolvedProblems();
-	console.log("solvedProblems:", solvedProblems);
+	const [allProblems,setAllProblems] = useState<DBProblem[]>([]);
+	const [filteredProblems,setFilteredProblems] = useState<DBProblem[]>([]);
+	const [solvedProblems, setSolvedProblems] = useState<string[]>([]);
+	// const filteredProblems = useGetProblems(onSetLoadingProblems);
+	// const solvedProblems = useGetSolvedProblems();
+	const [user] = useAuthState(auth);
+
 	const closeModal = () => {
 		setYoutubePlayer({ isOpen: false, videoId: "" });
 	};
+	// fetch the solved problems
+	useEffect(()=> {
+		const getSolvedProblems = async () => {
+			let fetchedSolvedProblems = await fetchSolvedProblems(user);
+			setSolvedProblems(fetchedSolvedProblems);
+		}
+		if (user) {
+			console.log("got user")
+			getSolvedProblems();
+		}
+		if (!user) {
+			setSolvedProblems([]);
+		}
+		
+	},[user]);
 
+	//fetch all the problems
+	useEffect(()=> {
+		const func = async () => {
+			onSetLoadingProblems(true);
+			let fetchedAllProblems = await fetchAllProblems();
+			setAllProblems(fetchedAllProblems);
+			setFilteredProblems(fetchedAllProblems);
+			console.log("allproblems:", allProblems);
+			console.log("solvedProblems:", solvedProblems);
+			console.log("filteredProblems:", filteredProblems);
+			onSetLoadingProblems(false);
+		};
+		func();
+	},[])
 	useEffect(() => {
+
 		const handleEsc = (e: KeyboardEvent) => {
 			if (e.key === "Escape") closeModal();
 		};
@@ -37,17 +73,17 @@ const ProblemsTable: React.FC<ProblemsTableProps> = ({ onSetLoadingProblems }) =
 	return (
 		<>
 			<tbody className='text-neutral-500'>
-				{problems.map((problem, idx) => {
+				{filteredProblems.map((problem, idx) => {
 					const difficulyColor =
 						problem.difficulty === "Easy"
 							? "text-green-600"
 							: problem.difficulty === "Medium"
-							? "text-yellow-600"
-							: "text-pink-600";
+								? "text-yellow-600"
+								: "text-pink-600";
 					return (
 						<tr className={`group hover:bg-neutral-800 ${idx % 2 == 1 ? "bg-neutral-900" : ""}`} key={problem.id}>
 							<th className='px-2 py-4 font-medium whitespace-nowrap text-dark-green-s'>
-								{solvedProblems.includes(problem.id) &&  <BsCheckCircle fontSize={"18"} width='18' />}
+								{solvedProblems.includes(problem.id) && <BsCheckCircle fontSize={"18"} width='18' />}
 							</th>
 							<td className='px-6 py-4'>
 								{problem.link ? (
@@ -82,7 +118,7 @@ const ProblemsTable: React.FC<ProblemsTableProps> = ({ onSetLoadingProblems }) =
 							<td className={"group-hover:text-white px-6 py-4"}>
 								{problem.deadline ? (
 									<p>{problem.deadline}</p>
-									
+
 								) : (
 									<p className='group-hover:text-white'>Not Confirmed</p>
 								)}
@@ -106,7 +142,7 @@ const ProblemsTable: React.FC<ProblemsTableProps> = ({ onSetLoadingProblems }) =
 									onClick={closeModal}
 								/>
 								<YouTube
-                                    videoId={youtubePlayer.videoId}
+									videoId={youtubePlayer.videoId}
 									loading='lazy'
 									iframeClassName='w-full min-h-[500px]'
 								/>
@@ -120,9 +156,33 @@ const ProblemsTable: React.FC<ProblemsTableProps> = ({ onSetLoadingProblems }) =
 };
 export default ProblemsTable;
 
-function useGetProblems(onSetLoadingProblems: React.Dispatch<React.SetStateAction<boolean>>){
-	const [ problems, setProblems ] = useState<DBProblem[]>([]);
-	useEffect(()=> {
+async function fetchAllProblems() {
+	const q = query(collection(firestore, "problems"), orderBy("order", "asc"));
+	const querySnapshot = await getDocs(q);
+	const tmp: DBProblem[] = [];
+	querySnapshot.forEach((doc) => {
+		// doc.data() is never undefined for query doc snapshots
+		tmp.push({ id: doc.id, ...doc.data() } as DBProblem);
+	});
+	return tmp;
+}
+
+async function fetchSolvedProblems(user:any) {
+	// const [user] = useAuthState(auth);
+	const userRef = doc(firestore, "users", user!.uid);
+	const userDoc = await getDoc(userRef);
+	const tmp: string[] = [];
+	if (userDoc.exists()) {
+		userDoc.data().solvedProblems.map((p:any) => {
+			tmp.push(p as string);
+		});
+	}
+	return tmp;
+}
+
+function useGetProblems(onSetLoadingProblems: React.Dispatch<React.SetStateAction<boolean>>) {
+	const [problems, setProblems] = useState<DBProblem[]>([]);
+	useEffect(() => {
 		const getProblems = async () => {
 			//fetching data logic from database
 			onSetLoadingProblems(true);
@@ -131,34 +191,37 @@ function useGetProblems(onSetLoadingProblems: React.Dispatch<React.SetStateActio
 			const tmp: DBProblem[] = [];
 			querySnapshot.forEach((doc) => {
 				// doc.data() is never undefined for query doc snapshots
-				tmp.push({id:doc.id,...doc.data()} as DBProblem);
-			  });
+				tmp.push({ id: doc.id, ...doc.data() } as DBProblem);
+			});
 			setProblems(tmp);
-			onSetLoadingProblems(false); 
+			onSetLoadingProblems(false);
 		}
 		getProblems();
-	},[onSetLoadingProblems])
+	}, [onSetLoadingProblems])
 	return problems;
 }
 
 function useGetSolvedProblems() {
-	const [ solvedProblems, setSolvedProblems ] = useState<string[]>([]);
-	const [ user ] = useAuthState(auth);
-	useEffect(()=>{
+	const [solvedProblems, setSolvedProblems] = useState<string[]>([]);
+	const [user] = useAuthState(auth);
+	
+	useEffect(() => {
 		const getSolvedProblems = async () => {
+			
 			const userRef = doc(firestore, "users", user!.uid);
 			const userDoc = await getDoc(userRef);
-			if(userDoc.exists()){
+
+			if (userDoc.exists()) {
 				setSolvedProblems(userDoc.data().solvedProblems);
 			}
 		}
-		if(user){
+		if (user) {
 			getSolvedProblems();
 		}
-		if(!user){
+		if (!user) {
 			setSolvedProblems([]);
 		}
-	},[user]);
+	}, [user]);
 
 	return solvedProblems;
 }
