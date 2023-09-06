@@ -54,7 +54,14 @@ const Signup: React.FC<SignupProps> = () => {
 				starredProblems: [],
 				role: toggle ? "admin" : "student",
 			};
-			await setDoc(doc(firestore, "users", newUser.user.uid), userData);
+			await fetch('/api/auth/createnewuser', {
+				method: 'POST',
+				body: JSON.stringify(
+					{
+						userData: userData,
+					}
+				),
+			});
 			router.push("/");
 		} catch (error: any) {
 			toast.error(error.message, { position: "top-center" });
