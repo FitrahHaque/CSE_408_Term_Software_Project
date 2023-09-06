@@ -3,22 +3,32 @@
 import { firestore } from "@/firebase/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { NextApiRequest, NextApiResponse } from "next";
+import { getCurrentUserDoc } from "./auth/getuser";
 
 type Data = {
     solvedProblems : string[],
 }
 export default async function handler(req: NextApiRequest,res: NextApiResponse<Data>) {
 	if(req.method === 'POST') {
-		const { user } = JSON.parse(req.body);
-		const data = await fetchSolvedProblems(user);
+		const { uid } = JSON.parse(req.body);
+		const data = await fetchSolvedProblems(uid);
 		res.status(200).json({ solvedProblems: data });
 	}
     res.status(500).send({solvedProblems:[]});
 }
 
-async function fetchSolvedProblems(user:any) {
-	const userRef = doc(firestore, "users", user!.uid);
-	const userDoc = await getDoc(userRef);
+async function fetchSolvedProblems(uid:string) {
+	console.log("solvedproblems:",uid)
+	// let response = await fetch('/api/auth/getuser/getuser', {
+	// 	method: 'POST',
+	// 	body: JSON.stringify({
+	// 		uid: uid,
+	// 	})
+	// });
+
+	const userDoc = await getCurrentUserDoc(uid);
+	// console.log("solvedproblems response :",userDoc)
+	
 	const tmp: string[] = [];
 	if (userDoc.exists()) {
 		userDoc.data().solvedProblems.map((p:any) => {

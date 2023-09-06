@@ -33,7 +33,7 @@ const ProblemsTable: React.FC<ProblemsTableProps> = ({ onSetLoadingProblems }) =
 			let response = await fetch('/api/solvedproblems', {
 				method: 'POST',
 				body: JSON.stringify({
-					user: user,
+					uid: user!.uid,
 				})
 			});
 			const data = await response.json();

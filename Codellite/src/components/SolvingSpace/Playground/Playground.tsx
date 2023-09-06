@@ -7,7 +7,7 @@ import { tokyoNight } from '@uiw/codemirror-theme-tokyo-night';
 import { javascript } from '@codemirror/lang-javascript';
 import EditorFooter from './EditorFooter/EditorFooter';
 import { cpp } from '@codemirror/lang-cpp';
-import { Problem } from '@/utils/types/problem';
+import { ProblemDesc } from '@/utils/types/problem';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth, firestore } from '@/firebase/firebase';
 import { toast } from 'react-toastify';
@@ -17,7 +17,7 @@ import { arrayUnion, doc, updateDoc } from 'firebase/firestore';
 import useLocalStorage from '@/hooks/useLocalStorage';
 
 type PlaygroundProps = {
-    problem: Problem;
+    problem: ProblemDesc;
     onSuccess: React.Dispatch<React.SetStateAction<boolean>>;
     setSolved: React.Dispatch<React.SetStateAction<boolean>>;
     

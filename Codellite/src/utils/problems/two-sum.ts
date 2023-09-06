@@ -1,5 +1,5 @@
 import assert from "assert";
-import { Problem } from "../types/problem";
+import { ProblemDesc } from "../types/problem";
 
 const twoSumHandler = (fn: any) => {
 	// fn is the callback that user's code is passed into
@@ -32,7 +32,7 @@ const twoSumHandler = (fn: any) => {
 
 
 
-export const twoSum: Problem = {
+export const twoSum: ProblemDesc = {
     id: "two-sum",
     title: "1. Two Sum",
     problemStatement: ` <p className='mt-3'>
