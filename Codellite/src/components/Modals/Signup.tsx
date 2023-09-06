@@ -17,13 +17,26 @@ const Signup: React.FC<SignupProps> = () => {
 	};
 	const [inputs, setInputs] = useState({ email: "", displayName: "", password: "" });
 	const router = useRouter();
+	const [toggle, setToggle] = useState<boolean>(false);
 	const [createUserWithEmailAndPassword, user, loading, error] = useCreateUserWithEmailAndPassword(auth);
 	const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+		if(e.target.name === "isAdmin"){
+			// console.log(e.target)
+			// console.log("toggle Button:", e.target.value);
+			setToggle((prev)=> !prev);
+			// console.log("toggle:",toggle);
+		}
+		else{
+			setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+		}
+		// console.log("toggle:",toggle);
 	};
-
+	// const toggleHandler = () => {
+	// 	console.log("toggled");
+	// }
 	const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
+		// console.log("toggle:",toggle);
 		if (!inputs.email || !inputs.password || !inputs.displayName) return alert("Please fill all fields");
 		try {
 			toast.loading("Creating your account", { position: "top-center", toastId: "loadingToast" });
@@ -39,6 +52,7 @@ const Signup: React.FC<SignupProps> = () => {
 				dislikedProblems: [],
 				solvedProblems: [],
 				starredProblems: [],
+				role: toggle ? "admin" : "student",
 			};
 			await setDoc(doc(firestore, "users", newUser.user.uid), userData);
 			router.push("/");
@@ -106,9 +120,28 @@ const Signup: React.FC<SignupProps> = () => {
 						placeholder='*******'
 					/>
 				</div>
+				{/* <div className="flex items-center">
+					<input checked id="checked-checkbox" type="checkbox" value="" className="w-4 h-4 text-sm font-medium block mb-2 text-slate-400 bg-gray-100 border-gray-300 rounded 
+					focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
+					<label htmlFor="checked-checkbox" className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">As an Admin?</label>
+				</div> */}
+				
+				<label className="relative inline-flex items-center cursor-pointer" >
+					<input type="checkbox" 
+					name="isAdmin"
+					// value="go"
+					className="sr-only peer" 
+					onChange={handleChangeInput} />
+					<div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 
+  					rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] 
+  					after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 
+  						after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"
+					></div>
+					<span className="ml-3 text-sm font-medium block mb-2 text-slate-400">As an Admin</span>
+				</label>
 
 				<Button disabled={loading}
-				variant="outline"
+					variant="outline"
 					type='submit'
 					className='font-mono w-full text-white bg-transparent hover:bg-gradient-to-r hover:from-cyan-300 hover:to-indigo-900 hover:text-black transition duration-200 ease-in-out'
 				>
@@ -130,16 +163,16 @@ const Signup: React.FC<SignupProps> = () => {
 				</div>
 			</div>
 			<div className="flex justify-center">
-			<Button variant="outline" className='w-80 bg-transparent font-mono text-white mb-5 mt-2 mr-1 hover:bg-gradient-to-r hover:from-cyan-300 hover:to-indigo-900 hover:text-black transition duration-200 ease-in-out' type="button" disabled={loading}>
-				{loading ? (
-					<Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
-				) : (
-					<Icons.gitHub className="mr-2 h-4 w-4" />
-				)}{" "}
-				Github
-			</Button>
+				<Button variant="outline" className='w-80 bg-transparent font-mono text-white mb-5 mt-2 mr-1 hover:bg-gradient-to-r hover:from-cyan-300 hover:to-indigo-900 hover:text-black transition duration-200 ease-in-out' type="button" disabled={loading}>
+					{loading ? (
+						<Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+					) : (
+						<Icons.gitHub className="mr-2 h-4 w-4" />
+					)}{" "}
+					Github
+				</Button>
 			</div>
-			
+
 			<div className='space-y-6 px-6 pb-4 text-sm font-medium font-mono text-slate-300'>
 				Already have an account?{" "}
 				<a href='#' className='text-sky-400 hover:underline' onClick={handleClick}>
