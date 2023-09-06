@@ -3,7 +3,7 @@
 import { firestore } from "@/firebase/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { NextApiRequest, NextApiResponse } from "next";
-import { getCurrentUser } from "./auth/getuser";
+import { getCurrentUserDoc } from "./auth/getuser";
 
 type Data = {
     solvedProblems : string[],
@@ -26,7 +26,7 @@ async function fetchSolvedProblems(uid:string) {
 	// 	})
 	// });
 
-	const userDoc = await getCurrentUser(uid);
+	const userDoc = await getCurrentUserDoc(uid);
 	// console.log("solvedproblems response :",userDoc)
 	
 	const tmp: string[] = [];

@@ -1,5 +1,5 @@
 import assert from "assert";
-import { Problem } from "../types/problem";
+import { ProblemDesc } from "../types/problem";
 import example from "./images/reverseLL.jpg";
 
 // JS doesn't have a built in LinkedList class, so we'll create one
@@ -77,7 +77,7 @@ function reverseLinkedList(head) {
   // Write your code here
 };`;
 
-export const reverseLinkedList: Problem = {
+export const reverseLinkedList: ProblemDesc = {
 	id: "reverse-linked-list",
 	title: "2. Reverse Linked List",
 	problemStatement: `<p class='mt-3'>Given the <code>head</code> of a singly linked list, reverse the list, and return <em>the reversed list</em>.</p>

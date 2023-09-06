@@ -1,7 +1,7 @@
 import { Sample } from "./sample";
 
 //local problem data
-export type Problem = {
+export type ProblemDesc = {
     id: string;
     title: string;
     problemStatement: string;

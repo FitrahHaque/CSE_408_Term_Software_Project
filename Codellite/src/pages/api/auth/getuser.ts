@@ -7,21 +7,20 @@ import { NextApiRequest, NextApiResponse } from "next"
 type Data = {
     userDoc: any,
 }
-export default async function handler(req:NextApiRequest, res: NextApiResponse<Data>) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
     // console.log("getuser", req.method)
-    if(req.method === 'POST') {
-        // console.log("POST--------------------------------")
+    if (req.method === 'POST') {
         const { uid } = JSON.parse(req.body);
-        // const userDoc = "hey"
-        const userDoc = await getCurrentUser(uid);
-        console.log("getuser:",uid)
-        res.status(200).json({ userDoc : userDoc });
+        const userDoc = await getCurrentUserDoc(uid);
+        console.log("getuser handler userDoc", userDoc.data()!.uid)
+        res.status(200).json({ userDoc: userDoc });
     }
-    res.status(500).send({ userDoc : null });
+    res.status(500).json({ userDoc: null });
 }
 
-export async function getCurrentUser(uid:string) {
+export async function getCurrentUserDoc(uid: string) {
     const userRef = doc(firestore, "users", uid);
-	const userDoc = await getDoc(userRef);
+    const userDoc = await getDoc(userRef);
     return userDoc;
 }
+

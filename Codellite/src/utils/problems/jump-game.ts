@@ -1,5 +1,5 @@
 import assert from "assert";
-import { Problem } from "../types/problem";
+import { ProblemDesc } from "../types/problem";
 
 export const jumpGameHandler = (fn: any) => {
 	try {
@@ -25,7 +25,7 @@ const starterCodeJumpGameJS = `function canJump(nums) {
   // Write your code here
 };`;
 
-export const jumpGame: Problem = {
+export const jumpGame: ProblemDesc = {
 	id: "jump-game",
 	title: "3. Jump Game",
 	problemStatement: `<p class='mt-3'>

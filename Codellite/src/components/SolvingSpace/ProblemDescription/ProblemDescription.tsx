@@ -1,4 +1,4 @@
-import { DBProblem, Problem } from '@/utils/types/problem';
+import { DBProblem, ProblemDesc } from '@/utils/types/problem';
 import React, { useEffect, useState } from 'react';
 import { AiFillLike, AiFillDislike, AiOutlineLoading3Quarters, AiFillStar, AiOutlineStar } from "react-icons/ai";
 import { BsCheck2Circle } from "react-icons/bs";
@@ -11,7 +11,7 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { toast } from 'react-toastify';
 
 type ProblemDescriptionProps = {
-    problem: Problem;
+    problem: ProblemDesc;
     _solved: boolean;
 };
 
@@ -21,9 +21,33 @@ const ProblemDescription: React.FC<ProblemDescriptionProps> = ({ problem, _solve
     const { liked, disliked, solved, starred, setData } = useGetUserDataOnProblem(problem.id);
     const [updating, setUpdating] = useState(false);
     const returnUserAndProblemDoc = async (transaction: any) => {
-        const userRef = doc(firestore, "users", user!.uid);
         const problemRef = doc(firestore, "problems", problem.id);
+        
+        const userRef = doc(firestore, "users", user!.uid);
+        // const response = await fetch('/api/auth/getuserref', {
+        //     method: 'POST',
+        //     body: JSON.stringify({
+        //         uid: user!.uid,
+        //     })
+        // });
+        // const data = await response.json();
+        // console.log("data:",data)
+        // const userRef = data.userRef;
+        // // console.log("userRef: ",userRef);
+        // const userDoc1 = await getDoc(userRef);
+        // console.log("userDoc1", userDoc1.data())
+        
         const userDoc = await transaction.get(userRef);
+        // let response = await fetch('/api/auth/getuser', {
+        //     method: 'POST',
+        //     body: JSON.stringify({
+        //         uid: user!.uid,
+        //     })
+        // })
+        // const data = await response.json();
+        // const userDoc = data.userDoc;
+        console.log("pd userDoc :", userDoc.data().uid);
+
         if (!userDoc.exists()) {
             throw "userDoc does not exist!";
         }
