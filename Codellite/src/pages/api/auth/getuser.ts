@@ -21,6 +21,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 export async function getCurrentUserDoc(uid: string) {
     const userRef = doc(firestore, "users", uid);
     const userDoc = await getDoc(userRef);
+    console.log(userDoc.data());
     return userDoc;
 }
 

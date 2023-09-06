@@ -34,7 +34,7 @@ const twoSumHandler = (fn: any) => {
 
 export const twoSum: ProblemDesc = {
     id: "two-sum",
-    title: "1. Two Sum",
+    title: "Two Sum",
     problemStatement: ` <p className='mt-3'>
     Given an array of integers <code>nums</code> and an integer <code>target</code>, return <em>indices of the two numbers such that they add up</em> to <code>target</code>.
 </p>

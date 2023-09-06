@@ -1,6 +1,6 @@
 import { auth } from "@/firebase/firebase";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import Logout from "../Buttons/Logout";
 import { useSetRecoilState } from "recoil";
@@ -20,7 +20,7 @@ import {
 	navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
 import { useRouter } from "next/router";
-import { Problem } from "@/utils/types/problem";
+import { ProblemDesc } from "@/utils/types/problem";
 import { problems } from "@/utils/problems";
 type TopbarProps = {
 	problemPage?: boolean;
@@ -68,8 +68,28 @@ const Topbar: React.FC<TopbarProps> = ({ problemPage }) => {
 	const [user] = useAuthState(auth);
 	const setAuthModalState = useSetRecoilState(authModalState);
 	const router = useRouter();
+	const [ userRole, setUserRole ] = useState<string>('');
+	useEffect(()=> {
+		const getRole = async () => {
+			const response = await fetch('/api/auth/getcurrentuser', {
+				method: 'POST',
+				body: JSON.stringify({
+					uid: user!.uid,
+				})
+			})
+			const data = await response.json();
+			const userInfo = data.userInfo;
+			setUserRole(userInfo.role);
+		}
+		if(user) {
+			getRole();
+		}
+		else {
+			setUserRole('');
+		}
+	},[user]);
 	const handleProblemNavigation = (isForward: boolean) => {
-		const { order } = problems[router.query.pid as string] as Problem;
+		const { order } = problems[router.query.pid as string] as ProblemDesc;
 		const direction = isForward ? 1 : -1;
 		const nextProblemOrder = order + direction;
 		const nextProblemKey = Object.keys(problems).find((key) => problems[key].order === nextProblemOrder);
@@ -173,13 +193,13 @@ const Topbar: React.FC<TopbarProps> = ({ problemPage }) => {
 									</ul>
 								</NavigationMenuContent>
 							</NavigationMenuItem>
-							<NavigationMenuItem>
-								<Link href="/docs" legacyBehavior passHref>
+							{userRole === "admin" && <NavigationMenuItem>
+								<Link href="/addproblem" legacyBehavior passHref>
 									<NavigationMenuLink className={navigationMenuTriggerStyle()}>
-										Student
+										Add a Problem
 									</NavigationMenuLink>
 								</Link>
-							</NavigationMenuItem>
+							</NavigationMenuItem>}
 						</NavigationMenuList>
 					</NavigationMenu>
 

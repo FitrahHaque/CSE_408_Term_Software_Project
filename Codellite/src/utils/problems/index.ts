@@ -6,7 +6,7 @@ import { twoSum } from "./two-sum";
 import { validParentheses } from "./valid-parentheses";
 
 interface ProblemMap {
-    [key: string]:ProblemDesc
+    [key: string]: ProblemDesc
 }
 export const problems: ProblemMap = {
     "two-sum" : twoSum,

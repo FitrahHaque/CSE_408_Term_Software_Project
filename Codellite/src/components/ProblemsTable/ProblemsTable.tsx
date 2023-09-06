@@ -8,6 +8,8 @@ import { collection, query, where, getDocs, orderBy, doc, getDoc } from "firebas
 import { auth, firestore } from "@/firebase/firebase";
 import { DBProblem } from "@/utils/types/problem";
 import { useAuthState } from "react-firebase-hooks/auth";
+import { useSetRecoilState } from "recoil";
+import { allProblemsCountState } from "@/atoms/allProblemCount";
 
 type ProblemsTableProps = {
 	onSetLoadingProblems: React.Dispatch<React.SetStateAction<boolean>>;
@@ -20,6 +22,7 @@ const ProblemsTable: React.FC<ProblemsTableProps> = ({ onSetLoadingProblems }) =
 	});
 	
 	const [allProblems,setAllProblems] = useState<DBProblem[]>([]);
+	const setAllProblemsCount = useSetRecoilState(allProblemsCountState);
 	const [filteredProblems,setFilteredProblems] = useState<DBProblem[]>([]);
 	const [solvedProblems, setSolvedProblems] = useState<string[]>([]);
 	const [user] = useAuthState(auth);
@@ -62,6 +65,11 @@ const ProblemsTable: React.FC<ProblemsTableProps> = ({ onSetLoadingProblems }) =
 			console.log(data);
 			setAllProblems(data.problems);
 			setFilteredProblems(data.problems);
+			console.log("data.problems.length = ", data.problems.length);
+			let tmp: number = data.problems.length;
+			// setAllProblemsCount((prev)=> { ...prev, count:data.problems.length});
+			setAllProblemsCount((prev) => ({ ...prev, count: tmp}));
+
 			// console.log("allproblems:", allProblems);
 			// console.log("solvedProblems:", solvedProblems);
 			// console.log("filteredProblems:", filteredProblems);

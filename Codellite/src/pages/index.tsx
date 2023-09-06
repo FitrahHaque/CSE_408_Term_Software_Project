@@ -87,6 +87,9 @@ const Home:React.FC<HomeProps> = () => {
 				{/* <form className="p-6 flex flex-col max-w-sm gap-3" onSubmit={handleSubmit}>
 					<input onChange={handleInputChange} type="text" placeholder="problem id" name="id"/>
 					<input onChange={handleInputChange} type="text" placeholder="title" name="title"/>
+					<input onChange={handleInputChange} type="text" placeholder="problem statement" name="problem statement"/>
+					<input onChange={handleInputChange} type="text" placeholder="samples" name="samples"/>
+					<input onChange={handleInputChange} type="text" placeholder="constraints" name="constraints"/>
 					<input onChange={handleInputChange} type="text" placeholder="difficulty" name="difficulty"/>
 					<input onChange={handleInputChange} type="text" placeholder="category" name="category"/>
 					<input onChange={handleInputChange} type="text" placeholder="order" name="order"/>

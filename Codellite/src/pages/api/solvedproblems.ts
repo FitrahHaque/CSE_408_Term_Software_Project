@@ -18,7 +18,7 @@ export default async function handler(req: NextApiRequest,res: NextApiResponse<D
 }
 
 async function fetchSolvedProblems(uid:string) {
-	console.log("solvedproblems:",uid)
+	// console.log("solvedproblems:",uid)
 	// let response = await fetch('/api/auth/getuser/getuser', {
 	// 	method: 'POST',
 	// 	body: JSON.stringify({
