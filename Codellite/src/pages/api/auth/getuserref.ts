@@ -16,7 +16,7 @@ export default async function handler(req: NextApiRequest,res: NextApiResponse<D
 	// // const userDoc = await getDoc(userRef);
         const data =  await getCurrentUserRef(uid)
         const userDoc = await getDoc(data);
-        console.log("userDoc", userDoc.data())
+        // console.log("userDoc", userDoc.data())
 	    res.status(200).json({ userRef : data});
 	}
     res.status(500).send({userRef:null});

@@ -12,7 +12,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         const { id } = JSON.parse(req.body);
         const userRef = doc(firestore, "problemdesc", id);
         const userDoc = await getDoc(userRef);
-        console.log("userDoc-> ",userDoc.data());
+        // console.log("userDoc-> ",userDoc.data());
         const tmp:ProblemDesc = {...userDoc.data()} as ProblemDesc;
         res.status(200).json({problem: tmp});
         // const q = query(collection(firestore, "problemdesc"), where("id", "==", id));

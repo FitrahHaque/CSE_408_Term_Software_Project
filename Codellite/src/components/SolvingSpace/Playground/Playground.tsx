@@ -137,15 +137,21 @@ const Playground: React.FC<PlaygroundProps> = ({ problem, onSuccess, setSolved }
                             <p className='text-sm font-medium mt-4 text-gray-400'>
                                 Input:
                             </p>
-                            <div className='w-full cursor-text rounded-lg border px-3 py-[10px] bg-dark-fill-3 border-transparent text-slate-50 mt-2'>
+                            <textarea
+                            style={{ height: 'auto', minHeight: '4em' }} 
+                            className='w-full cursor-text rounded-lg border px-3 py-[10px] bg-dark-fill-3 
+                            border-transparent text-slate-50 mt-2 resize-none'>
                                 {problem.samples[currentTestCaseId].inputText}
-                            </div>
+                            </textarea>
                             <p className='text-sm font-medium mt-4 text-gray-400'>
                                 Output:
                             </p>
-                            <div className='w-full cursor-text rounded-lg border px-3 py-[10px] bg-dark-fill-3 border-transparent text-white mt-2'>
+                            <textarea 
+                            style={{ height: 'auto', minHeight: '4em' }} 
+                            className='w-full cursor-text rounded-lg border px-3 py-[10px] bg-dark-fill-3 
+                            border-transparent text-white mt-2 resize-none'>
                                 {problem.samples[currentTestCaseId].outputText}
-                            </div>
+                            </textarea>
                         </div>}
                 </div>
             </Split>

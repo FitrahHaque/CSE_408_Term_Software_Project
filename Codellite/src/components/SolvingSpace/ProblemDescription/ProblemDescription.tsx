@@ -278,12 +278,15 @@ const ProblemDescription: React.FC<ProblemDescriptionProps> = ({ id, problem, _s
                                     )}
                                     <div className='example-card'>
                                         <pre>
-                                            <strong>Input:</strong><span className='text-white'> {sample.inputText}</span><br />
-                                            <strong>Output:</strong><span className='text-white'>  {sample.outputText}</span><br />
+                                            <strong>Input:</strong><br/>
+                                            <span className='text-white'>{sample.inputText}</span><br /><br/>
+                                            <strong>Output:</strong><br/>
+                                            <span className='text-white'>{sample.outputText}</span><br /><br/>
                                             {
                                                 sample.explanation && (
                                                     <>
-                                                        <strong>Explanation:</strong><span className='text-white'> {sample.explanation}</span>
+                                                        <strong>Explanation:</strong><br/>
+                                                        <span className='text-white'>{sample.explanation}</span>
                                                     </>
                                                 )
                                             }
