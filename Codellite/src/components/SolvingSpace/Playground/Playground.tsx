@@ -20,7 +20,7 @@ type PlaygroundProps = {
     problem: ProblemDesc;
     onSuccess: React.Dispatch<React.SetStateAction<boolean>>;
     setSolved: React.Dispatch<React.SetStateAction<boolean>>;
-    
+
 };
 export interface ISettings {
     fontSize: string;
@@ -28,68 +28,69 @@ export interface ISettings {
     dropdownIsOpen: boolean;
 }
 const Playground: React.FC<PlaygroundProps> = ({ problem, onSuccess, setSolved }) => {
-    const [ currentTestCaseId, setCurrentTestCaseId ] = useState<number> (0);
-    let [ userCode, setUserCode] = useState<string>(problem.boilerplateCode);
-    const [ user ] = useAuthState(auth);
+    console.log("playground", problem.samples.length)
+    const [currentTestCaseId, setCurrentTestCaseId] = useState<number>(0);
+    let [userCode, setUserCode] = useState<string>(problem.boilerplateCode);
+    const [user] = useAuthState(auth);
     const { query: { pid } } = useRouter();
-	const [fontSize, setFontSize] = useLocalStorage("codellite-fontSize", "16px");
-    const [ settings, setSettings ] = useState<ISettings>({
+    const [fontSize, setFontSize] = useLocalStorage("codellite-fontSize", "16px");
+    const [settings, setSettings] = useState<ISettings>({
         fontSize: fontSize,
         settingsModalIsOpen: false,
         dropdownIsOpen: false,
     })
     const handleSubmit = async () => {
-        if(!user) {
-            toast.error("Please Log in to submit your code", {position:"top-center", autoClose: 3000, theme: "dark"});
+        if (!user) {
+            toast.error("Please Log in to submit your code", { position: "top-center", autoClose: 3000, theme: "dark" });
             return;
         }
-        try{
+        try {
             userCode = userCode.slice(userCode.indexOf(problem.starterFunctionName));
             const cb = new Function(`return ${userCode}`)();
             const handler = problems[pid as string].onlineJudge;
-            if(typeof handler === "function"){
+            if (typeof handler === "function") {
                 const success = handler(cb);
-                if(success) {
-                    toast.success("Congrats! All tests passed", {position: "top-center", autoClose: 3000, theme: "dark"})
+                if (success) {
+                    toast.success("Congrats! All tests passed", { position: "top-center", autoClose: 3000, theme: "dark" })
                     onSuccess(true);
-                    setTimeout(()=> {
+                    setTimeout(() => {
                         onSuccess(false);
                     }, 4000);
                     const userRef = doc(firestore, "users", user.uid);
                     await updateDoc(userRef, {
-                        solvedProblems:arrayUnion(pid),
+                        solvedProblems: arrayUnion(pid),
                     })
                     setSolved(true);
                 }
             }
-            
-        } catch(error:any) {
+
+        } catch (error: any) {
             console.log(error);
-            if(error.message.startsWith("AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:")){
-                toast.error("Oops! One or more test cases failed!", {position:"top-center", autoClose: 3000, theme: "dark"})
+            if (error.message.startsWith("AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:")) {
+                toast.error("Oops! One or more test cases failed!", { position: "top-center", autoClose: 3000, theme: "dark" })
             }
-            else{
-                toast.error(error.message, {position:"top-center", autoClose: 3000, theme: "dark"})
+            else {
+                toast.error(error.message, { position: "top-center", autoClose: 3000, theme: "dark" })
             }
         }
     }
-    useEffect(()=> {
-        if(user) {
+    useEffect(() => {
+        if (user) {
             const code = localStorage.getItem(`code-${pid}-${user.uid}`);
             setUserCode(code ? JSON.parse(code) : problem.boilerplateCode);
-        } else{ 
+        } else {
             setUserCode(problem.boilerplateCode);
         }
-    },[pid, user, problem.boilerplateCode]);
-    const onChange = (value:string) => {
+    }, [pid, user, problem.boilerplateCode]);
+    const onChange = (value: string) => {
         setUserCode(value);
-        if(user){
+        if (user) {
             localStorage.setItem(`code-${pid}-${user.uid}`, JSON.stringify(value));
         }
     }
     return (
         <div className='flex flex-col bg-zinc-900 relative overflow-x-hidden'>
-            <PreferenceNav settings={settings} onSetSettings={setSettings}/>
+            <PreferenceNav settings={settings} onSetSettings={setSettings} />
             <Split className='h-[calc(100vh-94px)]' direction='vertical' sizes={[60, 40]} minSize={60}>
                 {/* Code editor */}
                 <div className='w-full overflow-auto'>
@@ -97,7 +98,7 @@ const Playground: React.FC<PlaygroundProps> = ({ problem, onSuccess, setSolved }
                         value={userCode}
                         theme={tokyoNight}
                         onChange={onChange}
-                        extensions={[javascript(),cpp()]}
+                        extensions={[javascript(), cpp()]}
                         style={{ fontSize: settings.fontSize }}
                     />
                 </div>
@@ -113,41 +114,42 @@ const Playground: React.FC<PlaygroundProps> = ({ problem, onSuccess, setSolved }
 
                     {/* Testcases */}
                     <div className='flex'>
-                        {problem.samples.map((sample,index) => (
-                            <div 
-                            className='mr-2 items-start mt-2 text-white'
-                            onClick={() => setCurrentTestCaseId(index)}
+                        {problem.samples.map((sample, index) => (
+                            <div
+                                className='mr-2 items-start mt-2 text-white'
+                                onClick={() => setCurrentTestCaseId(index)}
                             >
-                            <div className='flex flex-wrap items-center gap-y-4'>
-                                <div className={`text-sm items-center transition-all focus:outline-none inline-flex 
-		bg-dark-fill-3 hover:bg-dark-fill-2 relative rounded-lg px-4 py-1 cursor-pointer whitespace-nowrap ${currentTestCaseId === index ? "text-white" :"text-gray-500"}`}>
-                                    Case {index+1}
+                                <div className='flex flex-wrap items-center gap-y-4'>
+                                    <div className={`text-sm items-center transition-all focus:outline-none inline-flex 
+		bg-dark-fill-3 hover:bg-dark-fill-2 relative rounded-lg px-4 py-1 cursor-pointer whitespace-nowrap ${currentTestCaseId === index ? "text-white" : "text-gray-500"}`}>
+                                        Case {index + 1}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
                         ))}
-                        
 
-                        
+
+
                     </div>
 
-                    <div className='font-light mb-[80px] overflow-auto'>
-                        <p className='text-sm font-medium mt-4 text-gray-400'>
-                            Input:
-                        </p>
-                        <div className='w-full cursor-text rounded-lg border px-3 py-[10px] bg-dark-fill-3 border-transparent text-slate-50 mt-2'>
-                            {problem.samples[currentTestCaseId].inputText}
-                        </div>
-                        <p className='text-sm font-medium mt-4 text-gray-400'>
-                            Output:
-                        </p>
-                        <div className='w-full cursor-text rounded-lg border px-3 py-[10px] bg-dark-fill-3 border-transparent text-white mt-2'>
-                            {problem.samples[currentTestCaseId].outputText}
-                        </div>
-                    </div>
+                    {problem.samples.length > 0
+                        && <div className='font-light mb-[80px] overflow-auto'>
+                            <p className='text-sm font-medium mt-4 text-gray-400'>
+                                Input:
+                            </p>
+                            <div className='w-full cursor-text rounded-lg border px-3 py-[10px] bg-dark-fill-3 border-transparent text-slate-50 mt-2'>
+                                {problem.samples[currentTestCaseId].inputText}
+                            </div>
+                            <p className='text-sm font-medium mt-4 text-gray-400'>
+                                Output:
+                            </p>
+                            <div className='w-full cursor-text rounded-lg border px-3 py-[10px] bg-dark-fill-3 border-transparent text-white mt-2'>
+                                {problem.samples[currentTestCaseId].outputText}
+                            </div>
+                        </div>}
                 </div>
             </Split>
-            <EditorFooter onHandleSubmit={handleSubmit}/>
+            <EditorFooter onHandleSubmit={handleSubmit} />
         </div>
     )
 }

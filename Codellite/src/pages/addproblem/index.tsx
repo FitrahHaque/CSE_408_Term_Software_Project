@@ -9,16 +9,19 @@ import React, { useEffect, useState } from 'react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { toast } from 'react-toastify';
 import { doc, setDoc } from 'firebase/firestore';
-import { firestore } from '@/firebase/firebase';
+import { auth, firestore } from '@/firebase/firebase';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { useRouter } from 'next/router';
 
 type AddProblemPageProps = {
     problemCount: number,
 };
 
 const AddProblemPage: React.FC<AddProblemPageProps> = ({ problemCount }) => {
-
+    const [ user ] = useAuthState(auth);
     const setAllProblemsCount = useSetRecoilState(allProblemsCountState);
     const allProblemsCount = useRecoilValue(allProblemsCountState);
+	const router = useRouter();
 
     const [inputs, setInputs] = useState<ProblemDesc>({
         id: 'two-sum',
@@ -128,13 +131,13 @@ You can return the answer in any order.
         const tmpSample: Sample = {
             ...newSample,
             // inputText: newSample.inputText.replace('/\n/g', '<br>'),
-            id: inputs.samples.length + 1,
+            id: inputs.samples.length+1,
         }
         console.log(tmpSample.inputText)
         // const value={tmpSample.inputText.replace('/\n/g', '\n')}
         const updatedInputs: ProblemDesc = {
             ...inputs, // Copy the existing properties of 'inputs'
-            samples: [ ...inputs.samples, tmpSample ], // Add the new sample to the 'samples' array
+            samples: [ ...inputs.samples, tmpSample as Sample], // Add the new sample to the 'samples' array
         };
         setInputs(updatedInputs);
         setNewSample({
@@ -172,6 +175,10 @@ You can return the answer in any order.
             })
         } );
         toast.success("Added a Problem", {position: "top-center", autoClose: 1200, theme: "dark"});
+        setTimeout(function() {
+            // This code will run after 1 second
+            router.push(`/problems/${newProblem.id}`);
+        }, 1200);
     }
     
     
@@ -344,7 +351,7 @@ You can return the answer in any order.
                                 <textarea
                                     id="inputText"
                                     rows={4}
-                                    value={newSample.inputText.replace(/\n/g, '\n')}
+                                    value={newSample.inputText}
                                     onChange={(e) => handleSampleChange(e, -1)}
                                     style={{whiteSpace: 'pre-wrap'}}
                                     // onKeyDown={(e) => handleKeyDown(e,-1)}

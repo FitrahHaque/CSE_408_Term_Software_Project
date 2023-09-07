@@ -7,15 +7,15 @@ import { problems } from '@/utils/problems';
 import { ProblemDesc } from '@/utils/types/problem';
 
 type ProblemPageProps = {
-    problem: ProblemDesc;
+    pid:string;
 };
 
-const ProblemPage: React.FC<ProblemPageProps> = ({ problem }) => {
-
+const ProblemPage: React.FC<ProblemPageProps> = ({ pid }) => {
+    
     return (
         <div>
             <Topbar problemPage={true} />
-            <SolvingSpace problem={problem}/>
+            <SolvingSpace pid={pid}/>
         </div>
     )
 }
@@ -38,17 +38,17 @@ export async function getStaticPaths() {
 // getStaticProps => it fetches the data
 export async function getStaticProps({ params }: { params: { pid: string } }) {
     const { pid } = params;
-    const problem = problems[pid];
-    if (!problem) {
+    // const problem = problems[pid];
+    if (!pid) {
         return {
             notFound: true,
         }
     }
-    problem.onlineJudge = problem.onlineJudge.toString();
+    // problem.onlineJudge = problem.onlineJudge.toString();
     // console.log(problem)
     return {
         props: {
-            problem: problem,
+            pid: pid,
         }
     }
 }
