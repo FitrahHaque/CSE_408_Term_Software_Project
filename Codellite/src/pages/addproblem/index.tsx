@@ -8,6 +8,8 @@ import { Sample } from '@/utils/types/sample';
 import React, { useEffect, useState } from 'react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { toast } from 'react-toastify';
+import { doc, setDoc } from 'firebase/firestore';
+import { firestore } from '@/firebase/firebase';
 
 type AddProblemPageProps = {
     problemCount: number,
@@ -52,13 +54,14 @@ You can return the answer in any order.
     const [newSample, setNewSample] = useState<Sample>({
         id: 0,
         inputText: `2,7,11,15
-9`,
+        9`,
         outputText: `0,1`,
         explanation: `Because nums[0] + nums[1] == 9, we return [0,1].`,
         img: '',
     });
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>) => {
+        
         if (e.target.name === 'id') {
             const s = e.target.value.replace(/\s/g, '');
             setInputs({
@@ -75,18 +78,8 @@ You can return the answer in any order.
         console.log(inputs);
     };
 
-    // const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    // 	e.preventDefault(); //prevent page refresh
-    // 	//convert inputs.order to integer
-    // 	const newProblem = {
-    // 		...inputs,
-    // 		order: Number(inputs.order),
-    // 	}
-    // 	await setDoc(doc(firestore, "problems", inputs.id), newProblem);
-    // 	alert("saved to db");
-    // };	
-    // console.log(inputs);
-    const handleSampleChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>, index: number) => {
+    
+    const handleSampleChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement> | { target: {name: string, value:string }}, index: number) => {
         if (index === -1) {
             setNewSample({
                 ...newSample,
@@ -129,16 +122,19 @@ You can return the answer in any order.
             return;
         }
         if(inputs.samples.length === 6) {
-            toast.error("You have exceeded Sample Case limit", {position:"top-center", autoClose: 1000, theme: "dark"})
+            toast.error("You have exceeded Sample Case limit", {position: "top-center", autoClose: 1000, theme: "dark"})
             return;
         }
         const tmpSample: Sample = {
             ...newSample,
+            // inputText: newSample.inputText.replace('/\n/g', '<br>'),
             id: inputs.samples.length + 1,
         }
+        console.log(tmpSample.inputText)
+        // const value={tmpSample.inputText.replace('/\n/g', '\n')}
         const updatedInputs: ProblemDesc = {
             ...inputs, // Copy the existing properties of 'inputs'
-            samples: [...inputs.samples, tmpSample], // Add the new sample to the 'samples' array
+            samples: [ ...inputs.samples, tmpSample ], // Add the new sample to the 'samples' array
         };
         setInputs(updatedInputs);
         setNewSample({
@@ -149,7 +145,7 @@ You can return the answer in any order.
             explanation: '',
             img: '',
         });
-        toast.success("Added a New Sample Case", {position: "top-center", autoClose: 1000, theme: "dark"})
+        toast.success("Added a New Sample Case", {position: "top-center", autoClose: 1200, theme: "dark"})
 
     }
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -163,7 +159,22 @@ You can return the answer in any order.
             ...inputs,
             order: allProblemsCount.count,
         }
+        console.log("id: ",newProblem.id)
+        if(await exists(newProblem.id)) {
+            console.log("problem exists")
+            toast.error("Problem with this id already exists!", {position:"top-center", autoClose: 1200, theme: "dark"})
+            return;
+        }
+        await fetch('/api/addproblem/addnewproblem', {
+            method: "POST",
+            body: JSON.stringify({
+                problem: newProblem,
+            })
+        } );
+        toast.success("Added a Problem", {position: "top-center", autoClose: 1200, theme: "dark"});
     }
+    
+    
     return (
         <>
             <main className='bg-black min-h-screen'>
@@ -333,8 +344,10 @@ You can return the answer in any order.
                                 <textarea
                                     id="inputText"
                                     rows={4}
-                                    value={newSample.inputText}
+                                    value={newSample.inputText.replace(/\n/g, '\n')}
                                     onChange={(e) => handleSampleChange(e, -1)}
+                                    style={{whiteSpace: 'pre-wrap'}}
+                                    // onKeyDown={(e) => handleKeyDown(e,-1)}
                                     name='inputText'
                                     className='border-2 outline-none sm:text-sm rounded-lg focus:ring-sky-600 focus:border-sky-600 block w-full p-2.5
                     bg-gray-800 border-gray-500 placeholder-gray-400 text-white'
@@ -398,7 +411,7 @@ You can return the answer in any order.
                         <Button
                             onClick={handleAddSample}
                             variant="outline"
-                            type='submit'
+                            type='button'
                             className='font-mono mx-auto text-white bg-transparent hover:bg-gradient-to-r hover:from-cyan-300 hover:to-indigo-900 
                         hover:text-black transition duration-200 ease-in-out'
                         >
@@ -491,3 +504,15 @@ You can return the answer in any order.
     )
 }
 export default AddProblemPage;
+
+async function exists(id:string) {
+    const response = await fetch('/api/addproblem/getproblemids', {
+        method: 'GET',
+    });
+    const data = await response.json();
+    console.log("data:",data.problemids);
+    if (data.problemids.some((item:{id:string}) => item.id === id)) {
+        return true;
+    }    
+    return false;
+}

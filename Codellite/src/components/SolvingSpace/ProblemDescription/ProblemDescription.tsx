@@ -16,13 +16,14 @@ type ProblemDescriptionProps = {
 };
 
 const ProblemDescription: React.FC<ProblemDescriptionProps> = ({ problem, _solved }) => {
+    // const problem = await getProblemData(pid);
+//     console.log("problem:", problem);
     const [user] = useAuthState(auth);
     const { currentProblem, loading, problemDifficultyClass, setCurrentProblem } = useGetCurrentProblem(problem.id);
     const { liked, disliked, solved, starred, setData } = useGetUserDataOnProblem(problem.id);
     const [updating, setUpdating] = useState(false);
     const returnUserAndProblemDoc = async (transaction: any) => {
         const problemRef = doc(firestore, "problems", problem.id);
-        
         const userRef = doc(firestore, "users", user!.uid);
         // const response = await fetch('/api/auth/getuserref', {
         //     method: 'POST',
@@ -321,6 +322,8 @@ function useGetCurrentProblem(problemId: string) {
             if (docSnap.exists()) {
                 const problem = docSnap.data();
                 setCurrentProblem({ id: docSnap.id, ...problem } as DBProblem);
+                
+                
                 setProblemDifficultyClass(problem.difficulty == "Easy" ? "bg-olive text-olive" :
                     problem.difficulty == "Medium" ? "bg-yellow text-dark-yellow" : "bg-dark-pink text-dark-pink");
             } else {
@@ -331,6 +334,8 @@ function useGetCurrentProblem(problemId: string) {
         }
         getProblem();
     }, [problemId]);
+    console.log("get into usereffect1")
+        
     return { currentProblem, loading, problemDifficultyClass, setCurrentProblem };
 }
 
@@ -361,4 +366,16 @@ function useGetUserDataOnProblem(problemId: string) {
         return () => setData({ liked: false, disliked: false, starred: false, solved: false });
     }, [problemId, user])
     return { ...data, setData };
+}
+
+async function getProblemData(problemId:string) {
+    const response = await fetch('/api/getproblem/getproblemdesc', {
+        method: 'POST',
+        body: JSON.stringify({
+            id: problemId,
+        })
+    })
+    const data = await response.json();
+    console.log("data.problem: ", data.problem);
+    return data.problem;
 }

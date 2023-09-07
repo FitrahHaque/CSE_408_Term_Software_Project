@@ -4,10 +4,10 @@ import React from 'react';
 import Topbar from '@/components/Topbar/Topbar';
 import SolvingSpace from '@/components/SolvingSpace/SolvingSpace';
 import { problems } from '@/utils/problems';
-import { Problem } from '@/utils/types/problem';
+import { ProblemDesc } from '@/utils/types/problem';
 
 type ProblemPageProps = {
-    problem: Problem;
+    problem: ProblemDesc;
 };
 
 const ProblemPage: React.FC<ProblemPageProps> = ({ problem }) => {
