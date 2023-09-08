@@ -25,4 +25,5 @@ export type DBProblem = {
     videoId: string;
     link: string;
     deadline: string;
+    admin: string;
 };

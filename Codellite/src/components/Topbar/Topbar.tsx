@@ -68,8 +68,22 @@ const components: { title: string; href: string; description: string }[] = [
 
 const Topbar: React.FC<TopbarProps> = ({ problemPage, pid }) => {
 	const [ user ] = useAuthState(auth);
+	console.log(user);
 	const setAuthModalState = useSetRecoilState(authModalState);
 	const router = useRouter();
+	const [ currentProblem, setCurrentProblem ] = useState<DBProblem>({
+		id: '',
+        title: '',
+        difficulty: '',
+        order: 1,
+        category: '',
+        likes: 0,
+        dislikes: 0,
+        videoId: '',
+        link: '',
+        deadline: '',
+        admin: '',
+	});
 	const [ userRole, setUserRole ] = useState<string>('');
 	const [ problems, setProblems ] = useState<DBProblem[]>([]);
 	useEffect(()=> {
@@ -82,6 +96,20 @@ const Topbar: React.FC<TopbarProps> = ({ problemPage, pid }) => {
 			setProblems(data.problems);
 		}
 		getAllDbProblems();
+
+		const getCurrentProblem = async() => {
+			const response = await fetch('/api/getproblem/getdbproblem', {
+				method: 'POST',
+				body: JSON.stringify({
+					id:pid,
+				})
+			});
+			const data = await response.json();
+			setCurrentProblem(data.problem);
+		}
+		if(pid) {
+			getCurrentProblem();
+		}
 	},[]);
 	useEffect(()=> {
 		const getRole = async () => {
@@ -242,6 +270,13 @@ const Topbar: React.FC<TopbarProps> = ({ problemPage, pid }) => {
 								<Link href="/addproblem" legacyBehavior passHref>
 									<NavigationMenuLink className={navigationMenuTriggerStyle()}>
 										Add a Problem
+									</NavigationMenuLink>
+								</Link>
+							</NavigationMenuItem>}
+							{user && userRole === "admin" && user!.uid === currentProblem.admin &&<NavigationMenuItem>
+								<Link href="/addproblem" legacyBehavior passHref>
+									<NavigationMenuLink className={navigationMenuTriggerStyle()}>
+										Edit This Problem
 									</NavigationMenuLink>
 								</Link>
 							</NavigationMenuItem>}

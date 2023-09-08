@@ -29,14 +29,14 @@ export interface ISettings {
 }
 const Playground: React.FC<PlaygroundProps> = ({ problem, onSuccess, setSolved }) => {
     console.log("playground", problem.samples)
-    const [currentTestCaseId, setCurrentTestCaseId] = useState<number>(0);
+    const [ currentTestCaseId, setCurrentTestCaseId ] = useState<number>(0);
     // console.log("currentTestCaseId: ", currentTestCaseId);
     if(problem.samples.length > 0) {
         console.log(problem.samples[currentTestCaseId].outputText);
     }
-    let [userCode, setUserCode] = useState<string>(problem.boilerplateCode);
+    let [ userCode, setUserCode ] = useState<string>(problem.boilerplateCode);
     const [user] = useAuthState(auth);
-    const { query: { pid } } = useRouter();
+    // const { query: { pid } } = useRouter();
     const [fontSize, setFontSize] = useLocalStorage("codellite-fontSize", "16px");
     const [settings, setSettings] = useState<ISettings>({
         fontSize: fontSize,
@@ -51,7 +51,7 @@ const Playground: React.FC<PlaygroundProps> = ({ problem, onSuccess, setSolved }
         try {
             userCode = userCode.slice(userCode.indexOf(problem.starterFunctionName));
             const cb = new Function(`return ${userCode}`)();
-            const handler = problems[pid as string].onlineJudge;
+            const handler = problem.onlineJudge;
             if (typeof handler === "function") {
                 const success = handler(cb);
                 if (success) {
@@ -60,10 +60,19 @@ const Playground: React.FC<PlaygroundProps> = ({ problem, onSuccess, setSolved }
                     setTimeout(() => {
                         onSuccess(false);
                     }, 4000);
-                    const userRef = doc(firestore, "users", user.uid);
-                    await updateDoc(userRef, {
-                        solvedProblems: arrayUnion(pid),
-                    })
+
+                    await fetch('/api/updateuser/updatesolvedproblems', {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            pid: problem.id,
+                            uid: user!.uid,
+                        })
+                    });
+
+                    // const userRef = doc(firestore, "users", user.uid);
+                    // await updateDoc(userRef, {
+                    //     solvedProblems: arrayUnion(problem.id),
+                    // })
                     setSolved(true);
                 }
             }
@@ -80,16 +89,16 @@ const Playground: React.FC<PlaygroundProps> = ({ problem, onSuccess, setSolved }
     }
     useEffect(() => {
         if (user) {
-            const code = localStorage.getItem(`code-${pid}-${user.uid}`);
+            const code = localStorage.getItem(`code-${problem.id}-${user.uid}`);
             setUserCode(code ? JSON.parse(code) : problem.boilerplateCode);
         } else {
             setUserCode(problem.boilerplateCode);
         }
-    }, [pid, user, problem.boilerplateCode]);
+    }, [problem.id, user, problem.boilerplateCode]);
     const onChange = (value: string) => {
         setUserCode(value);
         if (user) {
-            localStorage.setItem(`code-${pid}-${user.uid}`, JSON.stringify(value));
+            localStorage.setItem(`code-${problem.id}-${user.uid}`, JSON.stringify(value));
         }
     }
     return (

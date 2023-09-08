@@ -33,7 +33,8 @@ const AddProblem: React.FC<AddProblemProps> = ({ problemCount }) => {
         dislikes: 0,
         videoId: '8-k1C6ehKuw',
         link: '',
-        deadline: '12-Aug-2023'
+        deadline: '12-Aug-2023',
+        admin: '',
     });
     
     const [inputs, setInputs] = useState<ProblemDesc>({
@@ -207,6 +208,7 @@ You can return the answer in any order.
         const newDBProblem = {
             ...DBInputs,
             order: allProblemsCount.count,
+            admin: user!.uid,
         }
         console.log("order: ", newProblem.order)
 
