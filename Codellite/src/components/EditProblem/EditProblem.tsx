@@ -1,84 +1,105 @@
-import { allProblemsCountState } from '@/atoms/allProblemCount';
-import { Button } from '@/components/ui/button';
+import { auth } from '@/firebase/firebase';
+import { getCurrentUserDoc } from '@/pages/api/auth/getuser';
 import { DBProblem, ProblemDesc } from '@/utils/types/problem';
-import { MdOutlineDelete, MdDelete } from 'react-icons/md'
-import { RiDeleteBack2Fill, RiDeleteBack2Line } from 'react-icons/ri'
 import { Sample } from '@/utils/types/sample';
-import React, { useEffect, useState } from 'react';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
-import { toast } from 'react-toastify';
-import { doc, setDoc } from 'firebase/firestore';
-import { auth, firestore } from '@/firebase/firebase';
-import { useAuthState } from 'react-firebase-hooks/auth';
 import { useRouter } from 'next/router';
-import { Link } from 'lucide-react';
-type AddProblemProps = {
-    problemCount: number;
+import React, { useEffect, useState } from 'react';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { toast } from 'react-toastify';
+import { Button } from '../ui/button';
+import { MdDelete } from 'react-icons/md';
+
+type EditProblemProps = {
+    pid: string;
 };
 
-const AddProblem: React.FC<AddProblemProps> = ({ problemCount }) => {
+const EditProblem: React.FC<EditProblemProps> = ({ pid }) => {
     const [user] = useAuthState(auth);
-    const setAllProblemsCount = useSetRecoilState(allProblemsCountState);
-    // const [allProblemsCount, setAllProblemsCount ] = useState<number>(0);
-    const allProblemsCount = useRecoilValue(allProblemsCountState);
-    console.log('allProblemsCount: ', allProblemsCount);
     const router = useRouter();
-    const [ DBInputs, setDBInputs ] = useState<DBProblem>({
-        id: 'two-sum',
-        title: 'Two Sum',
-        difficulty: 'Easy',
+    const [currentProblemdesc, setCurrentProblemdesc] = useState<ProblemDesc>({
+        id: '',
+        title: '',
+        problemStatement: ``,
+        samples: [],
+        constraints: ``,
         order: 1,
-        category: 'Array',
+        boilerplateCode: ``,
+        onlineJudge: ``,
+        starterFunctionName: ``,
+        difficulty: '',
+    });
+    const [currentDBProblem, setCurrentDBProblem] = useState<DBProblem>({
+        id: '',
+        title: '',
+        difficulty: '',
+        order: 1,
+        category: '',
         likes: 0,
         dislikes: 0,
-        videoId: '8-k1C6ehKuw',
+        videoId: '',
         link: '',
-        deadline: '12-Aug-2023',
+        deadline: '',
         admin: '',
     });
-    
     const [inputs, setInputs] = useState<ProblemDesc>({
-        id: 'two-sum',
-        title: 'Two Sum',
-        problemStatement: `<p className='mt-3'>
-    Given an array of integers <code>nums</code> and an integer <code>target</code>, return <em>indices of the two numbers such that they add up</em> to <code>target</code>.
-</p>
-<p className='mt-3'>
-    You may assume that each input would have <b><em>exactly</em> one solution</b>, and you may not use the same element twice.
-</p>
-<p className='mt-3'>
-You can return the answer in any order.
-</p>`,
+        id: '',
+        title: '',
+        problemStatement: ``,
         samples: [],
-        constraints: `<li class='mt-2'>
-        <code>2 ≤ nums.length ≤ 10</code>
-    </li> <li class='mt-2'>
-        <code>-10 ≤ nums[i] ≤ 10</code>
-    </li> <li class='mt-2'>
-        <code>-10 ≤ target ≤ 10</code>
-    </li>
-    <li class='mt-2 text-sm'>
-        <strong>Only one valid answer exists.</strong>
-    </li>`,
+        constraints: ``,
         order: 1,
-        boilerplateCode: `function twoSum(nums, target) {
-            //Write your code here
-        };`,
-        onlineJudge: `twoSumHandler`,
-        starterFunctionName: `function twoSum(nums, target)`,
-        difficulty: 'Easy',
+        boilerplateCode: ``,
+        onlineJudge: ``,
+        starterFunctionName: ``,
+        difficulty: '',
     });
-
-    // useEffect(()=> {
-    //     const response = await fetch('/api/addproblem/')
-    // },[])
+    const [DBInputs, setDBInputs] = useState<DBProblem>({
+        id: '',
+        title: '',
+        difficulty: '',
+        order: 1,
+        category: '',
+        likes: 0,
+        dislikes: 0,
+        videoId: '',
+        link: '',
+        deadline: '',
+        admin: '',
+    });
     const [newSample, setNewSample] = useState<Sample>({
-        id: 0,
-        inputText: `2,7,11,15\n9`,
-        outputText: `0,1`,
-        explanation: `Because nums[0] + nums[1] == 9, we return [0,1].`,
+        id: currentProblemdesc.samples.length,
+        inputText: ``,
+        outputText: ``,
+        explanation: ``,
         img: '',
     });
+
+    useEffect(() => {
+        const getCurrentProblem = async () => {
+            const response1 = await fetch('/api/getproblem/getproblemdesc', {
+                method: 'POST',
+                body: JSON.stringify({
+                    id: pid,
+                })
+            });
+            const data1 = await response1.json();
+            setCurrentProblemdesc(data1.problem);
+            setInputs(data1.problem);
+
+            const response2 = await fetch('/api/getproblem/getdbproblem', {
+                method: 'POST',
+                body: JSON.stringify({
+                    id: pid,
+                })
+            });
+            const data2 = await response2.json();
+            setCurrentDBProblem(data2.problem);
+            setDBInputs(data2.problem);
+        }
+        if (pid) {
+            getCurrentProblem();
+        }
+    }, [pid]);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>) => {
 
@@ -115,9 +136,7 @@ You can return the answer in any order.
                 [e.target.name]: e.target.value,
             })
         }
-        // console.log(inputs);
-    };
-
+    }
 
     const handleSampleChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement> | { target: { name: string, value: string } }, index: number) => {
         if (index === -1) {
@@ -153,7 +172,6 @@ You can return the answer in any order.
         }
         setInputs(updatedInputs);
         toast.success("Deleted a Sample Case", { position: "top-center", autoClose: 1000, theme: "dark" })
-
     }
 
     const handleAddSample = async () => {
@@ -188,6 +206,19 @@ You can return the answer in any order.
         toast.success("Added a New Sample Case", { position: "top-center", autoClose: 1200, theme: "dark" })
 
     }
+    const handleDelete = async ()=> {
+        await fetch('/api/deleteproblem/deleteproblem', {
+            method: "POST",
+            body: JSON.stringify({
+                pid: currentDBProblem.id,
+            })
+        })
+        toast.success("Deleted the Problem successfully", { position: "top-center", autoClose: 1200, theme: "dark" });
+        setTimeout(function() {
+            // This code will run after 1 second
+            router.push(`/`);
+        }, 1200);
+    }
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (!inputs.id || !inputs.boilerplateCode || !inputs.difficulty
@@ -195,22 +226,13 @@ You can return the answer in any order.
             toast.error("Please Fill All The Fields", { position: "top-center", autoClose: 1000, theme: "dark" })
             return;
         }
-        if (await exists(inputs.id, setAllProblemsCount)) {
-            // console.log("problem exists")
-            toast.error("Problem with this id already exists!", { position: "top-center", autoClose: 1200, theme: "dark" })
-            return;
-        }
-        console.log("-->", allProblemsCount);
         const newProblem = {
             ...inputs,
-            order: allProblemsCount.count,
         }
         const newDBProblem = {
             ...DBInputs,
-            order: allProblemsCount.count,
-            admin: user!.uid,
         }
-        console.log("order: ", newProblem.order)
+        // console.log("order: ", newProblem.order)
 
         const dateFormatPattern = /^(\d{1,2})-([A-Za-z]{3})-(\d{4})$/;
 
@@ -218,36 +240,76 @@ You can return the answer in any order.
             toast.error("Deadline is not in valid format (12-Aug-2023)!", { position: "top-center", autoClose: 1200, theme: "dark" });
             return;
         }
-        await fetch('/api/addproblem/addnewproblem', {
-            method: "POST",
-            body: JSON.stringify({
-                problem: newProblem,
+
+        if (currentProblemdesc.id === newProblem.id) {
+            await fetch('/api/addproblem/addnewproblem', {
+                method: "POST",
+                body: JSON.stringify({
+                    problem: newProblem,
+                })
+            });
+            await fetch('/api/addproblem/addnewdbproblem', {
+                method: "POST",
+                body: JSON.stringify({
+                    problem: newDBProblem,
+                })
+            });
+        }
+        else if (await exists(newProblem.id)) {
+            // console.log("problem exists")
+            toast.error("Problem with this id already exists!", { position: "top-center", autoClose: 1200, theme: "dark" })
+            return;
+        }
+        else {
+            await fetch('/api/deleteproblem/deleteproblem', {
+                method: "POST",
+                body: JSON.stringify({
+                    pid: currentDBProblem.id,
+                })
             })
-        });
-        await fetch('/api/addproblem/addnewdbproblem', {
-            method: "POST",
-            body: JSON.stringify({
-                problem: newDBProblem,
-            })
-        });
-        await fetch('/api/addproblem/addproblemid', {
-            method: "POST",
-            body: JSON.stringify({
-                pid: newProblem.id,
-            })
-        });
-        toast.success("Added a Problem", { position: "top-center", autoClose: 1200, theme: "dark" });
-        setTimeout(function() {
-            // This code will run after 1 second
-            router.push(`/problems/${newProblem.id}`);
-        }, 1200);
+            await fetch('/api/addproblem/addnewproblem', {
+                method: "POST",
+                body: JSON.stringify({
+                    problem: newProblem,
+                })
+            });
+            await fetch('/api/addproblem/addnewdbproblem', {
+                method: "POST",
+                body: JSON.stringify({
+                    problem: newDBProblem,
+                })
+            });
+            await fetch('/api/addproblem/addproblemid', {
+                method: "POST",
+                body: JSON.stringify({
+                    pid: newProblem.id,
+                })
+            });
+        }
+        toast.success("Edited successfully", { position: "top-center", autoClose: 1200, theme: "dark" });
+        // setTimeout(function() {
+        //     // This code will run after 1 second
+        //     router.push(`/problems/${newProblem.id}`);
+        // }, 1200);
     }
+
     return (
         <>
             <form className='w-4/5 mx-auto space-y-6 px-20 pb-4 pt-3 ' onSubmit={handleSubmit}>
                 <h3 className='font-mono text-transparent bg-gradient-to-r 
                     from-cyan-200 to-indigo-800 bg-clip-text text-4xl 
-				font-extrabold flex justify-center mt-5'>Add a Problem</h3>
+				font-extrabold flex justify-center mt-5'>Edit Problem</h3>
+                
+                <div className='flex justify-end'>
+                    <Button
+                        onClick={handleDelete}
+                        variant="outline"
+                        type="button"
+                        className="font-mono text-white bg-transparent hover:bg-gradient-to-r hover:from-cyan-300 hover:to-indigo-900 hover:text-black transition duration-200 ease-in-out"
+                    >
+                        Delete Problem
+                    </Button>
+                </div>
 
                 <div>
                     <label htmlFor='id' className='text-xl font-medium block mb-2 text-slate-400'>
@@ -474,8 +536,8 @@ You can return the answer in any order.
                     </div>
                 </div>
                 <div>
-                    
-                    
+
+
                     <Button
                         onClick={handleAddSample}
                         variant="outline"
@@ -485,8 +547,8 @@ You can return the answer in any order.
                     >
                         Add Sample
                     </Button>
-                
-                    
+
+
                 </div>
 
                 <div>
@@ -636,13 +698,13 @@ You can return the answer in any order.
                         type="submit"
                         className="font-mono text-white bg-transparent hover:bg-gradient-to-r hover:from-cyan-300 hover:to-indigo-900 hover:text-black transition duration-200 ease-in-out"
                     >
-                        Add
+                        Done
                     </Button>
 
                     <Button
                         variant="outline"
                         onClick={() => {
-                            router.push(`/`);
+                            router.push(`/problems/${currentProblemdesc.id}`);
                         }}
                         type="button"
                         className="font-mono text-white bg-transparent hover:bg-gradient-to-r hover:from-cyan-300 hover:to-indigo-900 hover:text-black transition duration-200 ease-in-out"
@@ -654,16 +716,15 @@ You can return the answer in any order.
         </>
     )
 }
-export default AddProblem;
+export default EditProblem;
 
-async function exists(id: string, setAllProblemsCount:any) {
+async function exists(id: string) {
     const response = await fetch('/api/addproblem/getproblemids', {
         method: 'GET',
     });
     const data = await response.json();
     console.log("len:", data.problemids.length)
     // setAllProblemsCount(data.problemids.length);
-    setAllProblemsCount((prev:any) => ({ ...prev, count: data.problemids.length + 1}));
 
     // console.log("data:", data.problemids);
     if (data.problemids.some((item: { id: string }) => item.id === id)) {

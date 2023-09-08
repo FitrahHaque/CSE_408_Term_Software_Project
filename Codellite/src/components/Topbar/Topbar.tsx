@@ -274,7 +274,7 @@ const Topbar: React.FC<TopbarProps> = ({ problemPage, pid }) => {
 								</Link>
 							</NavigationMenuItem>}
 							{user && userRole === "admin" && user!.uid === currentProblem.admin &&<NavigationMenuItem>
-								<Link href="/addproblem" legacyBehavior passHref>
+								<Link href={`/editproblem/${currentProblem.id}`} legacyBehavior passHref>
 									<NavigationMenuLink className={navigationMenuTriggerStyle()}>
 										Edit This Problem
 									</NavigationMenuLink>
