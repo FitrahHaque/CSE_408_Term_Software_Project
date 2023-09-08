@@ -1,5 +1,4 @@
 import { allProblemsCountState } from '@/atoms/allProblemCount';
-import { Problem } from '@/components/MockProblems/problems';
 import { Button } from '@/components/ui/button';
 import { DBProblem, ProblemDesc } from '@/utils/types/problem';
 import { MdOutlineDelete, MdDelete } from 'react-icons/md'
@@ -12,6 +11,7 @@ import { doc, setDoc } from 'firebase/firestore';
 import { auth, firestore } from '@/firebase/firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useRouter } from 'next/router';
+import { Link } from 'lucide-react';
 type AddProblemProps = {
     problemCount: number;
 };
@@ -464,6 +464,8 @@ You can return the answer in any order.
                     </div>
                 </div>
                 <div>
+                    
+                    
                     <Button
                         onClick={handleAddSample}
                         variant="outline"
@@ -473,6 +475,8 @@ You can return the answer in any order.
                     >
                         Add Sample
                     </Button>
+                
+                    
                 </div>
 
                 <div>

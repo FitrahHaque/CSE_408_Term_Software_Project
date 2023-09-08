@@ -11,7 +11,7 @@ import { ProblemDesc } from '@/utils/types/problem';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth, firestore } from '@/firebase/firebase';
 import { toast } from 'react-toastify';
-import { problems } from '@/utils/problems';
+// import { problems } from '@/utils/problems';
 import { useRouter } from 'next/router';
 import { arrayUnion, doc, updateDoc } from 'firebase/firestore';
 import useLocalStorage from '@/hooks/useLocalStorage';
@@ -28,8 +28,12 @@ export interface ISettings {
     dropdownIsOpen: boolean;
 }
 const Playground: React.FC<PlaygroundProps> = ({ problem, onSuccess, setSolved }) => {
-    console.log("playground", problem.samples.length)
+    console.log("playground", problem.samples)
     const [currentTestCaseId, setCurrentTestCaseId] = useState<number>(0);
+    // console.log("currentTestCaseId: ", currentTestCaseId);
+    if(problem.samples.length > 0) {
+        console.log(problem.samples[currentTestCaseId].outputText);
+    }
     let [userCode, setUserCode] = useState<string>(problem.boilerplateCode);
     const [user] = useAuthState(auth);
     const { query: { pid } } = useRouter();
@@ -139,20 +143,22 @@ const Playground: React.FC<PlaygroundProps> = ({ problem, onSuccess, setSolved }
                             </p>
                             <textarea
                             style={{ height: 'auto', minHeight: '4em' }} 
+                            value={problem.samples[currentTestCaseId].inputText}
                             className='w-full cursor-text rounded-lg border px-3 py-[10px] bg-dark-fill-3 
                             border-transparent text-slate-50 mt-2 resize-none'>
-                                {problem.samples[currentTestCaseId].inputText}
+                                
                             </textarea>
                             <p className='text-sm font-medium mt-4 text-gray-400'>
                                 Output:
                             </p>
                             <textarea 
                             style={{ height: 'auto', minHeight: '4em' }} 
+                            value={problem.samples[currentTestCaseId].outputText}
                             className='w-full cursor-text rounded-lg border px-3 py-[10px] bg-dark-fill-3 
                             border-transparent text-white mt-2 resize-none'>
-                                {problem.samples[currentTestCaseId].outputText}
                             </textarea>
                         </div>}
+                        
                 </div>
             </Split>
             <EditorFooter onHandleSubmit={handleSubmit} />

@@ -10,7 +10,7 @@ type SolvingSpaceProps = {
 };
 
 const SolvingSpace: React.FC<SolvingSpaceProps> = ({ pid }) => {
-    const [problem, setProblem] = useState<ProblemDesc>({
+    const [ problem, setProblem ] = useState<ProblemDesc>({
         id: ``,
         title: ``,
         problemStatement: '',
@@ -23,8 +23,8 @@ const SolvingSpace: React.FC<SolvingSpaceProps> = ({ pid }) => {
         difficulty: '',
     });
     const { width, height } = useWindowSize();
-    const [success, setSuccess] = useState(false);
-    const [solved, setSolved] = useState(false);
+    const [ success, setSuccess ] = useState(false);
+    const [ solved, setSolved ] = useState(false);
     useEffect(() => {
         const get = async () => {
             const tmp = await getProblemData(pid);
