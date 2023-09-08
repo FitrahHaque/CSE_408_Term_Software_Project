@@ -1,5 +1,3 @@
-import { cat } from "shelljs";
-
 var child_process = require('child_process');
 var shell = require('shelljs');
 var fs = require('fs');
