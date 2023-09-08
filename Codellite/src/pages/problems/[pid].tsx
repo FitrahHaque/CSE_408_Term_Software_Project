@@ -5,12 +5,16 @@ import Topbar from '@/components/Topbar/Topbar';
 import SolvingSpace from '@/components/SolvingSpace/SolvingSpace';
 import { problems } from '@/utils/problems';
 import { ProblemDesc } from '@/utils/types/problem';
+import { handler } from '../api/addproblem/getproblemids';
+import { NextApiRequestQuery } from 'next/dist/server/api-utils';
+import { NextApiResponse } from 'next';
 
 type ProblemPageProps = {
     pid:string;
 };
 
 const ProblemPage: React.FC<ProblemPageProps> = ({ pid }) => {
+    console.log("PPpid:", pid);
     
     return (
         <div>
@@ -21,14 +25,23 @@ const ProblemPage: React.FC<ProblemPageProps> = ({ pid }) => {
 }
 export default ProblemPage;
 
-
+type Data = {
+    problemids: { id: string }[];
+}
 // fetch the local data
 // SSG
 // getStaticPaths -> it creates the dynamic routes
 export async function getStaticPaths() {
+    // const response = await fetch('/api/addproblem/getproblemids');
+    // const data = await response.json();
+    // const res = await import("../api/addproblem/getproblemids");
+    // const paths = data.problemids.map((problem:{id:string}) => ({
+    //     params: { pid : problem.id},
+    // }))
     const paths = Object.keys(problems).map((key) => ({
         params: { pid: key }
     }))
+    // console.log("paths:", data);
     return {
         paths,
         fallback: false
@@ -39,6 +52,7 @@ export async function getStaticPaths() {
 export async function getStaticProps({ params }: { params: { pid: string } }) {
     const { pid } = params;
     // const problem = problems[pid];
+    console.log("pid:", pid);
     if (!pid) {
         return {
             notFound: true,

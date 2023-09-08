@@ -28,7 +28,7 @@ const SolvingSpace: React.FC<SolvingSpaceProps> = ({ pid }) => {
     useEffect(() => {
         const get = async () => {
             const tmp = await getProblemData(pid);
-            // console.log("problem:", tmp);
+            console.log("solvingspace:", tmp);
             setProblem(tmp);
         }
         get();
