@@ -20,10 +20,12 @@ import {
 	navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
 import { useRouter } from "next/router";
-import { ProblemDesc } from "@/utils/types/problem";
-import { problems } from "@/utils/problems";
+import { DBProblem, ProblemDesc } from "@/utils/types/problem";
+import { CloudFog } from "lucide-react";
+// import { problems } from "@/utils/problems";
 type TopbarProps = {
 	problemPage?: boolean;
+	pid? : string;
 };
 const components: { title: string; href: string; description: string }[] = [
 	{
@@ -64,11 +66,23 @@ const components: { title: string; href: string; description: string }[] = [
 ]
 
 
-const Topbar: React.FC<TopbarProps> = ({ problemPage }) => {
-	const [user] = useAuthState(auth);
+const Topbar: React.FC<TopbarProps> = ({ problemPage, pid }) => {
+	const [ user ] = useAuthState(auth);
 	const setAuthModalState = useSetRecoilState(authModalState);
 	const router = useRouter();
 	const [ userRole, setUserRole ] = useState<string>('');
+	const [ problems, setProblems ] = useState<DBProblem[]>([]);
+	useEffect(()=> {
+		const getAllDbProblems = async() => {
+			let response = await fetch('/api/allproblems', {
+				method: 'GET',
+			});
+			const data = await response.json();
+			// console.log(data);
+			setProblems(data.problems);
+		}
+		getAllDbProblems();
+	},[]);
 	useEffect(()=> {
 		const getRole = async () => {
 			const response = await fetch('/api/auth/getcurrentuser', {
@@ -88,24 +102,55 @@ const Topbar: React.FC<TopbarProps> = ({ problemPage }) => {
 			setUserRole('');
 		}
 	},[user]);
+	// const handleProblemNavigation = (isForward: boolean) => {
+	// 	const { order } = problems[router.query.pid as string] as DBProblem;
+	// 	const direction = isForward ? 1 : -1;
+	// 	const nextProblemOrder = order + direction;
+	// 	const nextProblemKey = Object.keys(problems).find((key) => problems[key].order === nextProblemOrder);
+	// 	if(isForward && !nextProblemKey) {
+	// 		const firstProblemKey = Object.keys(problems).find((key) => problems[key].order === 1);
+	// 		router.push(`/problems/${firstProblemKey}`);
+	// 	}
+	// 	else if(!isForward && !nextProblemKey){
+	// 		const lastProblemKey = Object.keys(problems).find((key)=> problems[key].order === Object.keys(problems).length)
+	// 		router.push(`/problems/${lastProblemKey}`);
+	// 	}
+	// 	else{
+	// 		router.push(`/problems/${nextProblemKey}`);
+	// 	}
+	// 	// console.log(router.query.pid);
+	// }
 	const handleProblemNavigation = (isForward: boolean) => {
-		const { order } = problems[router.query.pid as string] as ProblemDesc;
-		const direction = isForward ? 1 : -1;
-		const nextProblemOrder = order + direction;
-		const nextProblemKey = Object.keys(problems).find((key) => problems[key].order === nextProblemOrder);
-		if(isForward && !nextProblemKey) {
-			const firstProblemKey = Object.keys(problems).find((key) => problems[key].order === 1);
-			router.push(`/problems/${firstProblemKey}`);
+		if (pid) {
+			console.log("pid:", pid);
+		  const currentProblem = problems.find((problem) => problem.id === pid);
+	  
+		  if (currentProblem) {
+			const { order } = currentProblem;
+			const direction = isForward ? 1 : -1;
+			const nextProblemOrder = order + direction;
+	  
+			// Find the next problem based on the nextProblemOrder
+			const nextProblem = problems.find((problem) => problem.order === nextProblemOrder);
+	  
+			if (nextProblem) {
+			  const nextProblemKey = nextProblem.id;
+			  router.push(`/problems/${nextProblemKey}`);
+			} else if (isForward) {
+			  // If going forward and no next problem, navigate to the first problem
+			  const firstProblem = problems.find((problem) => problem.order === 1);
+			  if (firstProblem) {
+				router.push(`/problems/${firstProblem.id}`);
+			  }
+			} else {
+			  // If going backward and no previous problem, navigate to the last problem
+			  const lastProblem = problems.reduce((prev, current) => (prev.order > current.order ? prev : current));
+			  router.push(`/problems/${lastProblem.id}`);
+			}
+		  }
 		}
-		else if(!isForward && !nextProblemKey){
-			const lastProblemKey = Object.keys(problems).find((key)=> problems[key].order === Object.keys(problems).length)
-			router.push(`/problems/${lastProblemKey}`);
-		}
-		else{
-			router.push(`/problems/${nextProblemKey}`);
-		}
-		// console.log(router.query.pid);
-	}
+	  }
+	  
 	return (
 		<nav className='relative flex h-[50px] w-full shrink-0 items-center px-5 bg-black'>
 			<div className={`flex w-full items-center justify-between  ${problemPage ? "" : "max-w-[1200px] mx-auto"}`}>

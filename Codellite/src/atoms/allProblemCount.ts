@@ -5,7 +5,7 @@ type AllProblemsCountState = {
 };
 
 const initialAllProblemsCountState: AllProblemsCountState = {
-	count: 0,
+	count: 1,
 };
 
 export const allProblemsCountState = atom<AllProblemsCountState>({

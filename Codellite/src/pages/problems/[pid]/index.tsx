@@ -13,7 +13,7 @@ const ProblemPage: React.FC<ProblemPageProps> = ({ pid }) => {
     console.log("PPpid:", pid);
     return (
         <div>
-            <Topbar problemPage={true} />
+            <Topbar problemPage={true} pid={pid}/>
             <SolvingSpace pid={pid} />
         </div>
     )

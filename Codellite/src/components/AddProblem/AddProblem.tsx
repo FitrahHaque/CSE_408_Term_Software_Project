@@ -529,7 +529,7 @@ You can return the answer in any order.
                         type='onlineJudge'
                         name='onlineJudge'
                         id='onlineJudge'
-                        value={inputs.onlineJudge}
+                        value={inputs.onlineJudge.toString()}
                         className='
         border-2 outline-none sm:text-sm rounded-lg focus:ring-sky-600 focus:border-sky-600 block w-full p-2.5
         bg-gray-800 border-gray-500 placeholder-gray-400 text-white
@@ -649,7 +649,7 @@ async function exists(id: string, setAllProblemsCount:any) {
     const data = await response.json();
     console.log("len:", data.problemids.length)
     // setAllProblemsCount(data.problemids.length);
-    setAllProblemsCount((prev:any) => ({ ...prev, count: data.problemids.length }));
+    setAllProblemsCount((prev:any) => ({ ...prev, count: data.problemids.length + 1}));
 
     // console.log("data:", data.problemids);
     if (data.problemids.some((item: { id: string }) => item.id === id)) {
