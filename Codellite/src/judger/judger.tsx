@@ -1,10 +1,8 @@
-import { cat } from "shelljs";
-
 var child_process = require('child_process');
-var shell = require('shelljs');
-var fs = require('fs');
-const { type } = require('os');
-
+// var shell = require('shelljs');
+// var fs = require('fs');
+// const { type } = require('os');
+// 
 function execute(command:string) {
     /**
      * @param {Function} resolve A function that resolves the promise
@@ -42,12 +40,14 @@ function execute(command:string) {
 const run_code_cpp = async function (filepath:string,
 filename:string, testFilePathFull:string, testOutputFilePathFull:string){
     try{
-        const compile = await execute('g++ ${filepath}/${filename}.cpp -o ${filename}.exec');
+        const compile = await execute(`g++ ${filepath}/${filename}.cpp -o ${filename}.exec`);
         console.log("Compilation Successful");
     }catch(error){
+        console.log(error)
         console.log("Complilation Error");
-        let res:boolean = false;
-        let str:string = error as string;
+        const res:boolean = false;
+        const str:string = error as string;
+        console.log("Error: ", str);
         return {res, str};
     }
     try{
@@ -86,3 +86,5 @@ filename:string, testFilePathFull:string, testOutputFilePathFull:string){
         return {res, str};
     }
 }
+
+export default run_code_cpp;
