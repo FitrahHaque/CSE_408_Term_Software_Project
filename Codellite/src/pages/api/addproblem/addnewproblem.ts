@@ -12,6 +12,7 @@ type Data = {
 export default async function handler(req: NextApiRequestQuery,res: NextApiResponse<Data>) {
     if(req.method === 'POST') {
         const { problem } = JSON.parse(req.body);
+        // console.log("problemdesc ", problem);
         await setDoc(doc(firestore,"problemdesc",problem.id),problem);
         res.status(200).send({message:"ok"});
     }

@@ -69,7 +69,7 @@ const ProblemsTable: React.FC<ProblemsTableProps> = ({ onSetLoadingProblems }) =
 			let tmp: number = data.problems.length;
 			// setAllProblemsCount((prev)=> { ...prev, count:data.problems.length});
 			setAllProblemsCount((prev) => ({ ...prev, count: tmp}));
-
+			// console.log("tmp: ", tmp)
 			// console.log("allproblems:", allProblems);
 			// console.log("solvedProblems:", solvedProblems);
 			// console.log("filteredProblems:", filteredProblems);

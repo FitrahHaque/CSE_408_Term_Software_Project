@@ -19,7 +19,9 @@ type AddProblemProps = {
 const AddProblem: React.FC<AddProblemProps> = ({ problemCount }) => {
     const [user] = useAuthState(auth);
     const setAllProblemsCount = useSetRecoilState(allProblemsCountState);
+    // const [allProblemsCount, setAllProblemsCount ] = useState<number>(0);
     const allProblemsCount = useRecoilValue(allProblemsCountState);
+    console.log('allProblemsCount: ', allProblemsCount);
     const router = useRouter();
     const [DBInputs, setDBInputs] = useState<DBProblem>({
         id: 'two-sum',
@@ -33,6 +35,7 @@ const AddProblem: React.FC<AddProblemProps> = ({ problemCount }) => {
         link: '',
         deadline: '12-Aug-2023'
     });
+    
     const [inputs, setInputs] = useState<ProblemDesc>({
         id: 'two-sum',
         title: 'Two Sum',
@@ -64,6 +67,10 @@ You can return the answer in any order.
         starterFunctionName: `function twoSum(nums, target)`,
         difficulty: 'Easy',
     });
+
+    // useEffect(()=> {
+    //     const response = await fetch('/api/addproblem/')
+    // },[])
     const [newSample, setNewSample] = useState<Sample>({
         id: 0,
         inputText: `2,7,11,15\n9`,
@@ -187,6 +194,12 @@ You can return the answer in any order.
             toast.error("Please Fill All The Fields", { position: "top-center", autoClose: 1000, theme: "dark" })
             return;
         }
+        if (await exists(inputs.id, setAllProblemsCount)) {
+            // console.log("problem exists")
+            toast.error("Problem with this id already exists!", { position: "top-center", autoClose: 1200, theme: "dark" })
+            return;
+        }
+        console.log("-->", allProblemsCount);
         const newProblem = {
             ...inputs,
             order: allProblemsCount.count,
@@ -195,12 +208,7 @@ You can return the answer in any order.
             ...DBInputs,
             order: allProblemsCount.count,
         }
-        // console.log("id: ", newProblem.id)
-        if (await exists(newProblem.id)) {
-            // console.log("problem exists")
-            toast.error("Problem with this id already exists!", { position: "top-center", autoClose: 1200, theme: "dark" })
-            return;
-        }
+        console.log("order: ", newProblem.order)
 
         const dateFormatPattern = /^(\d{1,2})-([A-Za-z]{3})-(\d{4})$/;
 
@@ -634,11 +642,15 @@ You can return the answer in any order.
 }
 export default AddProblem;
 
-async function exists(id: string) {
+async function exists(id: string, setAllProblemsCount:any) {
     const response = await fetch('/api/addproblem/getproblemids', {
         method: 'GET',
     });
     const data = await response.json();
+    console.log("len:", data.problemids.length)
+    // setAllProblemsCount(data.problemids.length);
+    setAllProblemsCount((prev:any) => ({ ...prev, count: data.problemids.length }));
+
     // console.log("data:", data.problemids);
     if (data.problemids.some((item: { id: string }) => item.id === id)) {
         return true;
