@@ -29,7 +29,8 @@ export interface ISettings {
     dropdownIsOpen: boolean;
 }
 const Playground: React.FC<PlaygroundProps> = ({ problem, onSuccess, setSolved }) => {
-    console.log("playground", problem.samples)
+    // console.log("playground", problem.samples)
+
     const [currentTestCaseId, setCurrentTestCaseId] = useState<number>(0);
     // console.log("currentTestCaseId: ", currentTestCaseId);
     // if (problem.samples.length > 0) {
@@ -45,7 +46,7 @@ const Playground: React.FC<PlaygroundProps> = ({ problem, onSuccess, setSolved }
 
 
     let [userCode, setUserCode] = useState<string>(problem.boilerplateCode);
-    const [user] = useAuthState(auth);
+    const [ user ] = useAuthState(auth);
     // const { query: { pid } } = useRouter();
     const [fontSize, setFontSize] = useLocalStorage("codellite-fontSize", "16px");
     const [settings, setSettings] = useState<ISettings>({
@@ -98,7 +99,12 @@ const Playground: React.FC<PlaygroundProps> = ({ problem, onSuccess, setSolved }
         try {
             const response = await fetch('/api/runcode/runcode', {
                 method: 'POST',
-                body: JSON.stringify({ testCases, userCode }),
+                body: JSON.stringify({ 
+                    uid: user.uid, 
+                    pid : problem.id, 
+                    testcases: testCases, 
+                    code: userCode
+                }),
               });
               const data = await response.json();
               console.log(data.message)
