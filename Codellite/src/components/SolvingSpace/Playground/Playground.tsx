@@ -15,6 +15,7 @@ import { useRouter } from 'next/router';
 import { arrayUnion, doc, updateDoc } from 'firebase/firestore';
 import useLocalStorage from '@/hooks/useLocalStorage';
 import { Sample } from '@/utils/types/sample';
+import { AiOutlineDelete } from 'react-icons/ai';
 // import { test } from 'shelljs';
 type PlaygroundProps = {
     problem: ProblemDesc;
@@ -35,36 +36,36 @@ const Playground: React.FC<PlaygroundProps> = ({ problem, onSuccess, setSolved }
     //     console.log(problem.samples[currentTestCaseId].outputText);
     // }
 
-    const [ testCases, setTestCases ] = useState<Sample[]>([]);
+    const [testCases, setTestCases] = useState<Sample[]>([]);
     useEffect(() => {
         if (problem.samples.length > 0) {
             setTestCases(problem.samples);
         }
     }, [problem.samples.length]);
-    
+
 
     let [userCode, setUserCode] = useState<string>(problem.boilerplateCode);
     const [user] = useAuthState(auth);
     // const { query: { pid } } = useRouter();
-    const [ fontSize, setFontSize ] = useLocalStorage("codellite-fontSize", "16px");
-    const [ settings, setSettings ] = useState<ISettings>({
+    const [fontSize, setFontSize] = useLocalStorage("codellite-fontSize", "16px");
+    const [settings, setSettings] = useState<ISettings>({
         fontSize: fontSize,
         settingsModalIsOpen: false,
         dropdownIsOpen: false,
     })
-    const handleTestCaseChange = async (e:React.ChangeEvent<HTMLTextAreaElement>) => {
+    const handleTestCaseChange = async (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         const updatedTestCases = [...testCases];
         updatedTestCases[currentTestCaseId] = {
             ...updatedTestCases[currentTestCaseId],
-            [name] : value,
-          };
-        
+            [name]: value,
+        };
+
         setTestCases(updatedTestCases);
     }
-    
+
     const handleAddSample = async () => {
-        if(testCases.length === 7) {
+        if (testCases.length === 7) {
             toast.error("You have exceeded Sample Case limit", { position: "top-center", autoClose: 1000, theme: "dark" })
             return;
         }
@@ -72,11 +73,21 @@ const Playground: React.FC<PlaygroundProps> = ({ problem, onSuccess, setSolved }
         const tmpSample: Sample = {
             inputText: '',
             outputText: '',
-            id: index+1,
+            id: index + 1,
         }
-        const updatedTestCases: Sample[] = [ ...testCases, tmpSample as Sample]
+        const updatedTestCases: Sample[] = [...testCases, tmpSample as Sample]
         setTestCases(updatedTestCases);
         setCurrentTestCaseId(index);
+    }
+
+    const handleDeleteSample = async () => {
+        const index = currentTestCaseId;
+        const updatedTestCases: Sample[] = [...testCases ];
+        updatedTestCases.splice(index,1);
+        setTestCases(updatedTestCases);
+        if(index > 0) {
+            setCurrentTestCaseId(index-1);
+        }
     }
 
     const handleSubmit = async () => {
@@ -173,22 +184,37 @@ const Playground: React.FC<PlaygroundProps> = ({ problem, onSuccess, setSolved }
                             </div>
                         ))}
                         <div
-                            id="plus"
+                            id="add"
                             className='mr-2 items-start mt-2 text-white'
                             onClick={handleAddSample}
                         >
                             <div className='flex flex-wrap items-center gap-y-4'>
-                                    <div className={`text-sm items-center transition-all focus:outline-none inline-flex 
+                                <div className={`text-sm items-center transition-all focus:outline-none inline-flex 
 		bg-dark-fill-3 hover:bg-dark-fill-2 relative rounded-lg px-4 py-1 cursor-pointer whitespace-nowrap text-gray-500`}>
-                                        +
-                                    </div>
+                                    +
                                 </div>
+                            </div>
 
                         </div>
-
-
-
                     </div>
+                    <div
+                        className='flex justify-end'
+                    >
+                        <div
+                            id="delete"
+                            className='mr-2 items-start mt-2 text-white'
+                            onClick={handleDeleteSample}
+                        >
+                            <div className='flex flex-wrap items-center gap-y-4'>
+                                <div className={`text-medium items-center transition-all focus:outline-none inline-flex 
+		bg-dark-fill-3 hover:bg-dark-fill-2 relative rounded-lg px-4 py-1 cursor-pointer whitespace-nowrap text-gray-500`}>
+                                    <AiOutlineDelete />
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
 
                     {testCases.length > currentTestCaseId
                         && <div className='font-light mb-[80px] overflow-auto'>
@@ -209,8 +235,8 @@ const Playground: React.FC<PlaygroundProps> = ({ problem, onSuccess, setSolved }
                                 Output:
                             </p>
                             <textarea
-                                id = 'outputText'
-                                name = 'outputText'
+                                id='outputText'
+                                name='outputText'
                                 onChange={(e) => handleTestCaseChange(e)}
                                 style={{ height: 'auto', minHeight: '4em' }}
                                 value={testCases[currentTestCaseId].outputText}
