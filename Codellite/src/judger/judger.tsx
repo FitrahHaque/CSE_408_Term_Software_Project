@@ -37,8 +37,7 @@ function execute(command:string) {
     });
   }
 
-const run_code_cpp = async function (filepath:string,
-filename:string, testFilePathFull:string, testOutputFilePathFull:string){
+const run_code_cpp = async (filepath:string,filename:string, testFilePathFull:string, testOutputFilePathFull:string) => {
     try{
         const compile = await execute(`g++ ${filepath}/${filename}.cpp -o ./src/judger/${filename}.exec`);
         console.log("Compilation Successful");
@@ -64,27 +63,27 @@ filename:string, testFilePathFull:string, testOutputFilePathFull:string){
             console.log("checkR: ", checkR);
             if(parseInt(checkR as string) === 1){
                 console.log("here");
-                let res:boolean = true;
-                let str:string = "Success";
+                const res:boolean = true;
+                const str:string = "Success";
                 return {res, str};
             }
             else{
-                let res:boolean = false;
-                let str:string = "Wrong Answer";
+                const res:boolean = false;
+                const str:string = "Wrong Answer";
                 return {res, str};
             }
         }
         else{
             console.log("result.result: ", result.result);
-            let res:boolean = false;
-            let str:string = "result.result is not 0";
+            const res:boolean = false;
+            const str:string = "result.result is not 0";
             return {res, str};
             
         }
     }catch(error){
         console.log("Runtime Error");
-        let res:boolean = false;
-        let str:string = error as string;
+        const res:boolean = false;
+        const str:string = error as string;
         return {res, str};
     }
 }
