@@ -21,7 +21,7 @@ const ProblemsTable: React.FC<ProblemsTableProps> = ({ onSetLoadingProblems }) =
 		videoId: "",
 	});
 	
-	const [ allProblems,setAllProblems ] = useState<DBProblem[]>([]);
+	const [ allProblems, setAllProblems ] = useState<DBProblem[]>([]);
 	const setAllProblemsCount = useSetRecoilState(allProblemsCountState);
 	const [filteredProblems,setFilteredProblems] = useState<DBProblem[]>([]);
 	const [solvedProblems, setSolvedProblems] = useState<string[]>([]);

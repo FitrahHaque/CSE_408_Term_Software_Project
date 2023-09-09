@@ -13,7 +13,6 @@ export default async function handler(req: NextApiRequest,res: NextApiResponse<D
 	if(req.method === 'POST') {
 		const { uid } = JSON.parse(req.body);
 		const data = await getUserInfo(uid);
-        // console.log(data);
 		res.status(200).json({ userInfo: data });
 	}
     res.status(500).send({userInfo:[]});
@@ -22,9 +21,9 @@ export default async function handler(req: NextApiRequest,res: NextApiResponse<D
 async function getUserInfo(uid:string) {
     const userDoc = await getCurrentUserDoc(uid);
     if(userDoc.exists()){
-        console.log("userDoc exists")
+        // console.log("userDoc exists")
         const tmp = userDoc.data();
-        console.log(tmp);
+        // console.log(tmp);
         return tmp;
     }
     // console.log("getcurrentuser: ",userDoc.data());
