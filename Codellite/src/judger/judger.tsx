@@ -40,7 +40,7 @@ function execute(command:string) {
 const run_code_cpp = async function (filepath:string,
 filename:string, testFilePathFull:string, testOutputFilePathFull:string){
     try{
-        const compile = await execute(`g++ ${filepath}/${filename}.cpp -o ${filename}.exec`);
+        const compile = await execute(`g++ ${filepath}/${filename}.cpp -o ./src/judger/${filename}.exec`);
         console.log("Compilation Successful");
     }catch(error){
         console.log(error)
@@ -52,16 +52,18 @@ filename:string, testFilePathFull:string, testOutputFilePathFull:string){
     }
     try{
         let pass = process.env.OS_PASS;
-        const run = await execute(`echo ${pass} | sudo -S  ./src/judger/libjudger.so --max_cpu_time=100 --max_real_time=1000 --max_memory=130023424
-        --exe_path=./src/judger/${filename}.exec --input_path=${testFilePathFull} --output_path=./src/judger/${filename}.out --error_path=./src/judger/error.out`);
+        
+        const run = await execute(`echo ${pass} | sudo -S  ./src/judger/libjudger.so --max_cpu_time=100 --max_real_time=1000 --max_memory=130023424 --exe_path=./src/judger/${filename}.exec --input_path=${testFilePathFull} --output_path=./src/judger/${filename}.out --error_path=./src/judger/error.out`);
         console.log("Runtime successfull");
 
         const result = JSON.parse(run as string);
        
-        if(result.result == 0){
+        if(result.result === 0){
+            console.log(`./src/judger/compare.sh ${testOutputFilePathFull} ./src/judger/${filename}.out`);
             let checkR = await execute(`./src/judger/compare.sh ${testOutputFilePathFull} ./src/judger/${filename}.out`);
             console.log("checkR: ", checkR);
-            if(checkR == 0){
+            if(parseInt(checkR as string) === 1){
+                console.log("here");
                 let res:boolean = true;
                 let str:string = "Success";
                 return {res, str};
