@@ -83,7 +83,7 @@ export default async function handler(req: NextApiRequest, response: NextApiResp
             });
             const {res, str} = await run_code_cpp(codeDirectoryPath,'code', inputFilePath, outputFilePath);
             if(res === false) {
-                response.status(200).json({failedTestCaseIndex: i, success : false, message: str});
+                response.status(200).json({failedTestCaseIndex: i+1, success : false, message: str});
             }
         }
         response.status(200).json({ success: true, message: "ok" })

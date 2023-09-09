@@ -122,7 +122,20 @@ const Playground: React.FC<PlaygroundProps> = ({ problem, onSuccess, setSolved }
                 });
                 setSolved(true);
             }
+            else {
+                const message = `Failed at case ${data.failedTestCaseIndex}!` + data.message;
+                toast.error(message, { position: "top-center", autoClose: 3000, theme: "dark" })
+            }
+        } catch (error: any) {
+            console.log(error);
+            if (error.message.startsWith("AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:")) {
+                toast.error("Oops! One or more test cases failed!", { position: "top-center", autoClose: 3000, theme: "dark" })
+            }
+            else {
+                toast.error(error.message, { position: "top-center", autoClose: 3000, theme: "dark" })
+            }
         }
+        
         // try {
         //     userCode = userCode.slice(userCode.indexOf(problem.starterFunctionName));
         //     const cb = new Function(`return ${userCode}`)();
@@ -148,15 +161,7 @@ const Playground: React.FC<PlaygroundProps> = ({ problem, onSuccess, setSolved }
         //     }
 
         // }
-        catch (error: any) {
-            console.log(error);
-            if (error.message.startsWith("AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:")) {
-                toast.error("Oops! One or more test cases failed!", { position: "top-center", autoClose: 3000, theme: "dark" })
-            }
-            else {
-                toast.error(error.message, { position: "top-center", autoClose: 3000, theme: "dark" })
-            }
-        }
+        
     }
     useEffect(() => {
         if (user) {
