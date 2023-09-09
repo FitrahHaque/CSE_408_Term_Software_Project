@@ -46,7 +46,7 @@ const Playground: React.FC<PlaygroundProps> = ({ problem, onSuccess, setSolved }
 
 
     let [userCode, setUserCode] = useState<string>(problem.boilerplateCode);
-    const [ user ] = useAuthState(auth);
+    const [user] = useAuthState(auth);
     // const { query: { pid } } = useRouter();
     const [fontSize, setFontSize] = useLocalStorage("codellite-fontSize", "16px");
     const [settings, setSettings] = useState<ISettings>({
@@ -83,11 +83,11 @@ const Playground: React.FC<PlaygroundProps> = ({ problem, onSuccess, setSolved }
 
     const handleDeleteSample = async () => {
         const index = currentTestCaseId;
-        const updatedTestCases: Sample[] = [...testCases ];
-        updatedTestCases.splice(index,1);
+        const updatedTestCases: Sample[] = [...testCases];
+        updatedTestCases.splice(index, 1);
         setTestCases(updatedTestCases);
-        if(index > 0) {
-            setCurrentTestCaseId(index-1);
+        if (index > 0) {
+            setCurrentTestCaseId(index - 1);
         }
     }
 
@@ -99,15 +99,29 @@ const Playground: React.FC<PlaygroundProps> = ({ problem, onSuccess, setSolved }
         try {
             const response = await fetch('/api/runcode/runcode', {
                 method: 'POST',
-                body: JSON.stringify({ 
-                    uid: user.uid, 
-                    pid : problem.id, 
-                    testcases: testCases, 
+                body: JSON.stringify({
+                    uid: user.uid,
+                    pid: problem.id,
+                    testcases: testCases,
                     code: userCode
                 }),
-              });
-              const data = await response.json();
-              console.log(data.message)
+            });
+            const data = await response.json();
+            if (data.success) {
+                toast.success("Congrats! All tests passed", { position: "top-center", autoClose: 3000, theme: "dark" });
+                onSuccess(true);
+                setTimeout(() => {
+                    onSuccess(false);
+                }, 4000);
+                await fetch('/api/updateuser/updatesolvedproblems', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        pid: problem.id,
+                        uid: user!.uid,
+                    })
+                });
+                setSolved(true);
+            }
         }
         // try {
         //     userCode = userCode.slice(userCode.indexOf(problem.starterFunctionName));
@@ -134,7 +148,7 @@ const Playground: React.FC<PlaygroundProps> = ({ problem, onSuccess, setSolved }
         //     }
 
         // }
-         catch (error: any) {
+        catch (error: any) {
             console.log(error);
             if (error.message.startsWith("AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:")) {
                 toast.error("Oops! One or more test cases failed!", { position: "top-center", autoClose: 3000, theme: "dark" })
