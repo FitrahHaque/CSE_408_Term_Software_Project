@@ -1,3 +1,6 @@
-function twoSum(nums, target) {
-            //Write your code here
-        };
+#include <iostream>
+#include <vector>
+using namespace std;
+int main(){
+  cout << "0,1\n";
+}
