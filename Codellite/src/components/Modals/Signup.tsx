@@ -8,6 +8,7 @@ import { doc, setDoc } from "firebase/firestore";
 import { toast } from "react-toastify";
 import { Button } from "../ui/button";
 import { Icons } from "../icons";
+import { User } from "@/utils/types/user";
 type SignupProps = {};
 
 const Signup: React.FC<SignupProps> = () => {
@@ -42,7 +43,7 @@ const Signup: React.FC<SignupProps> = () => {
 			toast.loading("Creating your account", { position: "top-center", toastId: "loadingToast" });
 			const newUser = await createUserWithEmailAndPassword(inputs.email, inputs.password);
 			if (!newUser) return;
-			const userData = {
+			const userData:User = {
 				uid: newUser.user.uid,
 				email: newUser.user.email,
 				displayName: inputs.displayName,
@@ -52,6 +53,8 @@ const Signup: React.FC<SignupProps> = () => {
 				dislikedProblems: [],
 				solvedProblems: [],
 				starredProblems: [],
+				pendingProblems: [],
+				unsolvedProblems: [],
 				role: toggle ? "admin" : "student",
 			};
 			await fetch('/api/auth/createnewuser', {
