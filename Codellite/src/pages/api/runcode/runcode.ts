@@ -10,8 +10,12 @@ type Data = {
 }
 
 export default async function handler(req: NextApiRequest,response: NextApiResponse<Data>) {
-    const {res, str} = await run_code_cpp('./src/submissions/','code', './src/submissions/input.txt','./src/submissions/output.txt');
-    console.log('res', res);
-    console.log('str', str);
-    response.status(200).json({success: res, message: str});
+    // const {res, str} = await run_code_cpp('./src/submissions/','code', './src/submissions/input.txt','./src/submissions/output.txt');
+    if(req.method === 'POST') {
+        const { testCases, userCode } = JSON.parse(req.body);
+        // console.log("testCases: ", testCases.length);
+        // console.log("userCode: ", userCode);
+        response.status(200).json({success : true, message: "RAN"})
+    }
+    response.status(200).send({success: false, message: "Test Case Failed"});
 }

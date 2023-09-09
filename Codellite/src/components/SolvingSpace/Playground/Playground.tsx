@@ -92,34 +92,43 @@ const Playground: React.FC<PlaygroundProps> = ({ problem, onSuccess, setSolved }
 
     const handleSubmit = async () => {
         if (!user) {
-            toast.error("Please Log in to submit your code", { position: "top-center", autoClose: 3000, theme: "dark" });
+            toast.error("Please Log in to submit your code", { position: "top-center", autoClose: 2000, theme: "dark" });
             return;
         }
         try {
-            userCode = userCode.slice(userCode.indexOf(problem.starterFunctionName));
-            const cb = new Function(`return ${userCode}`)();
-            const handler = problem.onlineJudge;
-            if (typeof handler === "function") {
-                const success = handler(cb);
-                if (success) {
-                    toast.success("Congrats! All tests passed", { position: "top-center", autoClose: 3000, theme: "dark" })
-                    onSuccess(true);
-                    setTimeout(() => {
-                        onSuccess(false);
-                    }, 4000);
+            const response = await fetch('/api/runcode/runcode', {
+                method: 'POST',
+                body: JSON.stringify({ testCases, userCode }),
+              });
+              const data = await response.json();
+              console.log(data.message)
+        }
+        // try {
+        //     userCode = userCode.slice(userCode.indexOf(problem.starterFunctionName));
+        //     const cb = new Function(`return ${userCode}`)();
+        //     const handler = problem.onlineJudge;
+        //     if (typeof handler === "function") {
+        //         const success = handler(cb);
+        //         if (success) {
+        //             toast.success("Congrats! All tests passed", { position: "top-center", autoClose: 3000, theme: "dark" })
+        //             onSuccess(true);
+        //             setTimeout(() => {
+        //                 onSuccess(false);
+        //             }, 4000);
 
-                    await fetch('/api/updateuser/updatesolvedproblems', {
-                        method: 'POST',
-                        body: JSON.stringify({
-                            pid: problem.id,
-                            uid: user!.uid,
-                        })
-                    });
-                    setSolved(true);
-                }
-            }
+        //             await fetch('/api/updateuser/updatesolvedproblems', {
+        //                 method: 'POST',
+        //                 body: JSON.stringify({
+        //                     pid: problem.id,
+        //                     uid: user!.uid,
+        //                 })
+        //             });
+        //             setSolved(true);
+        //         }
+        //     }
 
-        } catch (error: any) {
+        // }
+         catch (error: any) {
             console.log(error);
             if (error.message.startsWith("AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:")) {
                 toast.error("Oops! One or more test cases failed!", { position: "top-center", autoClose: 3000, theme: "dark" })
