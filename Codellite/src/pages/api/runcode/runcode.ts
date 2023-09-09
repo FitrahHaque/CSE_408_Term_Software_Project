@@ -9,9 +9,9 @@ type Data = {
     message: string;
 }
 
-export default async function handler(req: NextApiRequest,res: NextApiResponse<Data>) {
-    const {suc, mes} = await run_code_cpp('./src/submissions/','code', './src/submissions/input.txt','./src/submissions/output.txt');
-    console.log('suc', suc);
-    console.log('mes', mes);
-    res.status(200).json({success: suc, message: mes});
+export default async function handler(req: NextApiRequest,response: NextApiResponse<Data>) {
+    const {res, str} = await run_code_cpp('./src/submissions/','code', './src/submissions/input.txt','./src/submissions/output.txt');
+    console.log('res', res);
+    console.log('str', str);
+    response.status(200).json({success: res, message: str});
 }
