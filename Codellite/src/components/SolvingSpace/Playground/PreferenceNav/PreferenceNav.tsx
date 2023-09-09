@@ -39,7 +39,7 @@ const PreferenceNav: React.FC<PreferenceNavProps> = ({ settings, onSetSettings }
             <button className='flex cursor-pointer items-center rounded text-left focus:outline-none bg-dark-fill-3 text-dark-label-2 hover:bg-dark-fill-2 px-2 py-1.5 font-medium'>
                 <div className='flex items-center px-1'>
                     <div className='text-xs text-label-2 daek:text-dark-label-2'>
-                        JavaScript
+                        C++
                     </div>
                 </div>
             </button>

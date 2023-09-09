@@ -11,11 +11,11 @@ import { ProblemDesc } from '@/utils/types/problem';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth, firestore } from '@/firebase/firebase';
 import { toast } from 'react-toastify';
-// import { problems } from '@/utils/problems';
 import { useRouter } from 'next/router';
 import { arrayUnion, doc, updateDoc } from 'firebase/firestore';
 import useLocalStorage from '@/hooks/useLocalStorage';
-
+import { Sample } from '@/utils/types/sample';
+// import { test } from 'shelljs';
 type PlaygroundProps = {
     problem: ProblemDesc;
     onSuccess: React.Dispatch<React.SetStateAction<boolean>>;
@@ -29,20 +29,56 @@ export interface ISettings {
 }
 const Playground: React.FC<PlaygroundProps> = ({ problem, onSuccess, setSolved }) => {
     console.log("playground", problem.samples)
-    const [ currentTestCaseId, setCurrentTestCaseId ] = useState<number>(0);
+    const [currentTestCaseId, setCurrentTestCaseId] = useState<number>(0);
     // console.log("currentTestCaseId: ", currentTestCaseId);
-    if(problem.samples.length > 0) {
-        console.log(problem.samples[currentTestCaseId].outputText);
-    }
-    let [ userCode, setUserCode ] = useState<string>(problem.boilerplateCode);
+    // if (problem.samples.length > 0) {
+    //     console.log(problem.samples[currentTestCaseId].outputText);
+    // }
+
+    const [ testCases, setTestCases ] = useState<Sample[]>([]);
+    useEffect(() => {
+        if (problem.samples.length > 0) {
+            setTestCases(problem.samples);
+        }
+    }, [problem.samples.length]);
+    
+
+    let [userCode, setUserCode] = useState<string>(problem.boilerplateCode);
     const [user] = useAuthState(auth);
     // const { query: { pid } } = useRouter();
-    const [fontSize, setFontSize] = useLocalStorage("codellite-fontSize", "16px");
-    const [settings, setSettings] = useState<ISettings>({
+    const [ fontSize, setFontSize ] = useLocalStorage("codellite-fontSize", "16px");
+    const [ settings, setSettings ] = useState<ISettings>({
         fontSize: fontSize,
         settingsModalIsOpen: false,
         dropdownIsOpen: false,
     })
+    const handleTestCaseChange = async (e:React.ChangeEvent<HTMLTextAreaElement>) => {
+        const { name, value } = e.target;
+        const updatedTestCases = [...testCases];
+        updatedTestCases[currentTestCaseId] = {
+            ...updatedTestCases[currentTestCaseId],
+            [name] : value,
+          };
+        
+        setTestCases(updatedTestCases);
+    }
+    
+    const handleAddSample = async () => {
+        if(testCases.length === 7) {
+            toast.error("You have exceeded Sample Case limit", { position: "top-center", autoClose: 1000, theme: "dark" })
+            return;
+        }
+        const index = testCases.length;
+        const tmpSample: Sample = {
+            inputText: '',
+            outputText: '',
+            id: index+1,
+        }
+        const updatedTestCases: Sample[] = [ ...testCases, tmpSample as Sample]
+        setTestCases(updatedTestCases);
+        setCurrentTestCaseId(index);
+    }
+
     const handleSubmit = async () => {
         if (!user) {
             toast.error("Please Log in to submit your code", { position: "top-center", autoClose: 3000, theme: "dark" });
@@ -68,11 +104,6 @@ const Playground: React.FC<PlaygroundProps> = ({ problem, onSuccess, setSolved }
                             uid: user!.uid,
                         })
                     });
-
-                    // const userRef = doc(firestore, "users", user.uid);
-                    // await updateDoc(userRef, {
-                    //     solvedProblems: arrayUnion(problem.id),
-                    // })
                     setSolved(true);
                 }
             }
@@ -111,7 +142,7 @@ const Playground: React.FC<PlaygroundProps> = ({ problem, onSuccess, setSolved }
                         value={userCode}
                         theme={tokyoNight}
                         onChange={onChange}
-                        extensions={[javascript(), cpp()]}
+                        extensions={[cpp()]}
                         style={{ fontSize: settings.fontSize }}
                     />
                 </div>
@@ -127,8 +158,9 @@ const Playground: React.FC<PlaygroundProps> = ({ problem, onSuccess, setSolved }
 
                     {/* Testcases */}
                     <div className='flex'>
-                        {problem.samples.map((sample, index) => (
+                        {testCases.map((sample, index) => (
                             <div
+                                key={index}
                                 className='mr-2 items-start mt-2 text-white'
                                 onClick={() => setCurrentTestCaseId(index)}
                             >
@@ -140,34 +172,53 @@ const Playground: React.FC<PlaygroundProps> = ({ problem, onSuccess, setSolved }
                                 </div>
                             </div>
                         ))}
+                        <div
+                            id="plus"
+                            className='mr-2 items-start mt-2 text-white'
+                            onClick={handleAddSample}
+                        >
+                            <div className='flex flex-wrap items-center gap-y-4'>
+                                    <div className={`text-sm items-center transition-all focus:outline-none inline-flex 
+		bg-dark-fill-3 hover:bg-dark-fill-2 relative rounded-lg px-4 py-1 cursor-pointer whitespace-nowrap text-gray-500`}>
+                                        +
+                                    </div>
+                                </div>
+
+                        </div>
 
 
 
                     </div>
 
-                    {problem.samples.length > 0
+                    {testCases.length > currentTestCaseId
                         && <div className='font-light mb-[80px] overflow-auto'>
                             <p className='text-sm font-medium mt-4 text-gray-400'>
                                 Input:
                             </p>
                             <textarea
-                            style={{ height: 'auto', minHeight: '4em' }} 
-                            value={problem.samples[currentTestCaseId].inputText}
-                            className='w-full cursor-text rounded-lg border px-3 py-[10px] bg-dark-fill-3 
+                                id='inputText'
+                                name='inputText'
+                                onChange={(e) => handleTestCaseChange(e)}
+                                style={{ height: 'auto', minHeight: '4em' }}
+                                value={testCases[currentTestCaseId].inputText}
+                                className='w-full cursor-text rounded-lg border px-3 py-[10px] bg-dark-fill-3 
                             border-transparent text-slate-50 mt-2 resize-none'>
-                                
+
                             </textarea>
                             <p className='text-sm font-medium mt-4 text-gray-400'>
                                 Output:
                             </p>
-                            <textarea 
-                            style={{ height: 'auto', minHeight: '4em' }} 
-                            value={problem.samples[currentTestCaseId].outputText}
-                            className='w-full cursor-text rounded-lg border px-3 py-[10px] bg-dark-fill-3 
+                            <textarea
+                                id = 'outputText'
+                                name = 'outputText'
+                                onChange={(e) => handleTestCaseChange(e)}
+                                style={{ height: 'auto', minHeight: '4em' }}
+                                value={testCases[currentTestCaseId].outputText}
+                                className='w-full cursor-text rounded-lg border px-3 py-[10px] bg-dark-fill-3 
                             border-transparent text-white mt-2 resize-none'>
                             </textarea>
                         </div>}
-                        
+
                 </div>
             </Split>
             <EditorFooter onHandleSubmit={handleSubmit} />
