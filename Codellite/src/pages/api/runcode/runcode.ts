@@ -36,58 +36,57 @@ export default async function handler(req: NextApiRequest, response: NextApiResp
                 console.log('File created successfully:');
             }
         });
-        // for (let i = 0; i < testcases.length; i++) {
-        //     const inputFileName = 'input.txt';
-        //     const outputFileName = 'output.txt';
-        //     const inputFileContent = testcases[i].inputText;
-        //     const outputFileContent = testcases[i].outputText;
-        //     let IOdirectoryPath = `./src/submissions/${pid}/${uid}/case-${i + 1}/`;
-        //     await fs.mkdir(IOdirectoryPath, { recursive: true }, (err: any) => {
-        //         if (err) {
-        //             console.error('Error creating directory:', err);
-        //         } else {
-        //             console.log('Directory created successfully:', IOdirectoryPath);
-        //         }
-        //     });
+        for (let i = 0; i < testcases.length; i++) {
+            const inputFileName = 'input.txt';
+            const outputFileName = 'output.txt';
+            const inputFileContent = testcases[i].inputText;
+            const outputFileContent = testcases[i].outputText;
+            const IOdirectoryPath = `./src/submissions/${pid}/${uid}/case${i + 1}/`;
+            const inputFilePath = await path.join(IOdirectoryPath, inputFileName);
+            const outputFilePath = await path.join(IOdirectoryPath, outputFileName);
 
-        //     const inputFilePath = await path.join(IOdirectoryPath, inputFileName);
-        //     await fs.writeFile(inputFilePath, inputFileContent, (err: any) => {
-        //         if (err) {
-        //             console.error('Error:', err);
-        //         } else {
-        //             console.log('File created successfully:');
-        //         }
-        //     });
-        //     await fs.readFile(inputFilePath, 'utf8', (err: any, data: any) => {
-        //         if (err) {
-        //             console.error('Error reading file:', err);
-        //         } else {
-        //             console.log('input file:', data);
-        //         }
-        //     });
+            await fs.mkdir(IOdirectoryPath, { recursive: true }, (err: any) => {
+                if (err) {
+                    console.error('Error creating directory:', err);
+                } else {
+                    console.log('Directory created successfully:', IOdirectoryPath);
+                }
+            });
 
-        //     const outputFilePath = await path.join(IOdirectoryPath, outputFileName);
-        //     await fs.writeFile(outputFilePath, outputFileContent, (err: any) => {
-        //         if (err) {
-        //             console.error('Error:', err);
-        //         } else {
-        //             console.log('File created successfully:');
-        //         }
-        //     });
-        //     await fs.readFile(outputFilePath, 'utf8', (err: any, data: any) => {
-        //         if (err) {
-        //             console.error('Error reading file:', err);
-        //         } else {
-        //             console.log('output file:', data);
-        //         }
-        //     });
-        //     // const {res, str} = await run_code_cpp(codeDirectoryPath,'code', inputFilePath, outputFilePath);
-        //     // if(res === false) {
-        //         // clear(codeDirectoryPath);
-        //     //     response.status(200).json({failedTestCaseIndex: i+1, success : false, message: str});
-        //     // }
-        // }
-        // await clear(codeDirectoryPath);
+            await fs.writeFile(inputFilePath, inputFileContent, (err: any) => {
+                if (err) {
+                    console.error('Error:', err);
+                } else {
+                    console.log('File created successfully:');
+                }
+            });
+            await fs.readFile(inputFilePath, 'utf8', (err: any, data: any) => {
+                if (err) {
+                    console.error('Error reading file:', err);
+                } else {
+                    console.log('input file:', data);
+                }
+            });
+
+            await fs.writeFile(outputFilePath, outputFileContent, (err: any) => {
+                if (err) {
+                    console.error('Error:', err);
+                } else {
+                    console.log('File created successfully:');
+                }
+            });
+            await fs.readFile(outputFilePath, 'utf8', (err: any, data: any) => {
+                if (err) {
+                    console.error('Error reading file:', err);
+                } else {
+                    console.log('output file:', data);
+                }
+            });
+            // const {res, str} = await run_code_cpp(codeDirectoryPath,'code', inputFilePath, outputFilePath);
+            // if(res === false) {
+            //     response.status(200).json({failedTestCaseIndex: i+1, success : false, message: str});
+            // }
+        }
         response.status(200).json({ success: true, message: "ok" })
     }
     response.status(200).send({ success: false, message: "Test Case Failed" });
