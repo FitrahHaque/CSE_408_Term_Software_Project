@@ -28,13 +28,14 @@ export default async function handler(req: NextApiRequest, response: NextApiResp
                 console.log('Directory created successfully:', codeDirectoryPath);
             }
         });
-        await fs.writeFile(codeFilePath, codeFileContent, (err: any) => {
+        await fs.writeFileSync(codeFilePath, codeFileContent, (err: any) => {
             if (err) {
                 console.error('Error:', err);
             } else {
                 console.log('File created successfully:');
             }
         });
+        console.log("testcases:", testcases.length);
         for (let i = 0; i < testcases.length; i++) {
             const inputFileName = 'input.txt';
             const outputFileName = 'output.txt';
@@ -52,7 +53,7 @@ export default async function handler(req: NextApiRequest, response: NextApiResp
                 }
             });
 
-            await fs.writeFile(inputFilePath, inputFileContent, (err: any) => {
+            await fs.writeFileSync(inputFilePath, inputFileContent, (err: any) => {
                 if (err) {
                     console.error('Error:', err);
                 } else {
@@ -67,7 +68,7 @@ export default async function handler(req: NextApiRequest, response: NextApiResp
                 }
             });
 
-            await fs.writeFile(outputFilePath, outputFileContent, (err: any) => {
+            await fs.writeFileSync(outputFilePath, outputFileContent, (err: any) => {
                 if (err) {
                     console.error('Error:', err);
                 } else {
@@ -81,10 +82,10 @@ export default async function handler(req: NextApiRequest, response: NextApiResp
                     console.log('output file:', data);
                 }
             });
-            // const {res, str} = await run_code_cpp(codeDirectoryPath,'code', inputFilePath, outputFilePath);
-            // if(res === false) {
-            //     response.status(200).json({failedTestCaseIndex: i+1, success : false, message: str});
-            // }
+            const {res, str} = await run_code_cpp(codeDirectoryPath,'code', inputFilePath, outputFilePath);
+            if(res === false) {
+                response.status(200).json({failedTestCaseIndex: i+1, success : false, message: str});
+            }
         }
         response.status(200).json({ success: true, message: "ok" })
     }

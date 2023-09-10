@@ -78,14 +78,18 @@ function execute(command:string) {
     }catch(exception){
         console.log("here i am ");
         console.log("clog ", exception.toString());
-        return gccparser(exception.toString());
+        return gccparser(exception.toString()).toString();
     }
     return res;
   }
 const run_code_cpp = async (filepath:string,filename:string, testFilePathFull:string, testOutputFilePathFull:string) => {
     let compile:any = "not assigned yet";
     try{
-        compile = execute(`g++ ${filepath}/${filename}.cpp -o ./src/judger/${filename}.exec`);
+        if(filepath.endsWith("/") === false){
+          filepath = filepath + "/";
+          console.log("filepath: ", filepath);
+        }
+        compile = execute(`g++ ${filepath}${filename}.cpp -o ./src/judger/${filename}.exec`);
         if(compile != "success"){
             console.log(compile);
             console.log("Complilation Error");
