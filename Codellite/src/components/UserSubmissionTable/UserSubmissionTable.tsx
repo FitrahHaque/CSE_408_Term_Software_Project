@@ -11,7 +11,8 @@ type UserSubmissionTableProps = {
 	uid: string;
 };
 const UserSubmissionTable: React.FC<UserSubmissionTableProps> = ({ onSetLoadingProblems, uid }) => {
-	const [unsolvedProblems, setUnsolvedProblems] = useState<string[]>([]);
+	
+	const [unsolvedProblems, setUnsolvedProblems ] = useState<string[]>([]);
 	const [solvedProblems, setSolvedProblems] = useState<string[]>([]);
 	const [AttemptedProblems, setAttemptedProblems] = useState<string[]>([]);
 	const [filteredProblems, setFilteredProblems] = useState<DBProblem[]>([]);
@@ -20,7 +21,7 @@ const UserSubmissionTable: React.FC<UserSubmissionTableProps> = ({ onSetLoadingP
 	useEffect(() => {
 		const getAttemptedProblems = async () => {
 			onSetLoadingProblems(true);
-			console.log("on")
+			// console.log("on")
 			const response = await fetch('/api/auth/getcurrentuser', {
 				method: 'POST',
 				body: JSON.stringify({
@@ -34,11 +35,11 @@ const UserSubmissionTable: React.FC<UserSubmissionTableProps> = ({ onSetLoadingP
 				...data.userInfo.unsolvedProblems,
 				...data.userInfo.solvedProblems,
 			]
-			console.log("here1")
+			// console.log("here1")
 			setSolvedProblems([...data.userInfo.solvedProblems]);
-			console.log("here2")
+			// console.log("here2")
 			setAttemptedProblems(tmp);
-			console.log("here3")
+			// console.log("here3")
 			const p: DBProblem[] = [];
 			for (let i = 0; i < tmp.length; i++) {
 				const res = await fetch('/api/getproblem/getdbproblem', {
@@ -49,11 +50,11 @@ const UserSubmissionTable: React.FC<UserSubmissionTableProps> = ({ onSetLoadingP
 				})
 				const data = await res.json();
 				p.push({ ...data.problem });
-				console.log("here5")
+				// console.log("here5")
 			}
-			console.log("here4")
+			// console.log("here4")
 			setFilteredProblems(p);
-			console.log('off')
+			// console.log('off')
 			onSetLoadingProblems(false);
 		}
 
@@ -77,20 +78,8 @@ const UserSubmissionTable: React.FC<UserSubmissionTableProps> = ({ onSetLoadingP
 							<th className='px-2 py-4 font-medium whitespace-nowrap text-dark-green-s'>
 								{solvedProblems.includes(problem.id) && <BsCheckCircle fontSize={"18"} width='18' />}
 							</th>
-							<td className='px-6 py-4'>
-								{problem.link ? (
-									<Link
-										className='group-hover:text-white cursor-pointer'
-										href={problem.link}>
-										{problem.title}
-									</Link>
-								) : (
-									<Link
-										className='group-hover:text-white cursor-pointer'
-										href={`/problems/${problem.id}`}>
-										{problem.title}
-									</Link>
-								)}
+							<td className='px-6 py-4 group-hover:text-white cursor-pointer'>
+								{problem.title}
 							</td>
 							<td className={"group-hover:text-white px-6 py-4"}>{problem.category}</td>
 							<td className={"group-hover:text-white px-6 py-4"}>
@@ -109,6 +98,9 @@ const UserSubmissionTable: React.FC<UserSubmissionTableProps> = ({ onSetLoadingP
 									<p className="font-mono text-neutral-400 text-base">
 										PENDING
 									</p>}
+							</td>
+							<td className={"group-hover:text-white px-6 py-4"}>
+								<p>Not Uploaded Yet</p>
 							</td>
 						</tr>
 					);

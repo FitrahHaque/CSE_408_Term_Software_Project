@@ -21,7 +21,6 @@ type PlaygroundProps = {
     problem: ProblemDesc;
     onSuccess: React.Dispatch<React.SetStateAction<boolean>>;
     setSolved: React.Dispatch<React.SetStateAction<boolean>>;
-
 };
 export interface ISettings {
     fontSize: string;
@@ -29,25 +28,11 @@ export interface ISettings {
     dropdownIsOpen: boolean;
 }
 const Playground: React.FC<PlaygroundProps> = ({ problem, onSuccess, setSolved }) => {
-    // console.log("playground", problem.samples)
-
     const [currentTestCaseId, setCurrentTestCaseId] = useState<number>(0);
-    // console.log("currentTestCaseId: ", currentTestCaseId);
-    // if (problem.samples.length > 0) {
-    //     console.log(problem.samples[currentTestCaseId].outputText);
-    // }
-
-    const [testCases, setTestCases] = useState<Sample[]>([]);
-    useEffect(() => {
-        if (problem.samples.length > 0) {
-            setTestCases(problem.samples);
-        }
-    }, [problem.samples.length]);
-
-
+    const [ testCases, setTestCases ] = useState<Sample[]>([]);
+    const router = useRouter();
     let [userCode, setUserCode] = useState<string>(problem.boilerplateCode);
     const [user] = useAuthState(auth);
-    // const { query: { pid } } = useRouter();
     const [fontSize, setFontSize] = useLocalStorage("codellite-fontSize", "16px");
     const [settings, setSettings] = useState<ISettings>({
         fontSize: fontSize,
@@ -92,6 +77,14 @@ const Playground: React.FC<PlaygroundProps> = ({ problem, onSuccess, setSolved }
     }
 
     const handleSubmit = async () => {
+        if(!user) {
+            toast.error("Please Log in to submit your code", { position: "top-center", autoClose: 2000, theme: "dark" });
+            return;
+        }
+        
+    }
+
+    const handleRun = async () => {
         if (!user) {
             toast.error("Please Log in to submit your code", { position: "top-center", autoClose: 2000, theme: "dark" });
             return;
@@ -193,7 +186,7 @@ const Playground: React.FC<PlaygroundProps> = ({ problem, onSuccess, setSolved }
                 </div>
 
                 <div className='w-full px-5 overflow-auto'>
-                    {/* TestCase heading */}
+                    {/* TestCase Heading */}
                     <div className='flex h-10 items-center space-x-6'>
                         <div className='relative flex h-full flex-col justify-center cursor-pointer'>
                             <div className='text-sm font-medium leading-5 text-white'>Testcase</div>
@@ -281,7 +274,7 @@ const Playground: React.FC<PlaygroundProps> = ({ problem, onSuccess, setSolved }
 
                 </div>
             </Split>
-            <EditorFooter onHandleSubmit={handleSubmit} />
+            <EditorFooter onHandleRun={handleRun} onHandleSubmit={handleSubmit} />
         </div>
     )
 }
