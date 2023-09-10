@@ -16,6 +16,7 @@ import { arrayUnion, doc, updateDoc } from 'firebase/firestore';
 import useLocalStorage from '@/hooks/useLocalStorage';
 import { Sample } from '@/utils/types/sample';
 import { AiOutlineDelete } from 'react-icons/ai';
+import { Submission } from '@/utils/types/submission';
 
 type PlaygroundProps = {
     problem: ProblemDesc;
@@ -34,12 +35,12 @@ const Playground: React.FC<PlaygroundProps> = ({ problem, onSuccess, setSolved }
         if (problem.samples.length > 0) {
             setTestCases(problem.samples);
         }
-    }, [ problem.samples.length ]);
+    }, [problem.samples.length]);
     const router = useRouter();
-    let [ userCode, setUserCode ] = useState<string>(problem.boilerplateCode);
+    let [userCode, setUserCode] = useState<string>(problem.boilerplateCode);
     const [user] = useAuthState(auth);
-    const [ fontSize, setFontSize ] = useLocalStorage("codellite-fontSize", "16px");
-    const [ settings, setSettings ] = useState<ISettings>({
+    const [fontSize, setFontSize] = useLocalStorage("codellite-fontSize", "16px");
+    const [settings, setSettings] = useState<ISettings>({
         fontSize: fontSize,
         settingsModalIsOpen: false,
         dropdownIsOpen: false,
@@ -118,20 +119,32 @@ const Playground: React.FC<PlaygroundProps> = ({ problem, onSuccess, setSolved }
                 })
             })
             // console.log("works till here");
-            console.log(user.uid,problem.id, sid, "pending", '')
+            // console.log(user.uid,problem.id, sid, "pending", '')
+            const submission: Submission = {
+                uid: '',
+                pid: '',
+                id: sid.toString(),
+                status: 'pending',
+                checkedBy: '',
+                marks: -200,
+                code: userCode,
+                createdAt: {
+                    year: 0,
+                    month: 0,
+                    hours: 0,
+                    minute: 0,
+                    second: 0,
+                }
+            }
             await fetch('/api/submissions/updatesubmission', {
                 method: 'POST',
                 body: JSON.stringify({
-                    uid: user.uid,
-                    pid: problem.id,
-                    sid: sid,
-                    status: 'pending',
-                    checkedBy: '',
+                    submission: submission,
                 })
             })
             // console.log("stored to updatesubmission");
             toast.success("Submitted", { position: "top-center", autoClose: 3000, theme: "dark" });
-            // router.push(`/submission/${user.uid}`);
+            router.push(`/submission/${user.uid}`);
         }
         catch (error: any) {
             toast.error(error.message, { position: "top-center", autoClose: 3000, theme: "dark" })
@@ -150,7 +163,7 @@ const Playground: React.FC<PlaygroundProps> = ({ problem, onSuccess, setSolved }
                     uid: user.uid,
                     pid: problem.id,
                     testcases: testCases,
-                    code: userCode
+                    code: userCode,
                 }),
             });
             const data = await response.json();

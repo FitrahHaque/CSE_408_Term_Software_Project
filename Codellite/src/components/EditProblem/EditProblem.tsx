@@ -215,7 +215,7 @@ const EditProblem: React.FC<EditProblemProps> = ({ pid }) => {
         })
         toast.success("Deleted the Problem successfully", { position: "top-center", autoClose: 1200, theme: "dark" });
         setTimeout(function() {
-            // This code will run after 1 second
+            // This code will run after 1.2 second
             router.push(`/`);
         }, 1200);
     }

@@ -1,6 +1,7 @@
 import { auth } from "@/firebase/firebase";
 import { DBProblem } from "@/utils/types/problem";
-import { Link } from "lucide-react";
+import { Submission } from "@/utils/types/submission";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { AiFillYoutube } from "react-icons/ai";
@@ -11,11 +12,23 @@ type UserSubmissionTableProps = {
 	uid: string;
 };
 const UserSubmissionTable: React.FC<UserSubmissionTableProps> = ({ onSetLoadingProblems, uid }) => {
-	
-	const [unsolvedProblems, setUnsolvedProblems ] = useState<string[]>([]);
-	const [solvedProblems, setSolvedProblems] = useState<string[]>([]);
-	const [AttemptedProblems, setAttemptedProblems] = useState<string[]>([]);
-	const [filteredProblems, setFilteredProblems] = useState<DBProblem[]>([]);
+	const [solvedProblems, setSolvedProblems] = useState<Submission[]>([]);
+
+	const [attemptedProblems, setAttemptedProblems] = useState<{
+		createdAt: {
+			year: number,
+			month: number,
+			hours: number,
+			minute: number,
+			second: number,
+		},
+		pid: string,
+		sid: string,
+	}[]>([]);
+	const [pidToTitle, setPidToTitle] = useState({});
+	const [dbProblems, setDbProblems] = useState<DBProblem[]>([]);
+	const [submissionProblems, setSubmissionProblems] = useState<Submission[]>([]);
+
 	const [user] = useAuthState(auth);
 
 	useEffect(() => {
@@ -30,9 +43,8 @@ const UserSubmissionTable: React.FC<UserSubmissionTableProps> = ({ onSetLoadingP
 			})
 			const data = await response.json();
 			console.log(data);
-			const tmp: string[] = [
+			const tmp = [
 				...data.userInfo.pendingProblems,
-				...data.userInfo.unsolvedProblems,
 				...data.userInfo.solvedProblems,
 			]
 			// console.log("here1")
@@ -45,15 +57,31 @@ const UserSubmissionTable: React.FC<UserSubmissionTableProps> = ({ onSetLoadingP
 				const res = await fetch('/api/getproblem/getdbproblem', {
 					method: 'POST',
 					body: JSON.stringify({
-						id: tmp[i],
+						id: tmp[i].pid,
 					})
 				})
 				const data = await res.json();
 				p.push({ ...data.problem });
-				// console.log("here5")
+				// console.log("here4")
 			}
-			// console.log("here4")
-			setFilteredProblems(p);
+			// console.log("here5")
+			setDbProblems(p);
+
+			//get particular submissions
+			const s: Submission[] = [];
+			for (let i = 0; i < tmp.length; i++) {
+				// console.log("id->", tmp[i].sid)
+				const res = await fetch('/api/submissions/getsubmission', {
+					method: 'POST',
+					body: JSON.stringify({
+						id: tmp[i].sid,
+					})
+				})
+				const data = await res.json();
+				s.push({ ...data.problem });
+				console.log("here5")
+			}
+			setSubmissionProblems(s);
 			// console.log('off')
 			onSetLoadingProblems(false);
 		}
@@ -65,38 +93,38 @@ const UserSubmissionTable: React.FC<UserSubmissionTableProps> = ({ onSetLoadingP
 			setAttemptedProblems([]);
 		}
 	}, [user]);
-	useEffect(()=> {
-		console.log("filteredProblems:", filteredProblems);
-	},[filteredProblems])
+	useEffect(() => {
+		console.log("dbProblems:", dbProblems);
+	}, [dbProblems])
 
 	return (
 		<>
 			<tbody className='text-neutral-500'>
-				{filteredProblems.map((problem, idx) => {
+				{submissionProblems.map((problem, idx) => {
 					return (
 						<tr className={`group hover:bg-neutral-800 ${idx % 2 == 1 ? "bg-neutral-900" : ""}`} key={problem.id}>
-							<th className='px-2 py-4 font-medium whitespace-nowrap text-dark-green-s'>
-								{solvedProblems.includes(problem.id) && <BsCheckCircle fontSize={"18"} width='18' />}
+							<th className='px-6 py-4 font-medium whitespace-nowrap'>
+								<Link
+									className='group-hover:text-white cursor-pointer underline'
+									href={`/usersubmission/${problem.id}`}>
+									{problem.id}
+								</Link>
 							</th>
 							<td className='px-6 py-4 group-hover:text-white cursor-pointer'>
-								{problem.title}
+								{dbProblems[idx].title}
 							</td>
-							<td className={"group-hover:text-white px-6 py-4"}>{problem.category}</td>
+							<td className={"group-hover:text-white px-6 py-4"}>{dbProblems[idx].category}</td>
 							<td className={"group-hover:text-white px-6 py-4"}>
 								<p>Not Uploaded Yet</p>
 							</td>
 							<td className={"px-6 py-4"}>
-								{solvedProblems.includes(problem.id) &&
+								{problem.status === 'solved' &&
 									<p className="font-mono text-emerald-300 text-base">
-										ACCEPTED
+										{problem.marks}
 									</p>}
-								{unsolvedProblems.includes(problem.id) &&
-									<p className="font-mono text-red-500 text-base">
-										WRONG ANSWER
-									</p>}
-								{!solvedProblems.includes(problem.id) && !unsolvedProblems.includes(problem.id) &&
-									<p className="font-mono text-neutral-400 text-base">
-										PENDING
+								{problem.status === 'pending' &&
+									<p className="font-mono text-base">
+										Pending
 									</p>}
 							</td>
 							<td className={"group-hover:text-white px-6 py-4"}>

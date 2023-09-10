@@ -56,7 +56,7 @@ const SubmissionPage: React.FC<SubmissionProps> = ({ uid }) => {
                                 {!loadingProblems && (
                                     <thead className='text-xs font-bold text-white uppercase border-b'>
                                         <tr>
-                                            <th scope='col' className='px-3 py-3 w-0 font-medium'>
+                                            <th scope='col' className='px-6 py-3 w-0 font-medium'>
                                                 #
                                             </th>
                                             <th scope='col' className='px-6 py-3 w-0 font-medium'>

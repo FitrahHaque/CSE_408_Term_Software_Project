@@ -266,6 +266,13 @@ const Topbar: React.FC<TopbarProps> = ({ problemPage, pid }) => {
 									</ul>
 								</NavigationMenuContent>
 							</NavigationMenuItem>
+							{user && userRole === "student" && <NavigationMenuItem>
+								<Link href={`/submission/${user.uid}`} legacyBehavior passHref>
+									<NavigationMenuLink className={navigationMenuTriggerStyle()}>
+										My Submissions
+									</NavigationMenuLink>
+								</Link>
+							</NavigationMenuItem>}
 							{userRole === "admin" && <NavigationMenuItem>
 								<Link href="/addproblem" legacyBehavior passHref>
 									<NavigationMenuLink className={navigationMenuTriggerStyle()}>
