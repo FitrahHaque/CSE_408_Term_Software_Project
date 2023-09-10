@@ -14,11 +14,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     if (req.method !== 'POST') {
         return res.status(405).end(); // Method not allowed
     }
-    const createdAt = getCurrentDateAndTime();
     const { uid, pid, sid } = JSON.parse(req.body);
     const userRef = doc(firestore, "users", uid);
     await updateDoc(userRef, {
-        pendingProblems: arrayUnion({ pid: pid, sid: sid, createdAt:createdAt}),
+        pendingProblems: arrayUnion({ pid: pid, sid: sid}),
     })
     
     res.status(200).json({message: 'ok'});

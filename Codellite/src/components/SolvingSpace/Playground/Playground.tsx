@@ -173,14 +173,14 @@ const Playground: React.FC<PlaygroundProps> = ({ problem, onSuccess, setSolved }
                 setTimeout(() => {
                     onSuccess(false);
                 }, 4000);
-                await fetch('/api/updateuser/updatesolvedproblems', {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        pid: problem.id,
-                        uid: user!.uid,
-                    })
-                });
-                setSolved(true); //this should not be here
+                // await fetch('/api/updateuser/updatesolvedproblems', {
+                //     method: 'POST',
+                //     body: JSON.stringify({
+                //         pid: problem.id,
+                //         uid: user!.uid,
+                //     })
+                // });
+                // setSolved(true); //this should not be here
             }
             else {
                 const message = `Failed at case ${data.failedTestCaseIndex}!` + data.message;

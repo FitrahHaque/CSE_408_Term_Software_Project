@@ -150,6 +150,14 @@ const UserSubmissionPage: React.FC<UserSubmissionProps> = ({ sid }) => {
                 submission: submission,
             })
         })
+        await fetch('/api/updateuser/updatesolvedproblems', {
+            method: 'POST',
+            body: JSON.stringify({
+                pid: dbProblem.id,
+                uid: author.uid,
+                sid: submittedProblem.id,
+            })
+        })
         toast.success("Evaluated", { position: "top-center", autoClose: 3000, theme: "dark" });
     }
 
