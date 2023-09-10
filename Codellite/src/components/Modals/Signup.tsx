@@ -54,7 +54,6 @@ const Signup: React.FC<SignupProps> = () => {
 				solvedProblems: [],
 				starredProblems: [],
 				pendingProblems: [],
-				unsolvedProblems: [],
 				role: toggle ? "admin" : "student",
 			};
 			await fetch('/api/auth/createnewuser', {

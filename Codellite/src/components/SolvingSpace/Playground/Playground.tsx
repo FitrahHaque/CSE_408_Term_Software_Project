@@ -16,7 +16,7 @@ import { arrayUnion, doc, updateDoc } from 'firebase/firestore';
 import useLocalStorage from '@/hooks/useLocalStorage';
 import { Sample } from '@/utils/types/sample';
 import { AiOutlineDelete } from 'react-icons/ai';
-// import { test } from 'shelljs';
+
 type PlaygroundProps = {
     problem: ProblemDesc;
     onSuccess: React.Dispatch<React.SetStateAction<boolean>>;
@@ -29,24 +29,27 @@ export interface ISettings {
 }
 const Playground: React.FC<PlaygroundProps> = ({ problem, onSuccess, setSolved }) => {
     const [currentTestCaseId, setCurrentTestCaseId] = useState<number>(0);
-    const [ testCases, setTestCases ] = useState<Sample[]>([]);
+    const [testCases, setTestCases] = useState<Sample[]>([]);
+    useEffect(() => {
+        if (problem.samples.length > 0) {
+            setTestCases(problem.samples);
+        }
+    }, [ problem.samples.length ]);
     const router = useRouter();
-    let [userCode, setUserCode] = useState<string>(problem.boilerplateCode);
+    let [ userCode, setUserCode ] = useState<string>(problem.boilerplateCode);
     const [user] = useAuthState(auth);
-    const [fontSize, setFontSize] = useLocalStorage("codellite-fontSize", "16px");
-    const [settings, setSettings] = useState<ISettings>({
+    const [ fontSize, setFontSize ] = useLocalStorage("codellite-fontSize", "16px");
+    const [ settings, setSettings ] = useState<ISettings>({
         fontSize: fontSize,
         settingsModalIsOpen: false,
         dropdownIsOpen: false,
     })
     const handleTestCaseChange = async (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        const { name, value } = e.target;
         const updatedTestCases = [...testCases];
         updatedTestCases[currentTestCaseId] = {
             ...updatedTestCases[currentTestCaseId],
-            [name]: value,
+            [e.target.name]: e.target.value,
         };
-
         setTestCases(updatedTestCases);
     }
 
@@ -77,11 +80,62 @@ const Playground: React.FC<PlaygroundProps> = ({ problem, onSuccess, setSolved }
     }
 
     const handleSubmit = async () => {
-        if(!user) {
+        if (!user) {
             toast.error("Please Log in to submit your code", { position: "top-center", autoClose: 2000, theme: "dark" });
             return;
         }
-        
+        try {
+            let sid;
+            // console.log("crossed try");
+            while (true) {
+                const tmp = generateUniqueId();
+                const response = await fetch('/api/sid/readsid', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        number: tmp,
+                    })
+                })
+                const data = await response.json();
+                if (!data.exists) {
+                    sid = tmp;
+                    break;
+                }
+            }
+            // console.log("sid:", sid);
+            await fetch('api/sid/writesid', {
+                method: 'POST',
+                body: JSON.stringify({
+                    number: sid,
+                })
+            })
+            // console.log("wrote to sid");
+            await fetch('/api/pending/addpending', {
+                method: 'POST',
+                body: JSON.stringify({
+                    uid: user.uid,
+                    pid: problem.id,
+                    sid: sid,
+                })
+            })
+            // console.log("works till here");
+            console.log(user.uid,problem.id, sid, "pending", '')
+            await fetch('/api/submissions/updatesubmission', {
+                method: 'POST',
+                body: JSON.stringify({
+                    uid: user.uid,
+                    pid: problem.id,
+                    sid: sid,
+                    status: 'pending',
+                    checkedBy: '',
+                })
+            })
+            // console.log("stored to updatesubmission");
+            toast.success("Submitted", { position: "top-center", autoClose: 3000, theme: "dark" });
+            // router.push(`/submission/${user.uid}`);
+        }
+        catch (error: any) {
+            toast.error(error.message, { position: "top-center", autoClose: 3000, theme: "dark" })
+        }
     }
 
     const handleRun = async () => {
@@ -113,11 +167,11 @@ const Playground: React.FC<PlaygroundProps> = ({ problem, onSuccess, setSolved }
                         uid: user!.uid,
                     })
                 });
-                setSolved(true);
+                setSolved(true); //this should not be here
             }
             else {
                 const message = `Failed at case ${data.failedTestCaseIndex}!` + data.message;
-                toast.error(message, { position: "top-center", autoClose: 3000, theme: "dark" })
+                toast.error(message, { position: "top-center", autoClose: 4000, theme: "dark" })
             }
         } catch (error: any) {
             console.log(error);
@@ -125,10 +179,10 @@ const Playground: React.FC<PlaygroundProps> = ({ problem, onSuccess, setSolved }
                 toast.error("Oops! One or more test cases failed!", { position: "top-center", autoClose: 3000, theme: "dark" })
             }
             else {
-                toast.error(error.message, { position: "top-center", autoClose: 3000, theme: "dark" })
+                toast.error(error.message, { position: "top-center", autoClose: 4000, theme: "dark" })
             }
         }
-        
+
         // try {
         //     userCode = userCode.slice(userCode.indexOf(problem.starterFunctionName));
         //     const cb = new Function(`return ${userCode}`)();
@@ -154,7 +208,7 @@ const Playground: React.FC<PlaygroundProps> = ({ problem, onSuccess, setSolved }
         //     }
 
         // }
-        
+
     }
     useEffect(() => {
         if (user) {
@@ -279,3 +333,17 @@ const Playground: React.FC<PlaygroundProps> = ({ problem, onSuccess, setSolved }
     )
 }
 export default Playground;
+
+function generateUniqueId(): number {
+    // Generate a timestamp as part of the ID
+    const timestamp = Date.now();
+
+    // Generate a random number (between 0 and 99999999)
+    const random = Math.floor(Math.random() * 100000000);
+
+    // Combine the timestamp and random number to create a unique ID
+    const uniqueId = timestamp * 100000000 + random;
+
+    return uniqueId;
+}
+

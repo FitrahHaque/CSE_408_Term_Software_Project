@@ -1,14 +1,13 @@
 export type User = {
     uid: string,
+    role: "admin" | "student",
     email: string | null,
     displayName: string,
     createdAt: number,
     updatedAt: number,
     likedProblems: string[],
     dislikedProblems: string[],
-    solvedProblems: string[],
     starredProblems: string[],
-    pendingProblems: string[],
-    unsolvedProblems: string[],
-    role: "admin" | "student",
+    solvedProblems: {pid: string, sid: string, createdAt: number}[],
+    pendingProblems: {pid:string, sid: string, createdAt: number}[],
 }

@@ -6,7 +6,7 @@ import { NextApiRequest, NextApiResponse } from "next"
 
 
 type Data = {
-    messgae: string;
+    message: string;
 }
 export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
     if (req.method === 'POST') {
@@ -14,7 +14,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         await deleteDoc(doc(firestore, "problemdesc", pid));
         await deleteDoc(doc(firestore, "problems", pid));
         await deleteDoc(doc(firestore, "problemId", pid));
-        res.status(200).send({messgae:'ok'});
+        res.status(200).send({message:'ok'});
     }
-    res.status(200).send({messgae:'not ok'});
+    res.status(200).send({message:'not ok'});
 }
