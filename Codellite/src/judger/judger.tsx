@@ -36,8 +36,17 @@ function execute1(command:string) {
       });
     });
   }
-function gccparser(errormsg:string){
-    return errormsg;
+function gccparser(error:string){
+      let l = error.indexOf("‘", 0);
+			let r = error.indexOf("’", l + 1);
+			let function_name = error.slice(l + 1, r);
+			l = error.indexOf(":", r + 2);
+			r = error.indexOf(":", l + 1);
+			let line_no = error.slice(l + 1, r);
+			
+			l = error.indexOf("error:", r + 1) + 6;
+			let error_message = error.slice(l, error.length);
+			return { "function_name": function_name, "line_no": line_no, "error_message": error_message};
 }
 function execute(command:string) {
    
