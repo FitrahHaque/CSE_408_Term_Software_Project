@@ -72,7 +72,7 @@ const SubmissionPage: React.FC<SubmissionProps> = ({ uid }) => {
                                                 Verdict
                                             </th>
                                             <th scope='col' className='px-6 py-3 w-0 font-medium'>
-                                                something
+                                                Evaluated By
                                             </th>
                                         </tr>
                                     </thead>

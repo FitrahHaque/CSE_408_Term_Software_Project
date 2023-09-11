@@ -6,6 +6,8 @@ import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { AiFillYoutube } from "react-icons/ai";
 import { BsCheckCircle } from "react-icons/bs";
+import { IoClose } from "react-icons/io5";
+import YouTube from "react-youtube";
 
 type UserSubmissionTableProps = {
 	onSetLoadingProblems: React.Dispatch<React.SetStateAction<boolean>>;
@@ -18,8 +20,15 @@ const UserSubmissionTable: React.FC<UserSubmissionTableProps> = ({ onSetLoadingP
 	// 	pid: string,
 	// 	sid: string,
 	// }[]>([]);
-	const [ dbProblems, setDbProblems ] = useState<DBProblem[]>([]);
-	const [ submissionProblems, setSubmissionProblems ] = useState<Submission[]>([]);
+	const [youtubePlayer, setYoutubePlayer] = useState({
+		isOpen: false,
+		videoId: "",
+	});
+	const closeModal = () => {
+		setYoutubePlayer({ isOpen: false, videoId: "" });
+	};
+	const [dbProblems, setDbProblems] = useState<DBProblem[]>([]);
+	const [submissionProblems, setSubmissionProblems] = useState<Submission[]>([]);
 
 	const [user] = useAuthState(auth);
 
@@ -104,7 +113,17 @@ const UserSubmissionTable: React.FC<UserSubmissionTableProps> = ({ onSetLoadingP
 							</td>
 							<td className={"group-hover:text-white px-6 py-4"}>{dbProblems[idx].category}</td>
 							<td className={"group-hover:text-white px-6 py-4"}>
-								<p>Not Uploaded Yet</p>
+								{dbProblems[idx].videoId ? (
+									<AiFillYoutube
+										fontSize={"28"}
+										className='cursor-pointer hover:text-red-600'
+										onClick={() =>
+											setYoutubePlayer({ isOpen: true, videoId: dbProblems[idx].videoId as string })
+										}
+									/>
+								) : (
+									<p>Not Uploaded Yet</p>
+								)}
 							</td>
 							<td className={"px-6 py-4"}>
 								{problem.status === 'solved' &&
@@ -117,12 +136,37 @@ const UserSubmissionTable: React.FC<UserSubmissionTableProps> = ({ onSetLoadingP
 									</p>}
 							</td>
 							<td className={"group-hover:text-white px-6 py-4"}>
-								<p>Not Uploaded Yet</p>
+								{problem.checkedBy}
 							</td>
+
 						</tr>
 					);
 				})}
 			</tbody>
+			{youtubePlayer.isOpen && (
+				<tfoot className='fixed top-0 left-0 h-screen w-screen flex items-center justify-center'>
+					<div
+						className='bg-black z-10 opacity-70 top-0 left-0 w-screen h-screen absolute'
+						onClick={closeModal}
+					></div>
+					<div className='w-full z-50 h-full px-6 relative max-w-4xl'>
+						<div className='w-full h-full flex items-center justify-center relative'>
+							<div className='w-full relative'>
+								<IoClose
+									fontSize={"35"}
+									className='cursor-pointer absolute -top-16 right-0'
+									onClick={closeModal}
+								/>
+								<YouTube
+									videoId={youtubePlayer.videoId}
+									loading='lazy'
+									iframeClassName='w-full min-h-[500px]'
+								/>
+							</div>
+						</div>
+					</div>
+				</tfoot>
+			)}
 		</>
 	);
 }
