@@ -12,12 +12,12 @@ type UserSubmissionTableProps = {
 	uid: string;
 };
 const UserSubmissionTable: React.FC<UserSubmissionTableProps> = ({ onSetLoadingProblems, uid }) => {
-	const [solvedProblems, setSolvedProblems] = useState<Submission[]>([]);
+	// const [solvedProblems, setSolvedProblems] = useState<Submission[]>([]);
 
-	const [attemptedProblems, setAttemptedProblems] = useState<{
-		pid: string,
-		sid: string,
-	}[]>([]);
+	// const [attemptedProblems, setAttemptedProblems] = useState<{
+	// 	pid: string,
+	// 	sid: string,
+	// }[]>([]);
 	const [ dbProblems, setDbProblems ] = useState<DBProblem[]>([]);
 	const [ submissionProblems, setSubmissionProblems ] = useState<Submission[]>([]);
 
@@ -40,9 +40,9 @@ const UserSubmissionTable: React.FC<UserSubmissionTableProps> = ({ onSetLoadingP
 				...data.userInfo.solvedProblems,
 			]
 			// console.log("here1")
-			setSolvedProblems([...data.userInfo.solvedProblems]);
+			// setSolvedProblems([...data.userInfo.solvedProblems]);
 			// console.log("here2")
-			setAttemptedProblems(tmp);
+			// setAttemptedProblems(tmp);
 			// console.log("here3")
 			const p: DBProblem[] = [];
 			for (let i = 0; i < tmp.length; i++) {
@@ -80,9 +80,6 @@ const UserSubmissionTable: React.FC<UserSubmissionTableProps> = ({ onSetLoadingP
 
 		if (user) {
 			getAttemptedProblems();
-		}
-		if (!user) {
-			setAttemptedProblems([]);
 		}
 	}, [user]);
 	useEffect(() => {

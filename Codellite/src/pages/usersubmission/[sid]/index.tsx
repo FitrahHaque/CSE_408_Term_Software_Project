@@ -143,6 +143,7 @@ const UserSubmissionPage: React.FC<UserSubmissionProps> = ({ sid }) => {
             ...submittedProblem,
             marks: parseInt(marks),
             checkedBy: prof,
+            status: 'solved',
         }
         await fetch('/api/submissions/updatesubmission', {
             method: 'POST',
@@ -158,7 +159,11 @@ const UserSubmissionPage: React.FC<UserSubmissionProps> = ({ sid }) => {
                 sid: submittedProblem.id,
             })
         })
-        toast.success("Evaluated", { position: "top-center", autoClose: 3000, theme: "dark" });
+        toast.success("Evaluated", { position: "top-center", autoClose: 1200, theme: "dark" });
+        setTimeout(function() {
+            // This code will run after 1 second
+            router.push(`/adminpending/${user!.uid}`);
+        }, 1200);
     }
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -211,7 +216,7 @@ const UserSubmissionPage: React.FC<UserSubmissionProps> = ({ sid }) => {
                         >
                             Run
                         </Button>
-                        {role === 'admin' &&
+                        {user && role === 'admin' &&
                             <Button
                                 variant="outline"
                                 onClick={handleEvaluate}

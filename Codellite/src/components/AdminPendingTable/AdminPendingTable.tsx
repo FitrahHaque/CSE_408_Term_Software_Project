@@ -27,6 +27,7 @@ const AdminPendingTable: React.FC<AdminPendingTableProps> = ({ onSetLoadingProbl
 			const tmp = [
 				...data.problems,
 			]
+            console.log("tmp: ", tmp);
 			const p: DBProblem[] = [];
 			for (let i = 0; i < tmp.length; i++) {
 				const res = await fetch('/api/getproblem/getdbproblem', {
@@ -37,12 +38,12 @@ const AdminPendingTable: React.FC<AdminPendingTableProps> = ({ onSetLoadingProbl
 				})
 				const data = await res.json();
 				p.push({ ...data.problem });
-				// console.log("here4")
+				console.log("here4")
 			}
 			console.log("here5")
 			setDbProblems(p);
 			setSubmissionProblems(tmp);
-			// console.log('off')
+			console.log(p);
 			onSetLoadingProblems(false);
 		}
 

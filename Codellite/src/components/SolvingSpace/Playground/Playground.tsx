@@ -121,8 +121,8 @@ const Playground: React.FC<PlaygroundProps> = ({ problem, onSuccess, setSolved }
             // console.log("works till here");
             // console.log(user.uid,problem.id, sid, "pending", '')
             const submission: Submission = {
-                uid: '',
-                pid: '',
+                uid: user.uid,
+                pid: problem.id,
                 id: sid.toString(),
                 status: 'pending',
                 checkedBy: '',

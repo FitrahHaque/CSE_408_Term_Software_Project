@@ -40,7 +40,14 @@ const ProblemsTable: React.FC<ProblemsTableProps> = ({ onSetLoadingProblems }) =
 				})
 			});
 			const data = await response.json();
-			setSolvedProblems(data.solvedProblems);
+			const tmp = [
+				...data.solvedProblems,
+			]
+			const names: string[] = [];
+			for(let i=0;i<tmp.length;i++) {
+				names.push(tmp[i].pid);
+			}
+			setSolvedProblems(names);
 		}
 		if (user) {
 			// console.log("got user")
