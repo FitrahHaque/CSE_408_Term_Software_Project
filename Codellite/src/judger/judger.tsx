@@ -37,10 +37,10 @@ function execute1(command:string) {
     });
   }
 function gccparser(error:string){
-    let s = error.indexOf("./src", 0);
+    let s:number = error.indexOf("./src", 0);
     s = error.indexOf("./src", s + 1);
-    let multi_error = "";
-    let ns = error.indexOf("./src", s + 1);
+    let multi_error:string = "";
+    let ns:number = error.indexOf("./src", s + 1);
     while(1)
     {
       s = ns;
@@ -48,21 +48,21 @@ function gccparser(error:string){
       if(s == -1) 
           break;
 
-      let l = error.indexOf(".cpp:", s) + 5;
+      let l:number = error.indexOf(".cpp:", s) + 5;
       //console.log(error.slice(l, l + 20));
       ns = error.indexOf("./src", s + 1);
       if(error[l] == " ")
       {
           l = error.indexOf("‘", l);
-          let r = error.indexOf("’", l + 1);
-          let function_name = error.slice(l + 1, r);
+          let r:number = error.indexOf("’", l + 1);
+          let function_name:string = error.slice(l + 1, r);
           console.log(function_name);
           multi_error = multi_error.concat("in function ", function_name, "\n");
           continue;
       }
       
-      let r = error.indexOf(":", l);
-      let line_no = error.slice(l, r);
+      let r:number = error.indexOf(":", l);
+      let line_no:string = error.slice(l, r);
       
       l = error.indexOf("error:", r + 1) + 6;
 
@@ -71,7 +71,7 @@ function gccparser(error:string){
       else
           r = ns;
 
-      let error_message = error.slice(l, r);
+      let error_message:string = error.slice(l, r);
       multi_error = multi_error.concat("in line ", line_no, "\n", error_message, "\n");
     }
     return multi_error;
