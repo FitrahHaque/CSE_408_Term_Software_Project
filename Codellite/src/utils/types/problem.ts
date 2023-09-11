@@ -9,8 +9,7 @@ export type ProblemDesc = {
     constraints: string;
     order: number;
     boilerplateCode: string;
-    onlineJudge: ((fn: any) => boolean) | string;
-    starterFunctionName: string;
+    
     difficulty: string;
 };
 

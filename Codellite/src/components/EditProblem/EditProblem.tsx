@@ -24,8 +24,6 @@ const EditProblem: React.FC<EditProblemProps> = ({ pid }) => {
         constraints: ``,
         order: 1,
         boilerplateCode: ``,
-        onlineJudge: ``,
-        starterFunctionName: ``,
         difficulty: '',
     });
     const [currentDBProblem, setCurrentDBProblem] = useState<DBProblem>({
@@ -49,8 +47,6 @@ const EditProblem: React.FC<EditProblemProps> = ({ pid }) => {
         constraints: ``,
         order: 1,
         boilerplateCode: ``,
-        onlineJudge: ``,
-        starterFunctionName: ``,
         difficulty: '',
     });
     const [DBInputs, setDBInputs] = useState<DBProblem>({
@@ -222,7 +218,7 @@ const EditProblem: React.FC<EditProblemProps> = ({ pid }) => {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (!inputs.id || !inputs.boilerplateCode || !inputs.difficulty
-            || !inputs.onlineJudge || !inputs.problemStatement || !inputs.starterFunctionName || !inputs.title) {
+             || !inputs.problemStatement || !inputs.title) {
             toast.error("Please Fill All The Fields", { position: "top-center", autoClose: 1000, theme: "dark" })
             return;
         }
@@ -584,41 +580,7 @@ const EditProblem: React.FC<EditProblemProps> = ({ pid }) => {
 
                 </div>
 
-                <div>
-                    <label htmlFor='onlineJudge' className='text-xl font-medium block mb-2 text-slate-400'>
-                        Online Judge
-                    </label>
-                    <input
-                        onChange={handleInputChange}
-                        type='onlineJudge'
-                        name='onlineJudge'
-                        id='onlineJudge'
-                        value={inputs.onlineJudge.toString()}
-                        className='
-        border-2 outline-none sm:text-sm rounded-lg focus:ring-sky-600 focus:border-sky-600 block w-full p-2.5
-        bg-gray-800 border-gray-500 placeholder-gray-400 text-white
-    '
-                        placeholder='twoSum'
-                    />
-                </div>
-
-                <div>
-                    <label htmlFor='starterFunctionName' className='text-xl font-medium block mb-2 text-slate-400'>
-                        Starter Function Name
-                    </label>
-                    <input
-                        onChange={handleInputChange}
-                        type='starterFunctionName'
-                        name='starterFunctionName'
-                        id='starterFunctionName'
-                        value={inputs.starterFunctionName}
-                        className='
-        border-2 outline-none sm:text-sm rounded-lg focus:ring-sky-600 focus:border-sky-600 block w-full p-2.5
-        bg-gray-800 border-gray-500 placeholder-gray-400 text-white
-    '
-                        placeholder=''
-                    />
-                </div>
+                
 
                 <div>
                     <label htmlFor='category' className='text-xl font-medium block mb-2 text-slate-400'>

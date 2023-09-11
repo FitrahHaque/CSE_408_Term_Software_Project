@@ -38,7 +38,7 @@ const AddProblem: React.FC<AddProblemProps> = ({ problemCount }) => {
     });
     
     const [inputs, setInputs] = useState<ProblemDesc>({
-        id: 'two-sum',
+        id: 'twosum',
         title: 'Two Sum',
         problemStatement: `<p className='mt-3'>
     Given an array of integers <code>nums</code> and an integer <code>target</code>, return <em>indices of the two numbers such that they add up</em> to <code>target</code>.
@@ -64,8 +64,6 @@ You can return the answer in any order.
         boilerplateCode: `function twoSum(nums, target) {
             //Write your code here
         };`,
-        onlineJudge: `twoSumHandler`,
-        starterFunctionName: `function twoSum(nums, target)`,
         difficulty: 'Easy',
     });
 
@@ -191,7 +189,7 @@ You can return the answer in any order.
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (!inputs.id || !inputs.boilerplateCode || !inputs.difficulty
-            || !inputs.onlineJudge || !inputs.problemStatement || !inputs.starterFunctionName || !inputs.title) {
+             || !inputs.problemStatement || !inputs.title) {
             toast.error("Please Fill All The Fields", { position: "top-center", autoClose: 1000, theme: "dark" })
             return;
         }
@@ -522,41 +520,6 @@ You can return the answer in any order.
 
                 </div>
 
-                <div>
-                    <label htmlFor='onlineJudge' className='text-xl font-medium block mb-2 text-slate-400'>
-                        Online Judge
-                    </label>
-                    <input
-                        onChange={handleInputChange}
-                        type='onlineJudge'
-                        name='onlineJudge'
-                        id='onlineJudge'
-                        value={inputs.onlineJudge.toString()}
-                        className='
-        border-2 outline-none sm:text-sm rounded-lg focus:ring-sky-600 focus:border-sky-600 block w-full p-2.5
-        bg-gray-800 border-gray-500 placeholder-gray-400 text-white
-    '
-                        placeholder='twoSum'
-                    />
-                </div>
-
-                <div>
-                    <label htmlFor='starterFunctionName' className='text-xl font-medium block mb-2 text-slate-400'>
-                        Starter Function Name
-                    </label>
-                    <input
-                        onChange={handleInputChange}
-                        type='starterFunctionName'
-                        name='starterFunctionName'
-                        id='starterFunctionName'
-                        value={inputs.starterFunctionName}
-                        className='
-        border-2 outline-none sm:text-sm rounded-lg focus:ring-sky-600 focus:border-sky-600 block w-full p-2.5
-        bg-gray-800 border-gray-500 placeholder-gray-400 text-white
-    '
-                        placeholder=''
-                    />
-                </div>
 
                 <div>
                     <label htmlFor='category' className='text-xl font-medium block mb-2 text-slate-400'>

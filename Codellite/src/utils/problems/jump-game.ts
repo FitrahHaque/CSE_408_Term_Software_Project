@@ -26,7 +26,7 @@ const starterCodeJumpGameJS = `function canJump(nums) {
 };`;
 
 export const jumpGame: ProblemDesc = {
-	id: "jump-game",
+	id: "jumpgame",
 	title: "Jump Game",
 	problemStatement: `<p class='mt-3'>
     You are given an integer array <code>nums</code>. You are initially positioned at the <strong>first index</strong>
@@ -55,8 +55,6 @@ export const jumpGame: ProblemDesc = {
 	constraints: `<li class='mt-2'><code>1 <= nums.length <= 10^4</code></li>
     <li class='mt-2'><code>0 <= nums[i] <= 10^5</code></li>`,
 	boilerplateCode: starterCodeJumpGameJS,
-	onlineJudge: jumpGameHandler,
-	starterFunctionName: "function canJump(",
 	order: 3,
     difficulty: "Medium",
 };
