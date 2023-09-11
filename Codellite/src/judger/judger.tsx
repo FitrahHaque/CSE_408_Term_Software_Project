@@ -1,9 +1,17 @@
-var child_process = require('child_process');
+var child_process  = require('child_process');
+
 // var shell = require('shelljs');
 // var fs = require('fs');
 // const { type } = require('os');
 // 
+
+function demoExec(command: string) {
+  console.log("-----------------------------------------*** Command : " , command);
+  return child_process.execSync(command).toString()
+}
+
 function execute1(command:string) {
+    console.log("----------------------------------------->>> Command : " , command);
     /**
      * @param {Function} resolve A function that resolves the promise
      * @param {Function} reject A function that fails the promise
@@ -112,12 +120,13 @@ function execute(command:string) {
   }
 const run_code_cpp = async (filepath:string,filename:string, testFilePathFull:string, testOutputFilePathFull:string) => {
     let compile:any = "not assigned yet";
+    let pass = process.env.OS_PASS;
     try{
         if(filepath.endsWith("/") === false){
           filepath = filepath + "/";
           console.log("filepath: ", filepath);
         }
-        compile = execute(`g++ ${filepath}${filename}.cpp -o ./src/judger/${filename}.exec`);
+        compile = execute(`echo ${pass} | g++ ${filepath}${filename}.cpp -o ./src/judger/${filename}.exec`);
         if(compile != "success"){
             console.log(compile);
             console.log("Complilation Error");
@@ -138,16 +147,16 @@ const run_code_cpp = async (filepath:string,filename:string, testFilePathFull:st
         return {res, str};
     }
     try{
-        let pass = process.env.OS_PASS;
         
-        const run = await execute1(`echo ${pass} | sudo -S  ./src/judger/libjudger.so --max_cpu_time=100 --max_real_time=1000 --max_memory=130023424 --exe_path=./src/judger/${filename}.exec --input_path=${testFilePathFull} --output_path=./src/judger/${filename}.out --error_path=./src/judger/error.out`);
+        
+        const run = await demoExec(`echo ${pass} | sudo -S  ./src/judger/libjudger.so --max_cpu_time=100 --max_real_time=1000 --max_memory=130023424 --exe_path=./src/judger/${filename}.exec --input_path=${testFilePathFull} --output_path=./src/judger/${filename}.out --error_path=./src/judger/error.out`);
         console.log("Runtime successfull");
         console.log("run1 " , run);
         const result = JSON.parse(run as string);
        
         if(result.result === 0){
             console.log(`./src/judger/compare.sh ${testOutputFilePathFull} ./src/judger/${filename}.out`);
-            let checkR = await execute1(`./src/judger/compare.sh ${testOutputFilePathFull} ./src/judger/${filename}.out`);
+            let checkR = await demoExec(`echo ${pass} | ./src/judger/compare.sh ${testOutputFilePathFull} ./src/judger/${filename}.out`);
             console.log("checkR: ", checkR);
             if(parseInt(checkR as string) === 1){
                 console.log("here");
