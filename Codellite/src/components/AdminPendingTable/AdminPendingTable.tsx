@@ -4,46 +4,29 @@ import { Submission } from "@/utils/types/submission";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { AiFillYoutube } from "react-icons/ai";
-import { BsCheckCircle } from "react-icons/bs";
 
-type UserSubmissionTableProps = {
-	onSetLoadingProblems: React.Dispatch<React.SetStateAction<boolean>>;
-	uid: string;
+
+type AdminPendingTableProps = {
+    onSetLoadingProblems: React.Dispatch<React.SetStateAction<boolean>>;
+    uid: string;
 };
-const UserSubmissionTable: React.FC<UserSubmissionTableProps> = ({ onSetLoadingProblems, uid }) => {
-	const [solvedProblems, setSolvedProblems] = useState<Submission[]>([]);
 
-	const [attemptedProblems, setAttemptedProblems] = useState<{
-		pid: string,
-		sid: string,
-	}[]>([]);
+const AdminPendingTable: React.FC<AdminPendingTableProps> = ({ onSetLoadingProblems, uid }) => {
 	const [ dbProblems, setDbProblems ] = useState<DBProblem[]>([]);
 	const [ submissionProblems, setSubmissionProblems ] = useState<Submission[]>([]);
-
 	const [user] = useAuthState(auth);
-
-	useEffect(() => {
-		const getAttemptedProblems = async () => {
+    useEffect(() => {
+		const getPendingProblems = async () => {
 			onSetLoadingProblems(true);
 			// console.log("on")
-			const response = await fetch('/api/auth/getcurrentuser', {
-				method: 'POST',
-				body: JSON.stringify({
-					uid: user!.uid,
-				})
+			const response = await fetch('/api/submissions/getallpending', {
+				method: 'GET',
 			})
 			const data = await response.json();
 			console.log(data);
 			const tmp = [
-				...data.userInfo.pendingProblems,
-				...data.userInfo.solvedProblems,
+				...data.problems,
 			]
-			// console.log("here1")
-			setSolvedProblems([...data.userInfo.solvedProblems]);
-			// console.log("here2")
-			setAttemptedProblems(tmp);
-			// console.log("here3")
 			const p: DBProblem[] = [];
 			for (let i = 0; i < tmp.length; i++) {
 				const res = await fetch('/api/getproblem/getdbproblem', {
@@ -56,40 +39,21 @@ const UserSubmissionTable: React.FC<UserSubmissionTableProps> = ({ onSetLoadingP
 				p.push({ ...data.problem });
 				// console.log("here4")
 			}
-			// console.log("here5")
+			console.log("here5")
 			setDbProblems(p);
-
-			//get particular submissions
-			const s: Submission[] = [];
-			for (let i = 0; i < tmp.length; i++) {
-				// console.log("id->", tmp[i].sid)
-				const res = await fetch('/api/submissions/getsubmission', {
-					method: 'POST',
-					body: JSON.stringify({
-						id: tmp[i].sid,
-					})
-				})
-				const data = await res.json();
-				s.push({ ...data.problem });
-				console.log("here5")
-			}
-			setSubmissionProblems(s);
+			setSubmissionProblems(tmp);
 			// console.log('off')
 			onSetLoadingProblems(false);
 		}
 
 		if (user) {
-			getAttemptedProblems();
+			getPendingProblems();
 		}
 		if (!user) {
-			setAttemptedProblems([]);
 		}
 	}, [user]);
-	useEffect(() => {
-		console.log("dbProblems:", dbProblems);
-	}, [dbProblems])
 
-	return (
+    return (
 		<>
 			<tbody className='text-neutral-500'>
 				{submissionProblems.map((problem, idx) => {
@@ -130,4 +94,5 @@ const UserSubmissionTable: React.FC<UserSubmissionTableProps> = ({ onSetLoadingP
 	);
 }
 
-export default UserSubmissionTable;
+
+export default AdminPendingTable;

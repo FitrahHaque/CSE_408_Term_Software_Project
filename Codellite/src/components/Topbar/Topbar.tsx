@@ -273,6 +273,13 @@ const Topbar: React.FC<TopbarProps> = ({ problemPage, pid }) => {
 									</NavigationMenuLink>
 								</Link>
 							</NavigationMenuItem>}
+							{user && userRole === "admin" && <NavigationMenuItem>
+								<Link href={`/adminpending/${user.uid}`} legacyBehavior passHref>
+									<NavigationMenuLink className={navigationMenuTriggerStyle()}>
+										Pending Submissions
+									</NavigationMenuLink>
+								</Link>
+							</NavigationMenuItem>}
 							{userRole === "admin" && <NavigationMenuItem>
 								<Link href="/addproblem" legacyBehavior passHref>
 									<NavigationMenuLink className={navigationMenuTriggerStyle()}>
@@ -280,13 +287,14 @@ const Topbar: React.FC<TopbarProps> = ({ problemPage, pid }) => {
 									</NavigationMenuLink>
 								</Link>
 							</NavigationMenuItem>}
-							{user && userRole === "admin" && user!.uid === currentProblem.admin &&<NavigationMenuItem>
+							{problemPage && user && userRole === "admin" && user!.uid === currentProblem.admin && <NavigationMenuItem>
 								<Link href={`/editproblem/${currentProblem.id}`} legacyBehavior passHref>
 									<NavigationMenuLink className={navigationMenuTriggerStyle()}>
 										Edit This Problem
 									</NavigationMenuLink>
 								</Link>
 							</NavigationMenuItem>}
+							
 						</NavigationMenuList>
 					</NavigationMenu>
 
