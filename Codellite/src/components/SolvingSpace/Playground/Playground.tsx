@@ -17,6 +17,7 @@ import useLocalStorage from '@/hooks/useLocalStorage';
 import { Sample } from '@/utils/types/sample';
 import { AiOutlineDelete } from 'react-icons/ai';
 import { Submission } from '@/utils/types/submission';
+import { CloudCog } from 'lucide-react';
 
 type PlaygroundProps = {
     problem: ProblemDesc;
@@ -31,6 +32,9 @@ export interface ISettings {
 const Playground: React.FC<PlaygroundProps> = ({ problem, onSuccess, setSolved }) => {
     const [currentTestCaseId, setCurrentTestCaseId] = useState<number>(0);
     const [testCases, setTestCases] = useState<Sample[]>([]);
+    const [hasError, setHasError] = useState<Boolean> (false);
+    const [errorText, setErrorText] = useState<string> ("");
+
     useEffect(() => {
         if (problem.samples.length > 0) {
             setTestCases(problem.samples);
@@ -152,6 +156,8 @@ const Playground: React.FC<PlaygroundProps> = ({ problem, onSuccess, setSolved }
     }
 
     const handleRun = async () => {
+        setHasError(false);
+
         if (!user) {
             toast.error("Please Log in to submit your code", { position: "top-center", autoClose: 2000, theme: "dark" });
             return;
@@ -184,7 +190,10 @@ const Playground: React.FC<PlaygroundProps> = ({ problem, onSuccess, setSolved }
             }
             else {
                 const message = `Failed at case ${data.failedTestCaseIndex}!` + data.message;
-                toast.error(message, { position: "top-center", autoClose: 4000, theme: "dark" })
+                toast.error(message, { position: "top-center", autoClose: 4000, theme: "light" })
+                setHasError(true);
+                setErrorText(message);
+                console.log(hasError);
             }
         } catch (error: any) {
             console.log(error);
@@ -337,9 +346,33 @@ const Playground: React.FC<PlaygroundProps> = ({ problem, onSuccess, setSolved }
                                 className='w-full cursor-text rounded-lg border px-3 py-[10px] bg-dark-fill-3 
                             border-transparent text-white mt-2 resize-none'>
                             </textarea>
-                        </div>}
-
+                            {
+                                hasError && 
+                                <> 
+                                <p className='text-sm font-medium mt-4 text-gray-400'>
+                                Error Log:
+                                </p>
+                                <textarea
+                                id='errorLog'
+                                name='errorLog'
+                                rows={5}
+                                value={errorText}
+                                disabled
+                                className=' w-full cursor-text rounded-lg border px-3 py-[10px] bg-dark-fill-3 
+                            border-transparent mt-2 resize-none font-bold text-red-400'>
+                                </textarea>
+                                </>
+                                 
+                                
+                            }
+                            
+                        </div>
+                    }
+                        
+                    
+                        
                 </div>
+                
             </Split>
             <EditorFooter onHandleRun={handleRun} onHandleSubmit={handleSubmit} />
         </div>
