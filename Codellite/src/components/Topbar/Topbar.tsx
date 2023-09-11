@@ -216,7 +216,7 @@ const Topbar: React.FC<TopbarProps> = ({ problemPage, pid }) => {
 				<div className='flex items-center space-x-4 flex-1 justify-end'>
 					<NavigationMenu>
 						<NavigationMenuList>
-							<NavigationMenuItem>
+							{/* <NavigationMenuItem>
 								<NavigationMenuTrigger>Getting started</NavigationMenuTrigger>
 								<NavigationMenuContent>
 									<ul className="grid gap-3 p-4 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
@@ -249,8 +249,8 @@ const Topbar: React.FC<TopbarProps> = ({ problemPage, pid }) => {
 										</Link>
 									</ul>
 								</NavigationMenuContent>
-							</NavigationMenuItem>
-							<NavigationMenuItem>
+							</NavigationMenuItem> */}
+							{/* <NavigationMenuItem>
 								<NavigationMenuTrigger>Components</NavigationMenuTrigger>
 								<NavigationMenuContent>
 									<ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
@@ -265,7 +265,7 @@ const Topbar: React.FC<TopbarProps> = ({ problemPage, pid }) => {
 										))}
 									</ul>
 								</NavigationMenuContent>
-							</NavigationMenuItem>
+							</NavigationMenuItem> */}
 							{user && userRole === "student" && <NavigationMenuItem>
 								<Link href={`/submission/${user.uid}`} legacyBehavior passHref>
 									<NavigationMenuLink className={navigationMenuTriggerStyle()}>
@@ -280,7 +280,7 @@ const Topbar: React.FC<TopbarProps> = ({ problemPage, pid }) => {
 									</NavigationMenuLink>
 								</Link>
 							</NavigationMenuItem>}
-							{userRole === "admin" && <NavigationMenuItem>
+							{user && userRole === "admin" && <NavigationMenuItem>
 								<Link href="/addproblem" legacyBehavior passHref>
 									<NavigationMenuLink className={navigationMenuTriggerStyle()}>
 										Add a Problem
@@ -294,7 +294,7 @@ const Topbar: React.FC<TopbarProps> = ({ problemPage, pid }) => {
 									</NavigationMenuLink>
 								</Link>
 							</NavigationMenuItem>}
-							{userRole === "admin" &&  <NavigationMenuItem>
+							{user && userRole === "admin" &&  <NavigationMenuItem>
 								<Link href={`/adminevaluation/${user!.uid}`} legacyBehavior passHref>
 									<NavigationMenuLink className={navigationMenuTriggerStyle()}>
 										Profile
@@ -321,7 +321,8 @@ const Topbar: React.FC<TopbarProps> = ({ problemPage, pid }) => {
 							href='/auth'
 							onClick={() => setAuthModalState((prev) => ({ ...prev, isOpen: true, type: "login" }))}
 						>
-							<button className='bg-dark-fill-3 py-1 px-2 cursor-pointer rounded '>Sign In</button>
+							<button className='flex text-white items-center gap-2 font-medium max-w-[170px] cursor-pointer hover:text-transparent hover:bg-gradient-to-r 
+							hover:from-cyan-200 hover:to-indigo-700 hover:bg-clip-text'>Sign In</button>
 						</Link>
 					)}
 					{user && (

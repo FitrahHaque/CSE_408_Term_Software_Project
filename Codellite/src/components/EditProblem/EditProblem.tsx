@@ -287,10 +287,10 @@ const EditProblem: React.FC<EditProblemProps> = ({ pid }) => {
             });
         }
         toast.success("Edited successfully", { position: "top-center", autoClose: 1200, theme: "dark" });
-        // setTimeout(function() {
-        //     // This code will run after 1 second
-        //     router.push(`/problems/${newProblem.id}`);
-        // }, 1200);
+        setTimeout(function() {
+            // This code will run after 1 second
+            router.push(`/problems/${newProblem.id}`);
+        }, 1200);
     }
 
     return (
