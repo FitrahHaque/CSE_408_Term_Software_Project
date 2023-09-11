@@ -7,25 +7,25 @@ import { useAuthState } from "react-firebase-hooks/auth";
 
 
 type AdminEvaluationTableProps = {
-    onSetLoadingProblems: React.Dispatch<React.SetStateAction<boolean>>;
-    uid: string;
+	onSetLoadingProblems: React.Dispatch<React.SetStateAction<boolean>>;
+	uid: string;
 };
 
 const AdminEvaluationTable: React.FC<AdminEvaluationTableProps> = ({ onSetLoadingProblems, uid }) => {
-	const [ dbProblems, setDbProblems ] = useState<DBProblem[]>([]);
-	const [ submissionProblems, setSubmissionProblems ] = useState<Submission[]>([]);
+	const [dbProblems, setDbProblems] = useState<DBProblem[]>([]);
+	const [submissionProblems, setSubmissionProblems] = useState<Submission[]>([]);
 	const [user] = useAuthState(auth);
-    useEffect(() => {
+	useEffect(() => {
 		const getPendingProblems = async () => {
 			onSetLoadingProblems(true);
-            const response2 = await fetch('/api/auth/getcurrentuser', {
+			const response2 = await fetch('/api/auth/getcurrentuser', {
 				method: 'POST',
 				body: JSON.stringify({
 					uid: user!.uid,
 				})
 			})
 			const data2 = await response2.json();
-            const username = data2.userInfo.displayName;
+			const username = data2.userInfo.displayName;
 			// console.log("on")
 			const response = await fetch('/api/submissions/getallsubmissions', {
 				method: 'GET',
@@ -35,7 +35,7 @@ const AdminEvaluationTable: React.FC<AdminEvaluationTableProps> = ({ onSetLoadin
 			const tmp = [
 				...data.problems,
 			]
-            console.log("tmp: ", tmp);
+			console.log("tmp: ", tmp);
 			const p: DBProblem[] = [];
 			for (let i = 0; i < tmp.length; i++) {
 				const res = await fetch('/api/getproblem/getdbproblem', {
@@ -50,8 +50,8 @@ const AdminEvaluationTable: React.FC<AdminEvaluationTableProps> = ({ onSetLoadin
 			}
 			console.log("here5")
 			setDbProblems(p);
-            
-            const s: Submission[] = tmp.filter((item:Submission) => item.status === 'solved' && item.checkedBy === username)
+
+			const s: Submission[] = tmp.filter((item: Submission) => item.status === 'solved' && item.checkedBy === username)
 			setSubmissionProblems(s);
 			console.log(p);
 			onSetLoadingProblems(false);
@@ -64,7 +64,7 @@ const AdminEvaluationTable: React.FC<AdminEvaluationTableProps> = ({ onSetLoadin
 		}
 	}, [user]);
 
-    return (
+	return (
 		<>
 			<tbody className='text-neutral-500'>
 				{submissionProblems.map((problem, idx) => {
@@ -78,12 +78,14 @@ const AdminEvaluationTable: React.FC<AdminEvaluationTableProps> = ({ onSetLoadin
 								</Link>
 							</th>
 							<td className='px-6 py-4 group-hover:text-white cursor-pointer'>
-								{dbProblems[idx].title}
+								<Link
+									className='group-hover:text-white cursor-pointer'
+									href={`/problems/${dbProblems[idx].id}`}>
+									{dbProblems[idx].title}
+								</Link>
 							</td>
 							<td className={"group-hover:text-white px-6 py-4"}>{dbProblems[idx].category}</td>
-							<td className={"group-hover:text-white px-6 py-4"}>
-								<p>Not Uploaded Yet</p>
-							</td>
+
 							<td className={"px-6 py-4"}>
 								{problem.status === 'solved' &&
 									<p className="font-mono text-emerald-300 text-base">
@@ -93,9 +95,6 @@ const AdminEvaluationTable: React.FC<AdminEvaluationTableProps> = ({ onSetLoadin
 									<p className="font-mono text-base">
 										Pending
 									</p>}
-							</td>
-							<td className={"group-hover:text-white px-6 py-4"}>
-								<p>Not Uploaded Yet</p>
 							</td>
 						</tr>
 					);

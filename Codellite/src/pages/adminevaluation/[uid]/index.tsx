@@ -65,15 +65,11 @@ const AdminEvaluatedPage: React.FC<AdminEvaluatedPageProps> = ({ uid }) => {
                                             <th scope='col' className='px-6 py-3 w-0 font-medium'>
                                                 Category
                                             </th>
-                                            <th scope='col' className='px-6 py-3 w-0 font-medium'>
-                                                Solution
-                                            </th>
+                                            
                                             <th scope='col' className='px-6 py-3 w-0 font-medium'>
                                                 Verdict
                                             </th>
-                                            <th scope='col' className='px-6 py-3 w-0 font-medium'>
-                                                something
-                                            </th>
+                                            
                                         </tr>
                                     </thead>
                                 )}

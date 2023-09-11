@@ -7,15 +7,15 @@ import { useAuthState } from "react-firebase-hooks/auth";
 
 
 type AdminPendingTableProps = {
-    onSetLoadingProblems: React.Dispatch<React.SetStateAction<boolean>>;
-    uid: string;
+	onSetLoadingProblems: React.Dispatch<React.SetStateAction<boolean>>;
+	uid: string;
 };
 
 const AdminPendingTable: React.FC<AdminPendingTableProps> = ({ onSetLoadingProblems, uid }) => {
-	const [ dbProblems, setDbProblems ] = useState<DBProblem[]>([]);
-	const [ submissionProblems, setSubmissionProblems ] = useState<Submission[]>([]);
+	const [dbProblems, setDbProblems] = useState<DBProblem[]>([]);
+	const [submissionProblems, setSubmissionProblems] = useState<Submission[]>([]);
 	const [user] = useAuthState(auth);
-    useEffect(() => {
+	useEffect(() => {
 		const getPendingProblems = async () => {
 			onSetLoadingProblems(true);
 			// console.log("on")
@@ -27,7 +27,7 @@ const AdminPendingTable: React.FC<AdminPendingTableProps> = ({ onSetLoadingProbl
 			const tmp = [
 				...data.problems,
 			]
-            console.log("tmp: ", tmp);
+			console.log("tmp: ", tmp);
 			const p: DBProblem[] = [];
 			for (let i = 0; i < tmp.length; i++) {
 				const res = await fetch('/api/getproblem/getdbproblem', {
@@ -54,7 +54,7 @@ const AdminPendingTable: React.FC<AdminPendingTableProps> = ({ onSetLoadingProbl
 		}
 	}, [user]);
 
-    return (
+	return (
 		<>
 			<tbody className='text-neutral-500'>
 				{submissionProblems.map((problem, idx) => {
@@ -68,25 +68,15 @@ const AdminPendingTable: React.FC<AdminPendingTableProps> = ({ onSetLoadingProbl
 								</Link>
 							</th>
 							<td className='px-6 py-4 group-hover:text-white cursor-pointer'>
-								{dbProblems[idx].title}
+								<Link
+									className='group-hover:text-white cursor-pointer'
+									href={`/problems/${dbProblems[idx].id}`}>
+									{dbProblems[idx].title}
+								</Link>
 							</td>
 							<td className={"group-hover:text-white px-6 py-4"}>{dbProblems[idx].category}</td>
-							<td className={"group-hover:text-white px-6 py-4"}>
-								<p>Not Uploaded Yet</p>
-							</td>
-							<td className={"px-6 py-4"}>
-								{problem.status === 'solved' &&
-									<p className="font-mono text-emerald-300 text-base">
-										{problem.marks}
-									</p>}
-								{problem.status === 'pending' &&
-									<p className="font-mono text-base">
-										Pending
-									</p>}
-							</td>
-							<td className={"group-hover:text-white px-6 py-4"}>
-								<p>Not Uploaded Yet</p>
-							</td>
+							
+
 						</tr>
 					);
 				})}
