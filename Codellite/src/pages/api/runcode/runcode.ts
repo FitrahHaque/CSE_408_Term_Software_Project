@@ -61,7 +61,7 @@ export default async function handler(req: NextApiRequest, response: NextApiResp
                 }
             });
             
-            await fs.readFile(inputFilePath, 'utf8', (err: any, data: any) => {
+            await fs.readFileSync(inputFilePath, 'utf8', (err: any, data: any) => {
                 if (err) {
                     console.error('Error reading file:', err);
                 } else {
@@ -76,7 +76,7 @@ export default async function handler(req: NextApiRequest, response: NextApiResp
                     console.log('File created successfully:');
                 }
             });
-            await fs.readFile(outputFilePath, 'utf8', (err: any, data: any) => {
+            await fs.readFileSync(outputFilePath, 'utf8', (err: any, data: any) => {
                 if (err) {
                     console.error('Error reading file:', err);
                 } else {
